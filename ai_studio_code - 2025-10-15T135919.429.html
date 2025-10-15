@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תוכנית הוראה - יחידת עולם הסוסים</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'David', 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #000;
+            background: white;
+            padding: 2cm;
+            max-width: 21cm;
+            margin: 0 auto;
+        }
+
+        /* כותרות */
+        h1 {
+            font-size: 22pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10pt;
+            color: #1f4788;
+            border-bottom: 3pt solid #1f4788;
+            padding-bottom: 10pt;
+        }
+
+        h2 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-top: 20pt;
+            margin-bottom: 12pt;
+            color: #1f4788;
+            background: #e7f0ff;
+            padding: 8pt;
+            border-right: 4pt solid #1f4788;
+        }
+
+        h3 {
+            font-size: 13pt;
+            font-weight: bold;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            color: #2c5aa0;
+        }
+
+        h4 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            color: #000;
+            text-decoration: underline;
+        }
+
+        /* פסקאות */
+        p {
+            margin-bottom: 8pt;
+            text-align: justify;
+        }
+
+        /* רשימות */
+        ul, ol {
+            margin-right: 25pt;
+            margin-bottom: 10pt;
+        }
+
+        li {
+            margin-bottom: 4pt;
+        }
+
+        /* טבלאות */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15pt 0;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #1f4788;
+            color: white;
+            font-weight: bold;
+            padding: 8pt;
+            border: 1pt solid #000;
+            text-align: center;
+        }
+
+        td {
+            border: 1pt solid #000;
+            padding: 8pt;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        /* תיבות מיוחדות */
+        .info-box {
+            background-color: #fff8dc;
+            border: 2pt solid #daa520;
+            padding: 12pt;
+            margin: 15pt 0;
+            page-break-inside: avoid;
+        }
+
+        .tip-box {
+            background-color: #e7f0ff;
+            border-right: 4pt solid #1f4788;
+            padding: 10pt;
+            margin: 12pt 0;
+            page-break-inside: avoid;
+        }
+
+        .warning-box {
+            background-color: #ffe6e6;
+            border: 2pt solid #d32f2f;
+            padding: 10pt;
+            margin: 12pt 0;
+            page-break-inside: avoid;
+        }
+
+        /* כותרת עמוד */
+        .page-header {
+            text-align: center;
+            margin-bottom: 20pt;
+            padding-bottom: 10pt;
+            border-bottom: 2pt solid #ccc;
+        }
+
+        .page-header .title {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #1f4788;
+        }
+
+        .page-header .subtitle {
+            font-size: 12pt;
+            color: #666;
+            margin-top: 5pt;
+        }
+
+        /* מספור */
+        .numbered-section {
+            margin-right: 20pt;
+        }
+
+        /* הדגשות */
+        .highlight {
+            background-color: #ffff00;
+            font-weight: bold;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        /* מעבר עמוד */
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* שוליים מיוחדים */
+        .indented {
+            margin-right: 30pt;
+        }
+
+        /* רקע לכותרות שעות */
+        .lesson-title {
+            background: linear-gradient(to left, #1f4788, #4a7bbf);
+            color: white;
+            padding: 10pt;
+            margin: 15pt 0 10pt 0;
+            font-weight: bold;
+            font-size: 14pt;
+        }
+
+        /* סטטוס/תגיות */
+        .badge {
+            display: inline-block;
+            padding: 2pt 8pt;
+            border-radius: 3pt;
+            font-size: 9pt;
+            font-weight: bold;
+            margin-left: 5pt;
+        }
+
+        .badge-primary { background: #1f4788; color: white; }
+        .badge-success { background: #28a745; color: white; }
+        .badge-warning { background: #ffc107; color: black; }
+        .badge-info { background: #17a2b8; color: white; }
+
+        /* תוכן עניינים */
+        .toc {
+            background: #f9f9f9;
+            border: 1pt solid #ccc;
+            padding: 15pt;
+            margin: 20pt 0;
+        }
+
+        .toc-title {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 10pt;
+            text-align: center;
+        }
+
+        .toc-item {
+            margin: 5pt 0;
+            padding-right: 15pt;
+        }
+
+        .toc-item a {
+            color: #1f4788;
+            text-decoration: none;
+        }
+
+        /* הדפסה */
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- עמוד שער -->
+<div style="text-align: center; margin-top: 100pt;">
+    <h1 style="font-size: 28pt; border: none; padding: 0;">תוכנית הוראה מפורטת</h1>
+    <p style="font-size: 20pt; margin-top: 30pt; color: #1f4788; font-weight: bold;">יחידת "עולם הסוסים"</p>
+    <p style="font-size: 16pt; margin-top: 20pt;">כיתה ד' | 8 שעות הוראה</p>
+    
+    <div style="margin-top: 80pt; border-top: 2pt solid #1f4788; padding-top: 20pt;">
+        <p style="font-size: 14pt;"><strong>תחום:</strong> קריאה והבנת הנקרא</p>
+        <p style="font-size: 14pt; margin-top: 10pt;"><strong>מיומנות מרכזית:</strong> איתור פרטים בטקסט</p>
+        <p style="font-size: 14pt; margin-top: 10pt;"><strong>אוכלוסיית יעד:</strong> כיתה ד' כולל תלמידים מתקשים (כ-45%)</p>
+    </div>
+
+    <div style="margin-top: 100pt;">
+        <p style="font-size: 11pt; color: #666;">
+            שנת הלימודים: תשפ"ה | 2024-2025
+        </p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- תוכן עניינים -->
+<div class="toc">
+    <div class="toc-title">תוכן עניינים</div>
+    <div class="toc-item">1. סקירה כללית של היחידה ..................................... עמוד 3</div>
+    <div class="toc-item">2. מיומנויות שפה נלמדות ..................................... עמוד 4</div>
+    <div class="toc-item">3. מבנה היחידה - 8 שעות ..................................... עמוד 5</div>
+    <div class="toc-item">4. תכנון שבועי מפורט:</div>
+    <div class="toc-item indented">• שעה 1: קורא מיומן ..................................... עמוד 6</div>
+    <div class="toc-item indented">• שעה 2: איתור פרטים ..................................... עמוד 8</div>
+    <div class="toc-item indented">• שעה 3: טקסט השיחה ..................................... עמוד 10</div>
+    <div class="toc-item indented">• שעה 4: יתרונות הרכיבה ..................................... עמוד 12</div>
+    <div class="toc-item indented">• שעה 5: כללי בטיחות ..................................... עמוד 14</div>
+    <div class="toc-item indented">• שעה 6: הסיפור - חלק א' ..................................... עמוד 16</div>
+    <div class="toc-item indented">• שעה 7: הסיפור - חלק ב' ..................................... עמוד 18</div>
+    <div class="toc-item indented">• שעה 8: הערכה מסכמת ..................................... עמוד 20</div>
+    <div class="toc-item">5. אסטרטגיות דיפרנציאציה ..................................... עמוד 22</div>
+    <div class="toc-item">6. כלי הערכה ורובריקות ..................................... עמוד 24</div>
+    <div class="toc-item">7. חומרים נדרשים ..................................... עמוד 26</div>
+    <div class="toc-item">8. נספחים ..................................... עמוד 27</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 1: סקירה כללית -->
+<h1>1. סקירה כללית של היחידה</h1>
+
+<h3>רקע</h3>
+<p>
+יחידה זו מבוססת על חוברת טקסטים בנושא "סוסים" ונועדה לפתח את מיומנות הקריאה וההבנה של תלמידי כיתה ד'. 
+היחידה מתמקדת במיומנות המרכזית של <span class="bold">איתור פרטים בטקסט</span>, תוך חשיפה למגוון סוגי טקסטים: 
+טקסט מידע, שיחה דיגיטלית, הוראות בטיחות וסיפור.
+</p>
+
+<h3>אוכלוסיית היעד</h3>
+<p>
+הכיתה כוללת כ-45% תלמידים מתקשים, מתוכם כ-15% קוראים קריאה איטית ומצרפת. 
+התכנון כולל דיפרנציאציה מלאה ל-4 רמות תלמידים בכל שעה.
+</p>
+
+<h3>משך היחידה</h3>
+<p>
+<span class="bold">8 שעות הוראה</span> (כולל שעת הערכה מסכמת)
+</p>
+
+<h3>מטרות כלליות</h3>
+<ul>
+    <li>פיתוח מיומנות <span class="bold">איתור פרטים בטקסט</span> באמצעות שימוש בכרטיס ניווט</li>
+    <li>הטמעת אסטרטגיות <span class="bold">"קורא מיומן"</span> לפני, תוך כדי ואחרי קריאה</li>
+    <li>הכרת מגוון סוגי טקסטים ומבניהם</li>
+    <li>הרחבת אוצר מילים בנושא סוסים</li>
+    <li>פיתוח כתיבת תשובה מלאה ומסודרת</li>
+    <li>חיזוק ביטחון עצמי של תלמידים מתקשים</li>
+</ul>
+
+<div class="info-box">
+    <p><span class="bold">💡 עקרון מנחה:</span></p>
+    <p>
+    "כל תלמיד יכול להצליח!" - היחידה בנויה כך שכל תלמיד, בכל רמה, יחווה הצלחה ויפתח את מיומנויות הקריאה שלו.
+    </p>
+</div>
+
+<h3>חומרים נדרשים</h3>
+<ul>
+    <li>חוברת טקסטים "עולם הסוסים" (לכל תלמיד)</li>
+    <li>חוברת שאלות (לכל תלמיד)</li>
+    <li>כרטיס "קורא מיומן" מלומינציה (לכל תלמיד)</li>
+    <li>כרטיס "ניווט לאיתור פרטים" מלומינציה (לכל תלמיד)</li>
+    <li>מרקרים צהובים (לכל תלמיד)</li>
+    <li>פוסטר כיתתי "קוראים מיומנים"</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- חלק 2: מיומנויות שפה -->
+<h1>2. מיומנויות שפה נלמדות ביחידה</h1>
+
+<h2>א. מיומנויות קריאה</h2>
+
+<h3>1. אסטרטגיות "לפני הקריאה" - קורא מיומן:</h3>
+<ul>
+    <li>קריאת כותרת וזיהוי נושא הטקסט</li>
+    <li>התבוננות באיורים, תרשימים וסמלים</li>
+    <li>סריקה ראשונית של הטקסט (תת-כותרות, מילים מודגשות, מבנה)</li>
+    <li>ניבוי תוכן על פי הרמזים הוויזואליים</li>
+    <li>זיהוי סוג הטקסט (מידע/סיפור/הוראות/שיחה)</li>
+</ul>
+
+<h3>2. אסטרטגיות "תוך כדי הקריאה":</h3>
+<ul>
+    <li><span class="highlight">איתור פרטים בטקסט</span> (מיומנות מרכזית)</li>
+    <li>קריאה עם תכלית - חיפוש מידע ספציפי</li>
+    <li>סימון והדגשת מידע חשוב במרקר</li>
+    <li>שימוש במילות מפתח לאיתור מידע</li>
+    <li>קריאה מרפרפת (סריקה מהירה)</li>
+</ul>
+
+<h3>3. אסטרטגיות "אחרי הקריאה":</h3>
+<ul>
+    <li>חזרה למקומות רלוונטיים בטקסט</li>
+    <li>מענה על שאלות מבוסס ציטוט/הפניה</li>
+    <li>הבנת הקשרים בין חלקי הטקסט</li>
+</ul>
+
+<h2>ב. מיומנויות אוצר מילים</h2>
+<ul>
+    <li>זיהוי וניתוח מילים חדשות מהקשר</li>
+    <li>הבנת ניקוד והשפעתו על משמעות (צַיִד/צַיָד, לְאַלֵף/לְאֶלֶף)</li>
+    <li>הכרת מילים ממשפחת מילים (חיזוק, לחזק, תחזק, מחוזק)</li>
+    <li>שימוש במילון טקסטואלי</li>
+</ul>
+
+<h2>ג. מיומנויות דקדוק ומבנה השפה</h2>
+<ul>
+    <li>זיהוי יחיד/רבים, זכר/נקבה</li>
+    <li>עבודה עם צורות פועל (עבר, הווה, עתיד)</li>
+    <li>הבנת מילות קישור (למרות, ובכל זאת, אם...אז)</li>
+    <li>זיהוי שמות תואר ותפקידם בתיאור</li>
+</ul>
+
+<h2>ד. מיומנויות כתיבה</h2>
+<ul>
+    <li>כתיבת תשובה מלאה למשפט</li>
+    <li>כתיבה בעלת ארגון והיגיון (פתיחה, פיתוח, סיכום)</li>
+    <li>שימוש בסימני פיסוק נכונים</li>
+    <li>העתקת משפטים מהטקסט במדויק</li>
+</ul>
+
+<h2>ה. מיומנויות חשיבה</h2>
+<ul>
+    <li>השוואה בין מקורות (מידע מול סיפור)</li>
+    <li>זיהוי שינויים בדמות לאורך סיפור</li>
+    <li>קישור בין טקסטים שונים לנושא אחד</li>
+    <li>הסקת מסקנות מפרטים בטקסט</li>
+</ul>
+
+<div class="tip-box">
+    <p><span class="bold">📌 שימו לב:</span></p>
+    <p>
+    כל מיומנות נלמדת בהוראה מפורשת, מתורגלת במגוון הקשרים ומוערכת בסוף היחידה.
+    התלמידים מקבלים כלי עזר קונקרטיים (כרטיסים) לשימוש עצמאי.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 3: מבנה היחידה -->
+<h1>3. מבנה היחידה - סקירת 8 השעות</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">שעה</th>
+            <th style="width: 25%;">נושא</th>
+            <th style="width: 40%;">מיומנויות מרכזיות</th>
+            <th style="width: 25%;">טקסט</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align: center;">1</td>
+            <td>מה עושה קורא מיומן?</td>
+            <td>
+                • 5 אסטרטגיות לפני קריאה<br>
+                • קריאת כותרת ואיורים<br>
+                • סריקת טקסט<br>
+                • זיהוי סוג טקסט
+            </td>
+            <td>"הסוס והאדם"<br>(טקסט מידע)</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">2</td>
+            <td>הוראה מפורשת: איתור פרטים</td>
+            <td>
+                • <span class="bold">כרטיס ניווט (6 שלבים)</span><br>
+                • קריאה מרפרפת<br>
+                • חיפוש מילות מפתח<br>
+                • כתיבת תשובה מלאה
+            </td>
+            <td>המשך "הסוס והאדם"<br>שאלות 1-2</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">3</td>
+            <td>טקסט השיחה המשפחתית</td>
+            <td>
+                • קריאת טקסט דיגיטלי<br>
+                • זיהוי רגשות<br>
+                • הבנת ביטויים<br>
+                • מבנה תנאי (אם...אז)
+            </td>
+            <td>שיחת ווצאפ<br>משפחת לירן</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">4</td>
+            <td>יתרונות הרכיבה</td>
+            <td>
+                • קריאת טקסט עם כותרות משנה<br>
+                • זיהוי מבנה (5 סעיפים)<br>
+                • הבנת מילים: לנוון, הדדית<br>
+                • משימת ג'יגסו
+            </td>
+            <td>"יתרונות הרכיבה<br>על סוסים לילדים"</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">5</td>
+            <td>כללי בטיחות + <span class="bold">עבודה עצמאית</span></td>
+            <td>
+                • קריאת טקסט הוראות<br>
+                • זיהוי מבנה: כלל+נימוק<br>
+                • <span class="highlight">תרגול למבחן</span>
+            </td>
+            <td>"כללי בטיחות<br>בשיעורי רכיבה"<br>שאלות 13-14</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">6</td>
+            <td>סיפור - חלק א'</td>
+            <td>
+                • קריאת סיפור<br>
+                • זיהוי דמויות ותכונות<br>
+                • הבנת רגשות<br>
+                • אוצר מילים: צלע, מהולל
+            </td>
+            <td>"נוצה-שסועה"<br>שורות 1-23</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">7</td>
+            <td>סיפור - חלק ב' וסיכום</td>
+            <td>
+                • המשך הסיפור<br>
+                • זיהוי שינוי בדמות<br>
+                • משפחות מילים<br>
+                • סיכום היחידה
+            </td>
+            <td>"נוצה-שסועה"<br>שורות 24-48<br>שאלות 22-32</td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">8</td>
+            <td><span class="bold">הערכה מסכמת</span></td>
+            <td>
+                • כל המיומנויות שנלמדו<br>
+                • טקסט חדש + שאלות<br>
+                • 4 גרסאות מותאמות
+            </td>
+            <td>טקסט חדש:<br>"סוסי פוני"</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="warning-box">
+    <p><span class="bold">⚠️ חשוב מאוד:</span></p>
+    <p>
+    שעה 5 כוללת עבודה עצמאית מודרכת שמשמשת כ<span class="bold">תרגול למבחן</span>. 
+    המורה עוברת ומפקחת אך לא מתערבת יתר על המידה, כדי לאפשר לתלמידים לתרגל עצמאות.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 4: תכנון מפורט - שעה 1 -->
+<div class="lesson-title">שעה 1 - יום ראשון | "מה עושה קורא מיומן?"</div>
+
+<h3>🎯 מיומנויות שפה נלמדות</h3>
+<ul>
+    <li>אסטרטגיות לפני קריאה (כותרת, איורים, סריקה, ניבוי)</li>
+    <li>זיהוי סוג טקסט</li>
+    <li>אוצר מילים: צמחוני, מבויתת, רעמה</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>עמוד 1 בחוברת הטקסטים - "הסוס והאדם"</p>
+
+<h3>⏱️ פירוט הפעילויות</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">פתיחה - שיחת התנעה</span><br>
+                • "מה אתם יודעים על סוסים?"<br>
+                • רשימת "יודעים/רוצים לדעת"<br>
+                • הצגת תמונות סוסים
+            </td>
+            <td>מליאה</td>
+            <td>
+                כל התלמידים משתתפים<br>
+                שיתוף חוויות אישיות
+            </td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">הוראה מפורשת - מודל "קורא מיומן"</span><br>
+                הצגת 5 שלבים:<br>
+                1. קריאת כותרת<br>
+                2. התבוננות באיורים<br>
+                3. סריקת הטקסט<br>
+                4. זיהוי סוג טקסט<br>
+                5. ניבוי תוכן<br><br>
+                • דגמה חיה של המורה<br>
+                • חלוקת כרטיס "קורא מיומן"
+            </td>
+            <td>מליאה</td>
+            <td>
+                <span class="bold">תלמידים מתקשים:</span><br>
+                • כרטיס מצומצם (3 שלבים)<br>
+                • המורה מדגימה בקול רם<br>
+                עם הרבה עצירות
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">תרגול מודרך</span><br>
+                • מילוי כרטיס "קורא מיומן" בזוגות<br>
+                • על טקסט "הסוס והאדם"<br>
+                • המורה מסתובבת ומסייעת
+            </td>
+            <td>זוגות</td>
+            <td>
+                <span class="bold">קבוצה א':</span> עצמאי<br>
+                <span class="bold">קבוצה ב':</span> בזוגות<br>
+                <span class="bold">קבוצה ג':</span> עם המורה
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">שיתוף</span><br>
+                2-3 זוגות מציגים תצפיות
+            </td>
+            <td>מליאה</td>
+            <td>
+                קריאה למגוון רמות
+            </td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">קריאת הטקסט</span><br>
+                • קריאה לפי קבוצות גמישות<br>
+                • זיהוי מילים חדשות
+            </td>
+            <td>קבוצות</td>
+            <td>
+                <span class="bold">א':</span> קריאה עצמאית<br>
+                <span class="bold">ב':</span> קריאה בזוגות<br>
+                <span class="bold">ג':</span> קריאה מודרכת עם המורה<br>
+                <span class="bold">ד':</span> קריאה עם הקלטה
+            </td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">סיכום</span><br>
+                • מה למדנו על סוסים?<br>
+                • יצירת פוסטר כיתתי<br>
+                • תליית הפוסטר בכיתה
+            </td>
+            <td>מליאה</td>
+            <td>
+                תלמידים משתפים פרטים<br>
+                מעניינים שמצאו
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>
+העתקת 5 מילים חדשות מהטקסט למחברת + הסבר במילים שלכם
+</p>
+
+<h3>💡 טיפים למורה</h3>
+<ul>
+    <li>הדגישו שאסטרטגיות אלה יעזרו בכל קריאה, לא רק ביחידה זו</li>
+    <li>תלו את הפוסטר במקום בולט - תתייחסו אליו בכל שעה</li>
+    <li>תלמידים מתקשים: העתיקו עבורם את 5 המילים והם רק מסבירים</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- שעה 2 -->
+<div class="lesson-title">שעה 2 - יום שני | הוראה מפורשת - איתור פרטים</div>
+
+<h3>🎯 מיומנויות שפה נלמדות</h3>
+<ul>
+    <li><span class="highlight">איתור פרטים בטקסט</span> (מיומנות מרכזית!)</li>
+    <li>קריאה עם תכלית - חיפוש מידע ספציפי</li>
+    <li>שימוש במילות מפתח</li>
+    <li>כתיבת תשובה מלאה</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>המשך עבודה על "הסוס והאדם" + שאלות 1-2 מחוברת השאלות</p>
+
+<h3>⏱️ פירוט הפעילויות</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">חזרה</span><br>
+                "מה עושה קורא מיומן לפני קריאה?"<br>
+                חזרה מהירה עם הפוסטר
+            </td>
+            <td>מליאה</td>
+            <td>
+                חיזוק הידע מהשיעור הקודם
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">הוראה מפורשת - "איתור פרטים"</span><br>
+                הצגת כרטיס הניווט (6 שלבים):<br>
+                1. קריאת השאלה בעיון<br>
+                2. סימון מילת השאלה<br>
+                3. סימון מילים מרכזיות<br>
+                4. סריקת הטקסט (קריאה מרפרפת)<br>
+                5. קריאת הפסקה הרלוונטית<br>
+                6. כתיבת תשובה מלאה<br><br>
+                הסבר: מה זה "קריאה מרפרפת"
+            </td>
+            <td>מליאה</td>
+            <td>
+                המורה מציגה כרטיס מוגדל<br>
+                כל תלמיד מקבל כרטיס<br>
+                אישי מלומינציה
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">דגמה חיה של המורה</span><br>
+                שאלה: "איך קוראים לשערות הארוכות על הצוואר?"<br>
+                • המורה מבצעת כל 6 השלבים בקול רם<br>
+                • מסמנת במרקר על הלוח<br>
+                • מסבירה את התהליך המחשבתי
+            </td>
+            <td>מליאה</td>
+            <td>
+                <span class="bold">תלמידים מתקשים:</span><br>
+                מקבלים טקסט עם סימון<br>
+                מוקדם של מילות מפתח
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">תרגול מודרך</span><br>
+                שאלה 2א' מחוברת השאלות<br>
+                • המורה מובילה 3 שלבים ראשונים<br>
+                • התלמידים משלימים בזוגות
+            </td>
+            <td>מליאה<br>↓<br>זוגות</td>
+            <td>
+                כל הכיתה עוברת את<br>
+                התהליך ביחד
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">תרגול בקבוצות</span><br>
+                <span class="bold">שאלה 1</span> - הטבלה:<br>
+                "יש תשובה בקטע / אין תשובה"
+            </td>
+            <td>קבוצות</td>
+            <td>
+                <span class="bold">חזקים:</span> 7 שאלות<br>
+                <span class="bold">בינוניים:</span> 5 שאלות<br>
+                <span class="bold">מתקשים:</span> 3 שאלות עם המורה<br>
+                <span class="bold">איטיים:</span> 2 שאלות + סיוע
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">סיכום</span><br>
+                • בדיקת 2-3 שורות ביחד<br>
+                • "איך מצאתם את התשובה?"<br>
+                • הדגשת האסטרטגיה
+            </td>
+            <td>מליאה</td>
+            <td>
+                שיתוף אסטרטגיות שעבדו
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>
+חיפוש תשובה לשאלה נוספת מהטבלה + הסבר כתוב "איך מצאתי את התשובה"
+</p>
+
+<div class="tip-box">
+    <p><span class="bold">💡 חשוב:</span> זוהי השעה המרכזית ביותר ביחידה!</p>
+    <p>
+    הקדישו זמן מספיק לדגמה. תלמידים צריכים לראות את התהליך כולו לפני שהם מנסים בעצמם.
+    אל תמהרו לתרגול עצמאי - ודאו שכולם מבינים את 6 השלבים.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- שעה 3 -->
+<div class="lesson-title">שעה 3 - יום שלישי | טקסט השיחה המשפחתית</div>
+
+<h3>🎯 מיומנויות שפה נלמדות</h3>
+<ul>
+    <li>קריאת טקסט דיגיטלי (שיחת ווצאפ)</li>
+    <li>זיהוי רגשות מתוך שפה כתובה</li>
+    <li>הבנת ביטויים: "ובכל זאת", "נשקול בחיוב"</li>
+    <li>זיהוי מבנה תנאי: אם...אז</li>
+    <li>איתור פרטים - המשך תרגול</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>עמוד 2 - שיחת ווצאפ של משפחת לירן | שאלות 4-7</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">חימום</span><br>
+                • "יש לכם קבוצות משפחתיות?"<br>
+                • מה מיוחד בטקסט כזה?
+            </td>
+            <td>מליאה</td>
+            <td>שיתוף חוויות אישיות</td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">קורא מיומן</span><br>
+                • מה אני רואה? (בועות, אימוג'י, שעות)<br>
+                • איזה סוג טקסט?<br>
+                • על מה השיחה תהיה?
+            </td>
+            <td>מליאה</td>
+            <td>תלמידים מזהים ביחד<br>המבנה הייחודי</td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">קריאת הטקסט - בתפקידים</span><br>
+                • אמא, אבא, לירן<br>
+                • קריאה בקול רם עם ביטוי<br>
+                • זיהוי סמלי האימוג'י
+            </td>
+            <td>מליאה</td>
+            <td>
+                <span class="bold">מתקשים:</span><br>
+                תפקיד קצר (אמא)<br>
+                <span class="bold">חזקים:</span><br>
+                תפקיד ארוך (לירן)
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">שיחה - הבנת רגשות</span><br>
+                • מה מרגישה לירן?<br>
+                • מה הוריה מרגישים?<br>
+                • איך אתם יודעים?
+            </td>
+            <td>מליאה</td>
+            <td>זיהוי רגשות מדיאלוג</td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">עבודה על שאלות 4-7</span><br>
+                • שאלה 4: העתקת משפט<br>
+                • שאלה 5: הסבר התמיכה<br>
+                • שאלה 6: מדוע לא תמכו<br>
+                • שאלה 7: ביטויים + תנאי
+            </td>
+            <td>קבוצות</td>
+            <td>
+                <span class="bold">א':</span> כל השאלות<br>
+                <span class="bold">ב':</span> 4,5,6<br>
+                <span class="bold">ג':</span> 4,5 עם תמיכה<br>
+                <span class="bold">ד':</span> 4 + סיוע בהעתקה
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">סיכום</span><br>
+                • למה לירן בחרה בחוג?<br>
+                • חיבור בין הטקסטים
+            </td>
+            <td>מליאה</td>
+            <td>הבנת קשרים</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>כתיבת הודעת ווצאפ קצרה (3-4 שורות) ללירן עם עצה או עידוד</p>
+
+<div class="page-break"></div>
+
+<!-- שעה 4 -->
+<div class="lesson-title">שעה 4 - יום רביעי | יתרונות הרכיבה על סוסים</div>
+
+<h3>🎯 מיומנויות שפה</h3>
+<ul>
+    <li>קריאת טקסט עם כותרות משנה ומספור</li>
+    <li>זיהוי מבנה טקסט מידע (כותרת ראשית + 5 סעיפים)</li>
+    <li>אוצר מילים: לנוון, לנווט, שַׁלְוָה, הֲדָדִית</li>
+    <li>הבנת משפטים מורכבים</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>עמוד 3 - "חוג רכיבה על סוסים לילדים" | שאלות 8-10</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">חימום</span><br>
+                "למה כדאי לרכוב על סוסים?"<br>
+                רשימת השערות על הלוח
+            </td>
+            <td>מליאה</td>
+            <td>כל התלמידים משתתפים</td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">קורא מיומן + סריקה</span><br>
+                • מה אני רואה? (5 כותרות ממוספרות)<br>
+                • מה זה אומר? (5 יתרונות)<br>
+                • הסבר מבנה טקסט מידע
+            </td>
+            <td>מליאה</td>
+            <td>המורה מסבירה מבנה טקסט</td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">קריאה - משימת ג'יגסו</span><br>
+                כל זוג אחראי על יתרון אחד (1-5)<br>
+                • קריאה בזוג<br>
+                • הכנת סיכום של היתרון<br>
+                • הכנת הצגה לכיתה (2-3 משפטים)
+            </td>
+            <td>זוגות</td>
+            <td>
+                <span class="bold">מתקשים:</span><br>
+                יתרון קצר (3,5)<br>
+                <span class="bold">חזקים:</span><br>
+                יתרון ארוך (2)<br>
+                <span class="bold">איטיים:</span><br>
+                קוראים עם הקלטה + שותף
+            </td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">שיתוף - הצגת היתרונות</span><br>
+                כל זוג מציג את היתרון שלו<br>
+                בניית טבלת סיכום על הלוח
+            </td>
+            <td>מליאה</td>
+            <td>
+                כל זוג תורם לכיתה<br>
+                למידה אחד מהשני
+            </td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">עבודה על שאלות 8-10</span><br>
+                • שאלה 8: קישור מתאים<br>
+                • שאלה 9: הבנת משפט<br>
+                • שאלה 10: התאמת מילים
+            </td>
+            <td>קבוצות</td>
+            <td>
+                <span class="bold">א':</span> כל השאלות<br>
+                <span class="bold">ב':</span> 8,9<br>
+                <span class="bold">ג':</span> 8 + טבלה מוכנה<br>
+                <span class="bold">ד':</span> 8 + עזרת איורים
+            </td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">סיכום</span><br>
+                • איזה יתרון הכי חשוב?<br>
+                • הצבעה וסיכום
+            </td>
+            <td>מליאה</td>
+            <td>דיון פתוח</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>כתיבת יתרון נוסף לרכיבה על סוסים (לפי דעתכם) - 2-3 משפטים</p>
+
+<div class="tip-box">
+    <p><span class="bold">💡 משימת ג'יגסו:</span></p>
+    <p>
+    בשיטה זו כל זוג הופך ל"מומחה" בנושא אחד ומלמד את הכיתה. 
+    זה מגביר מעורבות ואחריות. ודאו שכל זוג מבין את חלקו לפני ההצגה.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- שעה 5 -->
+<div class="lesson-title">שעה 5 - יום חמישי | כללי בטיחות + עבודה עצמאית</div>
+
+<h3>🎯 מיומנויות שפה</h3>
+<ul>
+    <li>קריאת טקסט הוראות</li>
+    <li>הבנת מילים: בעיטה, תוקפנות, עצבנות</li>
+    <li>זיהוי מבנה: כלל + נימוק</li>
+    <li><span class="highlight">איתור פרטים - תרגול עצמאי (תרגול למבחן!)</span></li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>עמוד 4 - "כללי בטיחות בשיעורי רכיבה" | <span class="bold">שאלות 13-14 (עבודה עצמאית)</span></p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">פתיחה</span><br>
+                • למה צריך כללי בטיחות?<br>
+                • תמונות של ציוד בטיחות<br>
+                • שיחה מעשית
+            </td>
+            <td>מליאה</td>
+            <td>כל התלמידים משתתפים</td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">קורא מיומן</span><br>
+                • מה רואים? (רשימה ממוספרת, מסגרת)<br>
+                • סוג טקסט? (הוראות/כללים)
+            </td>
+            <td>מליאה</td>
+            <td>זיהוי מבנה ויזואלי</td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">קריאה מודרכת</span><br>
+                • קריאת הכללים ביחד<br>
+                • הסבר מילים: בעיטה, תוקפנות<br>
+                • דיון: למה כל כלל חשוב?
+            </td>
+            <td>מליאה</td>
+            <td>
+                <span class="bold">מתקשים:</span><br>
+                קריאה עם הקלטה<br>
+                הסבר מורחב של מילים
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">הסבר המשימה העצמאית</span><br>
+                • שאלות 13-14<br>
+                • <span class="highlight">זהו תרגול למבחן!</span><br>
+                • הצגת הרמות והציפיות
+            </td>
+            <td>מליאה</td>
+            <td>הסבר ברור של הציפיות</td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">⭐ עבודה עצמאית ⭐</span><br>
+                שאלות 13-14<br>
+                <span class="highlight">זהו תרגול למבחן!</span><br>
+                התלמידים עובדים באופן עצמאי<br>
+                המורה עוברת ומפקחת ללא התערבות יתר
+            </td>
+            <td>עצמאי</td>
+            <td>
+                <span class="bold">רמה א':</span><br>
+                שתי השאלות + העשרה<br>
+                <span class="bold">רמה ב':</span><br>
+                שתי השאלות בזוגות + כרטיס<br>
+                <span class="bold">רמה ג':</span><br>
+                עם סייעת בקבוצה קטנה<br>
+                השאלות עם סימון שורות<br>
+                אפשרות לענות בעל-פה<br>
+                <span class="bold">רמה ד':</span><br>
+                הטקסט מוקלט<br>
+                שאלה 13 בלבד<br>
+                שימוש בתמונות
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">סיכום מהיר</span><br>
+                • איזה כלל הכי חשוב?<br>
+                • איסוף דפי העבודה
+            </td>
+            <td>מליאה</td>
+            <td>שיתוף קצר</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>לא תהיה - תלמידים צריכים מנוחה לפני הסיפור הארוך</p>
+
+<div class="warning-box">
+    <p><span class="bold">⚠️ חשוב מאוד למורה:</span></p>
+    <p>
+    זוהי שעת התרגול העצמאי היחידה לפני המבחן!<br>
+    אל תתערבו יתר על המידה - תנו לתלמידים לנסות בכוחות עצמם.<br>
+    עברו בין התלמידים, תצפו, אך התערבו רק במקרים של תקיעות ממש.<br>
+    זה הזמן לראות מי זקוק לתמיכה נוספת לקראת המבחן.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- שעה 6 -->
+<div class="lesson-title">שעה 6 - יום ראשון | סיפור "נוצה-שסועה" - חלק א'</div>
+
+<h3>🎯 מיומנויות שפה</h3>
+<ul>
+    <li>קריאת סיפור - זיהוי מבנה סיפורי</li>
+    <li>זיהוי דמויות ותכונותיהן</li>
+    <li>אוצר מילים: צָלַע, מְהוֹלָל, אוּלַּף</li>
+    <li>הבנת תיאור רגשי של דמות</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>עמודים 5-6 - "נוצה-שסועה" שורות 1-23 | שאלות 18-21</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">חימום</span><br>
+                • "מה זאת אגדה?"<br>
+                • "מכירים אינדיאנים?"<br>
+                • הצגת תמונה<br>
+                • הסבר: שמות אינדיאנים
+            </td>
+            <td>מליאה</td>
+            <td>יצירת רקע תרבותי</td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">קורא מיומן על הסיפור</span><br>
+                • כותרת + איור<br>
+                • זיהוי: זה סיפור!
+            </td>
+            <td>מליאה</td>
+            <td>הבחנה בין סוגי טקסטים</td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">קריאת חלק א' (שורות 1-23)</span><br>
+                • המורה קוראת בקול רם<br>
+                • תלמידים עוקבים<br>
+                • עצירות להבהרת מילים
+            </td>
+            <td>מליאה</td>
+            <td>
+                <span class="bold">כולם:</span><br>
+                עוקבים בטקסט<br>
+                מסמנים מילים קשות<br>
+                <span class="bold">איטיים:</span><br>
+                עוקבים באצבע<br>
+                טקסט מוגדל
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">שיחה - הבנת הסיפור</span><br>
+                • איך מרגיש נוצה-שסועה?<br>
+                • מה הוא רוצה?<br>
+                • מי זה סוס-הרוח?
+            </td>
+            <td>מליאה</td>
+            <td>בדיקת הבנה כללית</td>
+        </tr>
+        <tr>
+            <td>15 דק'</td>
+            <td>
+                <span class="bold">עבודה על שאלות 18-21</span><br>
+                • 18: 3 פרטים על נוצה-שסועה<br>
+                • 19: התייחסות אנשי הכפר<br>
+                • 20: קנאה בנערים<br>
+                • 21: משמעות השם
+            </td>
+            <td>קבוצות</td>
+            <td>
+                <span class="bold">חזקים:</span> כל השאלות<br>
+                <span class="bold">בינוניים:</span> 18-19<br>
+                <span class="bold">מתקשים:</span> 18 עם תמיכה<br>
+                <span class="bold">איטיים:</span> 18 - 2 פרטים
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">סיכום וציפייה</span><br>
+                • "מה יקרה בהמשך?"<br>
+                • ניבויים לחלק ב'
+            </td>
+            <td>מליאה</td>
+            <td>יצירת סקרנות</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>קריאת חלק א' שוב בבית + רשימת ניבויים "מה יקרה בהמשך?"</p>
+
+<div class="page-break"></div>
+
+<!-- שעה 7 -->
+<div class="lesson-title">שעה 7 - יום שני | סיפור "נוצה-שסועה" - חלק ב' וסיכום</div>
+
+<h3>🎯 מיומנויות שפה</h3>
+<ul>
+    <li>המשך קריאת הסיפור - זיהוי שיא ופתרון</li>
+    <li>זיהוי שינוי בדמות לאורך הסיפור</li>
+    <li>זיהוי מילים לפי הקשר (הוראות, נקודים)</li>
+    <li>הבנת משמעויות: עֲרָבוֹת, פִּרְאִיים</li>
+    <li>זיהוי משפחות מילים</li>
+</ul>
+
+<h3>📚 טקסטים</h3>
+<p>המשך עמוד 6 - שורות 24-48 | שאלות 22-32 (בחירה)</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">חזרה על חלק א'</span><br>
+                • מה קרה עד כה?<br>
+                • "מה חזיתם שיקרה?"
+            </td>
+            <td>מליאה</td>
+            <td>שיתוף הניבויים</td>
+        </tr>
+        <tr>
+            <td>20 דק'</td>
+            <td>
+                <span class="bold">קריאת חלק ב' (שורות 24-48)</span><br>
+                • תלמידים קוראים בשקט<br>
+                • המורה עובדת עם קבוצה מתקשים
+            </td>
+            <td>עצמאי<br>+<br>קבוצה קטנה</td>
+            <td>
+                <span class="bold">חזקים + בינוניים:</span><br>
+                קריאה שקטה עצמאית<br>
+                <span class="bold">מתקשים + איטיים:</span><br>
+                קריאה מודרכת עם המורה<br>
+                קריאה בקול רם<br>
+                הסבר תוך כדי
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">שיחה - הבנת הסיום</span><br>
+                • מה קרה בסוף?<br>
+                • איך השתנה נוצה-שסועה?<br>
+                • מה קרה לסוס-הרוח?
+            </td>
+            <td>מליאה</td>
+            <td>בדיקת הבנה<br>זיהוי השינוי</td>
+        </tr>
+        <tr>
+            <td>25 דק'</td>
+            <td>
+                <span class="bold">עבודה על שאלות 22-32</span><br>
+                <span class="highlight">בחירה: כל תלמיד בוחר 5 שאלות</span><br>
+                • 22: פרטים על סוס-הרוח<br>
+                • 23: סדר אירועים<br>
+                • 24: הבנת משפט<br>
+                • 25-27: שינוי בנוצה-שסועה<br>
+                • 28-32: דקדוק ומילים
+            </td>
+            <td>אישי<br>או<br>זוגות</td>
+            <td>
+                <span class="bold">חזקים:</span><br>
+                שאלות מורכבות<br>
+                (24, 25, 29, 31)<br>
+                <span class="bold">בינוניים:</span><br>
+                שאלות בינוניות<br>
+                (22, 23, 26, 30)<br>
+                <span class="bold">מתקשים:</span><br>
+                הנחייה לשאלות פשוטות<br>
+                (22, 23, 30, 32)<br>
+                עבודה עם תמיכה
+            </td>
+        </tr>
+        <tr>
+            <td>5 דק'</td>
+            <td>
+                <span class="bold">סיכום היחידה</span><br>
+                • "מה למדנו מהסיפור?"<br>
+                • "איך איתור פרטים עזר לנו?"<br>
+                • השלמת טבלה: "מה ידעתי/מה למדתי"
+            </td>
+            <td>מליאה</td>
+            <td>חיבור כל היחידה<br>שיקוף למידה</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>📝 משימת בית</h3>
+<p>
+כתיבת מכתב קצר לנוצה-שסועה או לסוס-הרוח (5-7 שורות) - מה הייתם אומרים להם?
+</p>
+
+<div class="tip-box">
+    <p><span class="bold">💡 שיטת הבחירה:</span></p>
+    <p>
+    מתן אפשרות לתלמידים לבחור שאלות מגביר מוטיבציה ותחושת שליטה.
+    הנחו תלמידים מתקשים לשאלות המתאימות להם, אך תנו להם להרגיש שהם בוחרים.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- שעה 8 -->
+<div class="lesson-title" style="background: linear-gradient(to left, #d32f2f, #f44336);">
+שעה 8 - יום שלישי | ⭐ הערכה מסכמת - מבחן ⭐
+</div>
+
+<h3>🎯 מיומנויות שפה מוערכות</h3>
+<ul>
+    <li><span class="bold">אסטרטגיות קורא מיומן</span> (כותרת, איורים, סריקה, ניבוי)</li>
+    <li><span class="highlight">איתור פרטים בטקסט</span> - שימוש בכרטיס הניווט</li>
+    <li><span class="bold">קריאה עם תכלית</span></li>
+    <li><span class="bold">כתיבת תשובה מלאה</span></li>
+    <li><span class="bold">אוצר מילים</span> - הבנת מילים מהקשר</li>
+</ul>
+
+<h3>📄 מבנה המבחן</h3>
+<p>טקסט חדש: "סוסי פוני - חברים קטנים וחמודים" (10 שורות)</p>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">זמן</th>
+            <th style="width: 35%;">פעילות</th>
+            <th style="width: 15%;">ארגון</th>
+            <th style="width: 40%;">דיפרנציאציה</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">הכנה למבחן</span><br>
+                • "מה למדנו בשבועיים?"<br>
+                • חזרה על אסטרטגיות קורא מיומן<br>
+                • חזרה על כרטיס הניווט<br>
+                • הסבר מבנה המבחן
+            </td>
+            <td>מליאה</td>
+            <td>
+                חזרה מהירה<br>
+                הרגעת חרדות<br>
+                הבטחה: כולם יכולים!
+            </td>
+        </tr>
+        <tr>
+            <td>40 דק'</td>
+            <td>
+                <span class="bold">⭐ מבחן - עבודה עצמאית ⭐</span><br>
+                <span class="bold">מבנה המבחן:</span><br>
+                1. טקסט קצר חדש (10 שורות)<br>
+                2. שאלות קורא מיומן (10 נק')<br>
+                3. שאלות איתור פרטים (15 נק')<br>
+                4. שאלות אוצר מילים (5 נק')<br>
+                5. כתיבת תשובה מלאה (10 נק')<br>
+                6. שאלת בונוס (5 נק')<br><br>
+                <span class="bold">כלי עזר מותרים:</span><br>
+                • כרטיס "קורא מיומן"<br>
+                • כרטיס "ניווט"<br>
+                • מרקר להדגשה
+            </td>
+            <td>עצמאי</td>
+            <td>
+                <span class="bold">רמה א' (חזקים):</span><br>
+                מבחן מלא - 40 נק'<br>
+                שאלת העמקה נוספת<br><br>
+                <span class="bold">רמה ב' (בינוניים):</span><br>
+                מבחן מלא - 40 נק'<br>
+                זמן נוסף במידת הצורך<br><br>
+                <span class="bold">רמה ג' (מתקשים):</span><br>
+                מבחן מותאם - 30 נק'<br>
+                שאלות עם הנחיות נוספות<br>
+                זמן נוסף<br><br>
+                <span class="bold">רמה ד' (איטיים):</span><br>
+                מבחן קצר - 20 נק'<br>
+                טקסט קצר יותר<br>
+                אפשרות לענות בעל-פה<br>
+                עבודה עם סייעת
+            </td>
+        </tr>
+        <tr>
+            <td>10 דק'</td>
+            <td>
+                <span class="bold">סיכום וסגירת היחידה</span><br>
+                • איסוף המבחנים<br>
+                • "מה היה הכי מעניין?"<br>
+                • "מה למדתם על עצמכם כקוראים?"<br>
+                • חלוקת תעודות "קורא מיומן"
+            </td>
+            <td>מליאה</td>
+            <td>
+                שיתוף רגשות<br>
+                חגיגת סיום<br>
+                חיזוק חיובי לכולם
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <h3 style="margin-bottom: 10pt;">📊 קריטריוני הערכה (רובריקה)</h3>
+    <table style="margin: 0;">
+        <tr>
+            <td style="width: 40%;"><strong>אסטרטגיות לפני קריאה</strong></td>
+            <td style="width: 60%;">10% - השתמש ב-5 האסטרטגיות</td>
+        </tr>
+        <tr>
+            <td><strong>איתור פרטים</strong></td>
+            <td>40% - מצא מידע נכון, סימן בטקסט</td>
+        </tr>
+        <tr>
+            <td><strong>כתיבת תשובה</strong></td>
+            <td>30% - תשובה מלאה, ניסוח ברור, כתיב נכון</td>
+        </tr>
+        <tr>
+            <td><strong>אוצר מילים</strong></td>
+            <td>20% - הבין מילים מהקשר</td>
+        </tr>
+    </table>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 5: דיפרנציאציה -->
+<h1>5. אסטרטגיות דיפרנציאציה מפורטות</h1>
+
+<h2>א. תלמידים קוראים קריאה איטית ומצרפת (כ-15%)</h2>
+
+<h3>1. הכנה מוקדמת:</h3>
+<ul>
+    <li>שליחת הטקסטים הביתה יום לפני הלימוד</li>
+    <li>הכנת הקלטות של כל הטקסטים (באמצעות יישומון הקראה)</li>
+    <li>שיחה אישית עם ההורים על חשיבות הקריאה המקדימה</li>
+</ul>
+
+<h3>2. במהלך השיעור:</h3>
+<ul>
+    <li>קריאה עם שותף חזק יותר (חונכות)</li>
+    <li>שימוש באצבע/סרגל/חלון קריאה למעקב אחר השורה</li>
+    <li>טקסטים מוגדלים (גופן 14-16)</li>
+    <li>הדגשה מוקדמת של מילות מפתח במרקר</li>
+    <li>מתן זמן נוסף לקריאה (כפול מהזמן הרגיל)</li>
+</ul>
+
+<h3>3. בשאלות:</h3>
+<ul>
+    <li>צמצום מספר השאלות (50% מהכמות המקורית)</li>
+    <li>אפשרות למענה בעל-פה והמבוגר/חבר רושם</li>
+    <li>סימון מספרי שורות מדויק ליד כל שאלה</li>
+    <li>שאלות עם בחירה מרובה במקום תשובות פתוחות</li>
+</ul>
+
+<h2>ב. תלמידים מתקשים כלליים (כ-30%)</h2>
+
+<h3>1. תמיכה בהבנה:</h3>
+<ul>
+    <li>הסבר מילים מראש עם דוגמאות ותמונות</li>
+    <li>כרטיס ניווט תמיד זמין ונגיש</li>
+    <li>דוגמה מלאה לפני עבודה עצמאית</li>
+    <li>פירוק משימות למרכיבים קטנים</li>
+</ul>
+
+<h3>2. תמיכה במשימה:</h3>
+<ul>
+    <li>צמצום מספר שאלות (70% מהכמות המקורית)</li>
+    <li>מתן זמן נוסף מעבר למקובל</li>
+    <li>עבודה בזוגות/קבוצות קטנות עם המורה</li>
+    <li>משוב מיידי תוך כדי עבודה</li>
+</ul>
+
+<h3>3. כלי עזר:</h3>
+<ul>
+    <li>מרקרים בצבעים שונים להדגשת סוגי מידע שונים</li>
+    <li>דפי עבודה עם שורות מסומנות וממוספרות</li>
+    <li>מילון מילים קשות עם הסברים פשוטים</li>
+    <li>דוגמאות למילוי בכל סוג שאלה</li>
+</ul>
+
+<h2>ג. תלמידים חזקים (כ-25%)</h2>
+
+<h3>1. העמקה:</h3>
+<ul>
+    <li>שאלות מחשבה נוספות מסדר גבוה</li>
+    <li>משימות כתיבה יצירתית הקשורות לנושא</li>
+    <li>חיבור בין טקסטים שונים</li>
+    <li>מחקר עצמאי בנושא הסוסים</li>
+</ul>
+
+<h3>2. עצמאות:</h3>
+<ul>
+    <li>עבודה עצמאית מוקדמת - לא ממתינים למליאה</li>
+    <li>שימוש כ"מומחים" לעזרה לאחרים (חונכות הפוכה)</li>
+    <li>הובלת דיונים בקבוצות</li>
+    <li>הכנת חומרי הוראה לכיתה (פוסטרים, מצגות)</li>
+</ul>
+
+<h3>3. אתגור:</h3>
+<ul>
+    <li>שאלות בונוס מאתגרות</li>
+    <li>קריאת טקסטים נוספים בנושא</li>
+    <li>כתיבת סיפור משלהם בהשראת "נוצה-שסועה"</li>
+</ul>
+
+<div class="tip-box">
+    <p><span class="bold">💡 עקרון חשוב:</span></p>
+    <p>
+    דיפרנציאציה אינה "הקלה" או "הכבדה" - אלא התאמה לרמת התלמיד כך שכולם חווים אתגר והצלחה.
+    <span class="bold">כל תלמיד צריך להרגיש שהוא מצליח ומתקדם!</span>
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 6: הערכה -->
+<h1>6. כלי הערכה ורובריקות</h1>
+
+<h2>א. הערכה מעצבת (לאורך היחידה)</h2>
+
+<h3>1. תצפית מתמדת:</h3>
+<ul>
+    <li>תצפית על עבודה בקבוצות - מי משתתף? מי משתמש בכרטיסים?</li>
+    <li>הקשבה לשיחות בזוגות - מה התלמידים אומרים?</li>
+    <li>מעקב אחר השימוש באסטרטגיות</li>
+</ul>
+
+<h3>2. בדיקת דפי עבודה:</h3>
+<ul>
+    <li>בדיקה יומית של דפי העבודה</li>
+    <li>מתן משוב כתוב מעודד ובונה</li>
+    <li>זיהוי תלמידים הזקוקים לתמיכה נוספת</li>
+</ul>
+
+<h3>3. שיחות אישיות קצרות:</h3>
+<ul>
+    <li>2-3 דקות עם כל תלמיד במהלך היחידה</li>
+    <li>"איך מרגיש לך הקריאה?" "מה עוזר לך?"</li>
+    <li>בדיקת הבנת האסטרטגיות</li>
+</ul>
+
+<h2>ב. הערכה מסכמת (שעה 8)</h2>
+
+<h3>מטלת איתור פרטים:</h3>
+<p>טקסט חדש בנושא סוסים + שאלות המודדות את כל המיומנויות שנלמדו</p>
+
+<h3>רובריקה מפורטת - חלוקת ציונים:</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 30%;">קריטריון</th>
+            <th style="width: 15%;">משקל</th>
+            <th style="width: 55%;">תיאור</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>אסטרטגיות קורא מיומן</strong></td>
+            <td>10 נק'</td>
+            <td>
+                • קרא כותרת וזיהה נושא (2 נק')<br>
+                • הסביר מה למד מהכותרת (3 נק')<br>
+                • זיהה סוג טקסט נכון (2 נק')<br>
+                • כתב 2 תצפיות מסריקה (3 נק')
+            </td>
+        </tr>
+        <tr>
+            <td><strong>איתור פרטים</strong></td>
+            <td>15 נק'</td>
+            <td>
+                • מצא את המידע הנכון בטקסט<br>
+                • סימן/הדגיש במקום הנכון<br>
+                • השתמש במילות מפתח<br>
+                • חזר למקום הנכון בטקסט
+            </td>
+        </tr>
+        <tr>
+            <td><strong>אוצר מילים</strong></td>
+            <td>5 נק'</td>
+            <td>
+                • הבין מילים חדשות מהקשר<br>
+                • הסביר משמעות במילים שלו
+            </td>
+        </tr>
+        <tr>
+            <td><strong>כתיבת תשובה מלאה</strong></td>
+            <td>10 נק'</td>
+            <td>
+                <strong>תוכן (4 נק'):</strong> 2+ נימוקים, מפורט<br>
+                <strong>מבנה (3 נק'):</strong> פתיחה, פיתוח, סיכום<br>
+                <strong>שפה (3 נק'):</strong> משפטים מלאים, כתיב, פיסוק
+            </td>
+        </tr>
+        <tr>
+            <td><strong>בונוס (אופציונלי)</strong></td>
+            <td>+5 נק'</td>
+            <td>שאלת העמקה - השוואה בין סוגי סוסים</td>
+        </tr>
+        <tr style="background: #e7f0ff;">
+            <td colspan="2"><strong>סה"כ</strong></td>
+            <td><strong>40 נקודות</strong> (+ 5 בונוס)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>מפתח ציונים:</h3>
+<table style="width: 60%;">
+    <tr style="background: #d4edda;">
+        <td style="width: 50%;"><strong>36-40 נקודות</strong></td>
+        <td>מצוין - שליטה מלאה במיומנויות</td>
+    </tr>
+    <tr style="background: #cfe2ff;">
+        <td><strong>28-35 נקודות</strong></td>
+        <td>טוב מאוד - שליטה טובה במיומנויות</td>
+    </tr>
+    <tr style="background: #fff3cd;">
+        <td><strong>20-27 נקודות</strong></td>
+        <td>טוב - שליטה חלקית, צריך חיזוק</td>
+    </tr>
+    <tr style="background: #ffe6e6;">
+        <td><strong>מתחת ל-20 נקודות</strong></td>
+        <td>זקוק לתמיכה נוספת ותרגול מתמשך</td>
+    </tr>
+</table>
+
+<h2>ג. משוב לתלמידים</h2>
+<h3>עקרונות למתן משוב:</h3>
+<ul>
+    <li><span class="bold">תמיד התחילו בחיובי</span> - "שים לב כמה יפה..."</li>
+    <li><span class="bold">היו ספציפיים</span> - לא "טוב", אלא "השתמשת נכון בכרטיס הניווט"</li>
+    <li><span class="bold">הצביעו על דרך התקדמות</span> - "פעם הבאה נסה..."</li>
+    <li><span class="bold">השוו לעצמו</span> - "השתפרת מאוד לעומת..."</li>
+    <li><span class="bold">חזקו מאמץ ולא רק הישג</span> - "ראיתי איך השתדלת..."</li>
+</ul>
+
+<div class="warning-box">
+    <p><span class="bold">⚠️ חשוב:</span></p>
+    <p>
+    לתלמידים מתקשים - תנו משוב פרטני ועדכנו את ההורים על ההתקדמות.
+    לתלמידים שלא הגיעו ל-20 נקודות - תכננו תוכנית התערבות אישית.
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 7: חומרים נדרשים -->
+<h1>7. חומרים נדרשים ליחידה</h1>
+
+<h2>א. חומרים מודפסים (לכל תלמיד)</h2>
+<table>
+    <thead>
+        <tr>
+            <th style="width: 40%;">פריט</th>
+            <th style="width: 15%;">כמות</th>
+            <th style="width: 45%;">הערות</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>חוברת טקסטים "עולם הסוסים"</td>
+            <td>1 לתלמיד</td>
+            <td>6 עמודים, הדפסה צבעונית מומלצת</td>
+        </tr>
+        <tr>
+            <td>חוברת שאלות</td>
+            <td>1 לתלמיד</td>
+            <td>15 עמודים</td>
+        </tr>
+        <tr>
+            <td>כרטיס "קורא מיומן" (מלומינציה)</td>
+            <td>1 לתלמיד</td>
+            <td>גודל A5, למינציה עבה</td>
+        </tr>
+        <tr>
+            <td>כרטיס "ניווט לאיתור פרטים" (מלומינציה)</td>
+            <td>1 לתלמיד</td>
+            <td>גודל A5, למינציה עבה</td>
+        </tr>
+        <tr>
+            <td>מרקר צהוב</td>
+            <td>1 לתלמיד</td>
+            <td>להדגשת מידע בטקסט</td>
+        </tr>
+        <tr>
+            <td>דפי מבחן (4 גרסאות)</td>
+            <td>לפי צורך</td>
+            <td>כל תלמיד מקבל את הגרסה המתאימה</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>ב. חומרים לכיתה</h2>
+<table>
+    <thead>
+        <tr>
+            <th style="width: 40%;">פריט</th>
+            <th style="width: 15%;">כמות</th>
+            <th style="width: 45%;">הערות</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>פוסטר כיתתי "קוראים מיומנים"</td>
+            <td>1</td>
+            <td>גודל A2 או יותר, הדפסה צבעונית</td>
+        </tr>
+        <tr>
+            <td>כרטיסי ניווט מוגדלים (לדגמה)</td>
+            <td>2</td>
+            <td>גודל A3, להצגה מול הכיתה</td>
+        </tr>
+        <tr>
+            <td>תמונות סוסים</td>
+            <td>5-10</td>
+            <td>להתנעה ולהמחשה</td>
+        </tr>
+        <tr>
+            <td>לוח מחיק/דפים גדולים</td>
+            <td>לפי צורך</td>
+            <td>לרשימות משותפות</td>
+        </tr>
+        <tr>
+            <td>מרקרים לוח בצבעים</td>
+            <td>5</td>
+            <td>לסימון על הלוח</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>ג. חומרים דיגיטליים</h2>
+<table>
+    <thead>
+        <tr>
+            <th style="width: 40%;">פריט</th>
+            <th style="width: 60%;">תיאור</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>הקלטות אודיו של הטקסטים</td>
+            <td>
+                להקליט בקול ברור ואיטי<br>
+                להשתמש ביישומון הקראה או להקליט באופן אישי
+            </td>
+        </tr>
+        <tr>
+            <td>מצגת דיגיטלית</td>
+            <td>
+                להצגת האסטרטגיות, התמונות והטקסטים<br>
+                אופציונלי - אפשר להשתמש רק בחומרים מודפסים
+            </td>
+        </tr>
+        <tr>
+            <td>סרטוני וידאו על סוסים</td>
+            <td>
+                אופציונלי - להעשרה<br>
+                למשל מ-YouTube Kids
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>ד. הכנות מוקדמות</h2>
+<div class="info-box">
+    <p><span class="bold">שבוע לפני תחילת היחידה:</span></p>
+    <ul style="margin: 10pt 0 0 20pt;">
+        <li>הדפסת כל החומרים</li>
+        <li>למינציה של הכרטיסים</li>
+        <li>הכנת הקלטות האודיו</li>
+        <li>יצירת הפוסטר הכיתתי</li>
+        <li>הכנת תמונות ואיורים</li>
+        <li>בדיקת זמינות מרקרים וכלי כתיבה</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- חלק 8: נספחים -->
+<h1>8. נספחים</h1>
+
+<h2>נספח א': כרטיס "קורא מיומן"</h2>
+<div style="border: 3pt solid #1f4788; padding: 20pt; background: #f8f9fa;">
+    <h3 style="text-align: center; color: #1f4788;">📖 אני קורא מיומן!</h3>
+    <p style="margin-top: 15pt;"><strong>לפני שאני מתחיל לקרוא:</strong></p>
+
+    <p style="margin: 10pt 0; padding: 8pt; background: white; border-right: 3pt solid #1f4788;">
+        <strong>1. קראתי את הכותרת:</strong><br>
+        ________________________________
+    </p>
+
+    <p style="margin: 10pt 0; padding: 8pt; background: white; border-right: 3pt solid #1f4788;">
+        <strong>2. הסתכלתי על האיור - ראיתי:</strong><br>
+        ________________________________<br>
+        ________________________________
+    </p>
+
+    <p style="margin: 10pt 0; padding: 8pt; background: white; border-right: 3pt solid #1f4788;">
+        <strong>3. סרקתי את הטקסט - מצאתי:</strong><br>
+        ☐ כותרות משנה<br>
+        ☐ מילים מודגשות<br>
+        ☐ מספרים<br>
+        ☐ תמונות/איורים
+    </p>
+
+    <p style="margin: 10pt 0; padding: 8pt; background: white; border-right: 3pt solid #1f4788;">
+        <strong>4. סוג הטקסט:</strong><br>
+        ☐ סיפור  ☐ מידע  ☐ הוראות  ☐ שיחה
+    </p>
+
+    <p style="margin: 10pt 0; padding: 8pt; background: white; border-right: 3pt solid #1f4788;">
+        <strong>5. אני מנבא שאקרא על:</strong><br>
+        ________________________________<br>
+        ________________________________
+    </p>
+</div>
+
+<h2 style="margin-top: 30pt;">נספח ב': כרטיס "ניווט לאיתור פרטים"</h2>
+<div style="border: 3pt solid #27ae60; padding: 20pt; background: #f8f9fa;">
+    <h3 style="text-align: center; color: #27ae60;">🔍 כרטיס ניווט למציאת תשובה בטקסט</h3>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: #d4edda; border-right: 4pt solid #27ae60;">
+        <strong>שלב 1:</strong> נִקְרָא הֵיטֵב אֶת הַשְׁאֵלָה
+    </p>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: white; border-right: 4pt solid #27ae60;">
+        <strong>שלב 2:</strong> נְסַמֵּן אֶת מִלּוֹת הַשְׁאֵלָה<br>
+        (מה? מי? איפה? מתי? למה?)
+    </p>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: #d4edda; border-right: 4pt solid #27ae60;">
+        <strong>שלב 3:</strong> נְסַמֵּן מִלִּים מֶרְכָּזִיּוֹת בַּשְׁאֵלָה<br>
+        (המילים החשובות ביותר)
+    </p>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: white; border-right: 4pt solid #27ae60;">
+        <strong>שלב 4:</strong> נַחֲזֹר אֶל הַטֶּקְסְט<br>
+        נְחַפֵּשׂ בִּקְרִיאָה מְרַפְרֶפֶת (סריקה מהירה)<br>
+        אֶת הַמִּלִּים הַמֶּרְכָּזִיּוֹת
+    </p>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: #d4edda; border-right: 4pt solid #27ae60;">
+        <strong>שלב 5:</strong> נְחַפֵּשׂ אֶת הַתְּשׁוּבָה<br>
+        בַּמָּקוֹם שֶׁמָּצָאנוּ אֶת הַמִּלִּים הַמֶּרְכָּזִיּוֹת
+    </p>
+
+    <p style="margin: 15pt 0; padding: 10pt; background: white; border-right: 4pt solid #27ae60;">
+        <strong>שלב 6:</strong> נִכְתֹּב תְּשׁוּבָה מְלֵאָה
+    </p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>נספח ג': דוגמה לפוסטר כיתתי</h2>
+<div style="border: 4pt solid #1f4788; padding: 25pt; background: linear-gradient(to bottom, #e7f0ff, white);">
+    <h2 style="text-align: center; color: #1f4788; font-size: 20pt; margin-bottom: 20pt;">
+        📚 קוראים מיומנים בכיתה שלנו! 📚
+    </h2>
+
+    <div style="background: #fff; padding: 15pt; margin: 15pt 0; border-right: 5pt solid #f39c12;">
+        <h3 style="color: #f39c12; margin-bottom: 10pt;">לפני הקריאה:</h3>
+        <p>🔸 כותרת ← מה הנושא?</p>
+        <p>🔸 תמונות ← מה אני רואה?</p>
+        <p>🔸 סריקה ← מה מודגש?</p>
+        <p>🔸 סוג טקסט ← מידע/סיפור/הוראות?</p>
+        <p>🔸 ניבוי ← על מה אקרא?</p>
+    </div>
+
+    <div style="background: #fff; padding: 15pt; margin: 15pt 0; border-right: 5pt solid #27ae60;">
+        <h3 style="color: #27ae60; margin-bottom: 10pt;">תוך כדי הקריאה:</h3>
+        <p>🔸 מחפש מילות מפתח</p>
+        <p>🔸 מדגיש פרטים חשובים</p>
+        <p>🔸 שואל שאלות</p>
+    </div>
+
+    <div style="background: #fff; padding: 15pt; margin: 15pt 0; border-right: 5pt solid #e74c3c;">
+        <h3 style="color: #e74c3c; margin-bottom: 10pt;">אחרי הקריאה:</h3>
+        <p>🔸 חוזר לטקסט לאתר תשובות</p>
+        <p>🔸 כותב תשובה מלאה</p>
+    </div>
+</div>
+
+<h2 style="margin-top: 30pt;">נספח ד': טבלת מעקב אישי למורה</h2>
+<table style="font-size: 9pt;">
+    <thead>
+        <tr>
+            <th>שם התלמיד</th>
+            <th>רמה</th>
+            <th>קורא מיומן</th>
+            <th>איתור פרטים</th>
+            <th>כתיבת תשובה</th>
+            <th>ציון מבחן</th>
+            <th>הערות</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+<p style="margin-top: 10pt; font-size: 9pt;"><strong>מקרא:</strong></p>
+<p style="font-size: 9pt;">רמה: א-חזקים | ב-בינוניים | ג-מתקשים | ד-קוראים איטית</p>
+<p style="font-size: 9pt;">מיומנויות: ✓ שולט | ◐ חלקי | ✗ זקוק לתמיכה</p>
+
+<div class="page-break"></div>
+
+<h2>נספח ה': רעיונות להמשך ולהעמקה</h2>
+<div class="info-box">
+    <h3>פעילויות העשרה (אופציונלי - לאחר סיום היחידה)</h3>
+
+    <h4>1. ביקור בחווה:</h4>
+    <p>ארגון סיור לימודי בחווה עם סוסים - קישור התיאוריה למעשה</p>
+
+    <h4>2. הזמנת מדריך רכיבה:</h4>
+    <p>הרצאה והדגמה בכיתה על רכיבה על סוסים ובטיחות</p>
+
+    <h4>3. פרויקט מחקר:</h4>
+    <p>כל תלמיד בוחר סוג סוס ומכין עליו מצגת/פוסטר</p>
+
+    <h4>4. כתיבה יצירתית:</h4>
+    <p>המשך לסיפור "נוצה-שסועה" - מה קרה אחר כך?</p>
+
+    <h4>5. קישור למקצועות נוספים:</h4>
+    <ul style="margin-right: 20pt;">
+        <li><strong>טבע ומדע:</strong> מחזור החיים של הסוס, האנטומיה</li>
+        <li><strong>גאוגרפיה:</strong> היכן חיים סוסים בעולם?</li>
+        <li><strong>היסטוריה:</strong> תפקיד הסוסים בהיסטוריה</li>
+        <li><strong>אומנות:</strong> ציור/פיסול סוסים</li>
+    </ul>
+
+    <h4>6. יחידה נוספת בנושא בעלי חיים:</h4>
+    <p>שימוש באותן מיומנויות על בעלי חיים אחרים (כלבים, חתולים, דולפינים)</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- סיכום ומחשבות אחרונות -->
+<h1>סיכום ומחשבות אחרונות</h1>
+
+<h2>נקודות חשובות לזכור:</h2>
+
+<div class="tip-box">
+    <h3>1. כל תלמיד יכול להצליח</h3>
+    <p>
+    היחידה תוכננה כך שכל תלמיד, ללא קשר לרמתו, יחווה הצלחה ויפתח את כישורי הקריאה שלו.
+    הדגישו התקדמות אישית ולא השוואה לאחרים.
+    </p>
+</div>
+
+<div class="tip-box">
+    <h3>2. האסטרטגיות הן הכלי המרכזי</h3>
+    <p>
+    כרטיס "קורא מיומן" וכרטיס "הניווט" הם כלים שהתלמידים ישתמשו בהם גם מחוץ ליחידה זו.
+    השקיעו זמן בהטמעתם - זו השקעה לטווח ארוך.
+    </p>
+</div>
+
+<div class="tip-box">
+    <h3>3. גמישות היא המפתח</h3>
+    <p>
+    התכנון מפורט, אך אל תהססו להתאים לקצב הכיתה שלכם.
+    אם צריך עוד שעה לאיתור פרטים - תנו לזה זמן.
+    איכות ההבנה חשובה יותר מדבקות בלוח זמנים.
+    </p>
+</div>
+
+<div class="tip-box">
+    <h3>4. תקשורת עם הורים</h3>
+    <p>
+    שלחו להורים עדכון על מה נלמד ואיך הם יכולים לתמוך בבית.
+    הורים שקוראים עם הילדים בבית - מכפילים את האפקט.
+    </p>
+</div>
+
+<div class="tip-box">
+    <h3>5. חגגו הצלחות!</h3>
+    <p>
+    כל התקדמות, קטנה ככל שתהיה, ראויה לחיזוק.
+    תלמיד שהיה קורא איטי והצליח לסיים טקסט בעצמו - זו הצלחה ענקית!
+    </p>
+</div>
+
+<h2 style="margin-top: 30pt;">שאלות נפוצות:</h2>
+<h4>שאלה: מה אם תלמיד ממש לא מצליח?</h4>
+<p>
+תנו תמיכה אישית נוספת בשעות חוץ-תוכניתיות. שקלו גם הערכה של יועצת/פסיכולוגית בית ספרית.
+החשוב - אל תוותרו! כל תלמיד יכול להתקדם.
+</p>
+
+<h4>שאלה: האם חובה להשתמש בכל הטקסטים?</h4>
+<p>
+כן, כל טקסט תורם משהו אחר. אם יש קושי בזמן, אפשר לקצר את העבודה על הסיפור,
+אך אל תוותרו על ההוראה המפורשת של איתור פרטים (שעות 1-2).
+</p>
+
+<h4>שאלה: תלמיד חזק מתלונן שזה קל לו, מה עושים?</h4>
+<p>
+תנו לו את כל שאלות הבונוס, הציעו לו להכין מצגת על נושא, או לכתב סיפור משלו.
+תלמידים חזקים יכולים גם לשמש כחונכים לחלשים יותר.
+</p>
+
+<div class="page-break"></div>
+
+<!-- עמוד אחרון -->
+<div style="text-align: center; margin-top: 100pt;">
+    <h1 style="color: #1f4788; font-size: 24pt;">בהצלחה ביישום היחידה!</h1>
+
+    <p style="font-size: 16pt; margin-top: 40pt; color: #666;">
+        זכרו: אתם לא לבד בתהליך הזה.
+    </p>
+
+    <p style="font-size: 14pt; margin-top: 20pt;">
+        אם יש שאלות, התלבטויות או רעיונות לשיפור -<br>
+        שתפו עם צוות המקצוע בבית הספר.
+    </p>
+
+    <div style="margin-top: 80pt; padding: 30pt; background: #e7f0ff; border: 3pt solid #1f4788;">
+        <p style="font-size: 18pt; font-weight: bold; color: #1f4788;">
+            "המורה הטוב ביותר אינו זה שמלמד את כולם אותו דבר,<br>
+            אלא זה שמלמד כל אחד בדרך המתאימה לו."
+        </p>
+        <p style="margin-top: 15pt; font-size: 12pt; color: #666;">
+            (מבוסס על עקרונות החינוך המתקדם)
+        </p>
+    </div>
+
+    <div style="margin-top: 60pt; border-top: 2pt solid #1f4788; padding-top: 20pt;">
+        <p style="font-size: 11pt; color: #999;">
+            תוכנית זו נוצרה במיוחד לכיתה ד' עם דגש על תלמידים מתקשים<br>
+            מקצוע: קריאה והבנת הנקרא | שנת תשפ"ה
+        </p>
+        
+        <p style="font-size: 11pt; color: #999; margin-top: 15pt;">
+            📧 לשאלות ולהערות: <br>
+            ניתן לפנות למדריכה הפדגוגית / רכזת השפה בבית הספר
+        </p>
+    </div>
+
+    <div style="margin-top: 40pt;">
+        <p style="font-size: 20pt; color: #1f4788;">
+            🌟 יחד ניצור קוראים מיומנים! 🌟
+        </p>
+    </div>
+</div>
+<!-- סוף המסמך -->
+
+<script>
+// הוספת פונקציונליות הדפסה
+function printDocument() {
+    window.print();
+}
+
+// הוספת תאריך אוטומטי
+document.addEventListener('DOMContentLoaded', function() {
+    const dateElements = document.querySelectorAll('.auto-date');
+    const today = new Date();
+    const dateString = today.toLocaleDateString('he-IL');
+    dateElements.forEach(el => el.textContent = dateString);
+});
+</script>
+
+</body>
+</html>```
