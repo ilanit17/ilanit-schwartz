@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חוֹבֶרֶת חֵקֶר בַּעֲלֵי חַיִּים - כִּיתָּה ב'</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            padding: 20px;
+            color: #333;
+            /* Font size and line height adjusted for 2nd grade */
+            font-size: 20px;
+            line-height: 1.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .cover-page {
+            background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
+            padding: 60px 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-page::before {
+            content: '🐾🌿';
+            position: absolute;
+            top: 20px;
+            right: 0;
+            left: 0;
+            font-size: 40px;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .cover-page h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .cover-page .subtitle {
+            font-size: 26px;
+            margin-bottom: 30px;
+        }
+
+        .cover-page .student-name {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 30px auto;
+            max-width: 400px;
+            font-size: 22px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section, .card {
+            /* This is the key change for printing: avoids breaking elements across pages */
+            page-break-inside: avoid;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 32px;
+            box-shadow: 0 4px 15px rgba(77, 182, 172, 0.4);
+        }
+
+        .section-number {
+            background: white;
+            color: #4db6ac;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .card {
+            background: #f1f8e9;
+            border: 2px solid #81c784;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+        
+        h4 {
+            font-size: 24px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #00796b;
+        }
+        
+        .info-box {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-right: 5px solid #66bb6a;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .step-card {
+            background: white;
+            border: 2px solid #a5d6a7;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(77, 182, 172, 0.2);
+        }
+
+        .step-icon { font-size: 44px; margin-bottom: 10px; }
+        .step-title { color: #2e7d32; font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+        .step-description { font-size: 18px; color: #555; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        th { background: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%); color: white; padding: 15px; text-align: center; font-size: 20px; }
+        td { border: 1px solid #ddd; padding: 15px; text-align: right; }
+        tr:nth-child(even) { background: #f1f8e9; }
+        
+        .worksheet { background: #fffde7; border: 2px dashed #4db6ac; border-radius: 12px; padding: 25px; margin: 20px 0; }
+        .input-line { border-bottom: 2px dotted #4db6ac; min-height: 40px; margin: 15px 0; padding: 5px; }
+        
+        .question-words { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+        .question-word { background: linear-gradient(135deg, #ffd54f 0%, #ffb74d 100%); color: #333; padding: 10px 20px; border-radius: 20px; font-size: 20px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+        
+        .tips-box { background: #e0f2f1; border-radius: 12px; padding: 20px; margin: 20px 0; border-right: 5px solid #4db6ac; }
+        .tips-list { padding-right: 20px; list-style-position: inside; }
+        .tips-list li { margin: 10px 0; font-size: 20px; }
+
+        .reflection-grid { border: 1px solid #ccc; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .reflection-row { display: flex; align-items: center; border-bottom: 1px solid #ccc; }
+        .reflection-row:last-child { border-bottom: none; }
+        .reflection-topic { background-color: #e0f2f1; padding: 15px; font-weight: bold; text-align: right; flex: 1; }
+        .reflection-faces { display: flex; justify-content: space-around; padding: 15px; flex: 1; }
+        .face { cursor: pointer; transition: transform 0.3s; font-size: 34px; }
+        .face:hover { transform: scale(1.3); }
+
+        .print-button { background: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%); color: white; border: none; padding: 15px 40px; font-size: 22px; border-radius: 30px; cursor: pointer; display: block; margin: 30px auto; box-shadow: 0 4px 15px rgba(77, 182, 172, 0.4); transition: transform 0.3s; }
+        .print-button:hover { transform: scale(1.05); }
+        
+        ol { padding-right: 30px; }
+        
+        .notebook-instruction {
+            background-color: #fff9c4;
+            border: 2px dashed #fbc02d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 22px;
+            color: #3e2723;
+        }
+
+        @media print { 
+            body { 
+                background: white; 
+                padding: 0;
+                font-size: 16px; /* Adjust font size for printing if needed */
+            } 
+            .container { 
+                box-shadow: none; 
+                max-width: 100%; 
+                border-radius: 0;
+            } 
+            .print-button { 
+                display: none; 
+            } 
+            .cover-page { 
+                page-break-after: always; 
+            } 
+        }
+        
+        .toc { background: #f1f8e9; border-radius: 15px; padding: 30px; margin: 30px 0; }
+        .toc h2 { color: #00796b; margin-bottom: 20px; font-size: 30px; text-align: center; }
+        .toc ul { list-style: none; column-count: 2; padding: 0; }
+        .toc li { padding: 12px 0; border-bottom: 1px solid #ddd; font-size: 20px; }
+        .toc li:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- עמוד שער -->
+        <div class="cover-page">
+            <h1>🔍 חוֹבֶרֶת חֵקֶר 🔍</h1>
+            <div class="subtitle">עוֹלַם בַּעֲלֵי הַחַיִּים הַמְּרַתֵּק</div>
+            <div style="font-size: 60px; margin: 20px 0;">🦁 🐘 🦒 🐧 🦊</div>
+            <div class="student-name">
+                <div style="margin-bottom: 10px;">שֵׁם הַתַּלְמִיד/ה:</div>
+                <div style="font-size: 24px; font-weight: bold;">___________________</div>
+            </div>
+            <div style="margin-top: 30px; font-size: 20px;">כִּיתָּה ב'</div>
+        </div>
+
+        <div class="content">
+            <!-- תוכן עניינים -->
+            <div class="toc">
+                <h2>📋 תֹּכֶן עִנְיָינִים</h2>
+                <ul>
+                    <li>מָה זֶה חֵקֶר?</li>
+                    <li>שִׁשָּׁה שִׁלְבֵי הַחֵקֶר</li>
+                    <li>שֵׁלָב 1: בְּחִירַת נוֹשֵׂא</li>
+                    <li>שֵׁלָב 2: שְׁאֵלַת שְׁאֵלוֹת</li>
+                    <li>שֵׁלָב 3: חִפּוּשׂ מֵידָע</li>
+                    <li>🐾 הַכָּרַת עוֹלַם הַחַי (דַּפֵּי עֲבוֹדָה)</li>
+                    <li>שֵׁלָב 4: אִרְגּוּן הַמֵּידָע</li>
+                    <li>שֵׁלָב 5: הֲכָנַת תּוֹצָר</li>
+                    <li>שֵׁלָב 6: הַצָּגַת הַתּוֹצָר</li>
+                    <li>💭 מָשׁוֹב וְרֶפְלֶקְצְיָה</li>
+                </ul>
+            </div>
+
+            <!-- מהו חקר -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">🎯</div>
+                    <div>מָה זֶה חֵקֶר?</div>
+                </div>
+                <div class="card">
+                    <h3>חֵקֶר הוּא מַסָּע מְרַתֵּק שֶׁל לְמִידָה!</h3>
+                    <p>בְּחֵקֶר, אַתֶּם הוֹפְכִים לְחוֹקְרִים אֲמִתִּיִּים! 🔬</p>
+                    <p>אַתֶּם בּוֹחֲרִים נוֹשֵׂא שֶׁמְּעַנְיֵן אֶתְכֶם, שׁוֹאֲלִים שְׁאֵלוֹת, מְחַפְּשִׂים מֵידָע וּמְגַלִּים דְּבָרִים חֲדָשִׁים!</p>
+                    <div class="info-box">
+                        <strong>💡 לָמָּה חֵקֶר זֶה כֵּיף?</strong>
+                        <ul class="tips-list" style="margin-top: 10px;">
+                            <li>לוֹמְדִים עַל מַה שֶּׁבֶּאֱמֶת מְעַנְיֵן אוֹתָנוּ.</li>
+                            <li>הוֹפְכִים לְמוּמְחִים בְּנוֹשֵׂא שֶׁבָּחַרְנוּ.</li>
+                            <li>מְגַלִּים דְּבָרִים חֲדָשִׁים וּמַפְתִּיעִים.</li>
+                            <li>יוֹצְרִים תּוֹצָר מְיֻחָד מִשֶּׁלָּנוּ.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- שלבי החקר -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">🔢</div>
+                    <div>שִׁשָּׁה שִׁלְבֵי הַחֵקֶר</div>
+                </div>
+                <div class="steps-container">
+                    <div class="step-card"><div class="step-icon">💡</div><div class="step-title">שֵׁלָב 1: בְּחִירַת נוֹשֵׂא</div><div class="step-description">סִיעוּר מוֹחִין וּבְחִירַת נוֹשֵׂא מְעַנְיֵן.</div></div>
+                    <div class="step-card"><div class="step-icon">❓</div><div class="step-title">שֵׁלָב 2: שְׁאֵלוֹת</div><div class="step-description">כְּתִיבַת מִגְוַן שְׁאֵלוֹת מְסַקְרְנוֹת.</div></div>
+                    <div class="step-card"><div class="step-icon">🔍</div><div class="step-title">שֵׁלָב 3: חִפּוּשׂ מֵידָע</div><div class="step-description">אִיתּוּר מֵידָע מֵהֵימָן וְרֶלֶוַונְטִי.</div></div>
+                    <div class="step-card"><div class="step-icon">📝</div><div class="step-title">שֵׁלָב 4: סִכּוּם</div><div class="step-description">אִרְגּוּן הַמֵּידָע וּכְתִיבַת סִכּוּם.</div></div>
+                    <div class="step-card"><div class="step-icon">🎨</div><div class="step-title">שֵׁלָב 5: תּוֹצָר</div><div class="step-description">הֲכָנַת תּוֹצָר לְמִידָה יְצִירָתִי.</div></div>
+                    <div class="step-card"><div class="step-icon">🎤</div><div class="step-title">שֵׁלָב 6: הַצָּגָה וּמָשׁוֹב</div><div class="step-description">הַצָּגַת הַתּוֹצָר וּמָשׁוֹב עַל תַּהֲלִיךְ הַלְּמִידָה.</div></div>
+                </div>
+            </div>
+
+            <!-- בחירת נושא -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">1</div><div>שֵׁלָב 1: בְּחִירַת נוֹשֵׂא</div></div>
+                <div class="card">
+                    <h3>🌟 בּוֹאוּ נִבְחַר בַּעַל חַיִּים לַחְקֹר!</h3>
+                    <div class="tips-box">
+                        <h4>💭 רַעְיוֹנוֹת לְסִיעוּר מוֹחִין:</h4>
+                        <ul class="tips-list">
+                            <li>אֵיזֶה בַּעַל חַיִּים תָּמִיד סִקְרֵן אֶתְכֶם?</li>
+                            <li>עַל אֵיזֶה בַּעַל חַיִּים תִּרְצוּ לָדַעַת יוֹתֵר?</li>
+                            <li>הַאִם יֵשׁ בַּעַל חַיִּים עִם תְּכוּנָה מְיֻחֶדֶת שֶׁמְּעַנְיֶנֶת אֶתְכֶם?</li>
+                        </ul>
+                    </div>
+                    <div class="worksheet">
+                        <h4>✍️ הַבְּחִירָה שֶׁלִּי</h4>
+                        <p><strong>הַנּוֹשֵׂא שֶׁבָּחַרְתִּי לַחְקֹר הוּא:</strong></p>
+                        <div class="input-line"></div>
+                        <p><strong>נִמּוּק הַבְּחִירָה (לָמָּה בָּחַרְתִּי בְּנוֹשֵׂא זֶה?):</strong></p>
+                        <div class="input-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- שאילת שאלות -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">2</div><div>שֵׁלָב 2: שְׁאִילַת שְׁאֵלוֹת</div></div>
+                <div class="card">
+                    <h3>❓ מִילּוֹת הַשְּׁאֵלָה יַעַזְרוּ לָנוּ!</h3>
+                    <div class="question-words">
+                        <div class="question-word">מִי</div><div class="question-word">מָה</div><div class="question-word">מָתַי</div><div class="question-word">אֵיפֹה/לְאָן</div>
+                        <div class="question-word">לָמָּה/מַדּוּעַ</div><div class="question-word">כֵּיצַד/אֵיךְ</div><div class="question-word">כַּמָּה</div><div class="question-word">אֵיזֶה</div>
+                    </div>
+                    <div class="tips-box">
+                        <h4>💡 דֻּגְמָאוֹת לִשְׁאֵלוֹת חֵקֶר:</h4>
+                        <ul class="tips-list">
+                            <li>אֵיפֹה בַּעַל הַחַיִּים חַי (סְבִיבַת הַמִּחְיָה שֶׁלּוֹ)?</li>
+                            <li>מַה הוּא אוֹכֵל? (הַמָּזוֹן שֶׁלּוֹ)</li>
+                            <li>כֵּיצַד הוּא מֵגֵן עַל עַצְמוֹ מִפְּנֵי אוֹיְבִים?</li>
+                            <li>מָה הַתְּכוּנָה הֲכִי מְיֻחֶדֶת שֶׁלּוֹ?</li>
+                            <li>אֵיךְ הוּא מְטַפֵּל בַּגּוּרִים שֶׁלּוֹ?</li>
+                        </ul>
+                    </div>
+                    <div class="worksheet">
+                        <h4>✍️ שְׁאֵלוֹת הַחֵקֶר שֶׁלִּי</h4>
+                        <p>כִּתְבוּ לְפָחוֹת 5 שְׁאֵלוֹת עַל בַּעַל הַחַיִּים שֶׁבְּחַרְתֶּם:</p>
+                        <div style="margin: 10px 0;">1. <div class="input-line"></div></div>
+                        <div style="margin: 10px 0;">2. <div class="input-line"></div></div>
+                        <div style="margin: 10px 0;">3. <div class="input-line"></div></div>
+                        <div style="margin: 10px 0;">4. <div class="input-line"></div></div>
+                        <div style="margin: 10px 0;">5. <div class="input-line"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- חיפוש מידע -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">3</div><div>שֵׁלָב 3: חִפּוּשׂ מֵידָע</div></div>
+                <div class="card">
+                    <h3>🔍 אֵיפֹה אֶפְשָׁר לִמְצֹא מֵידָע?</h3>
+                    <div class="info-box">
+                        <ul class="tips-list">
+                            <li>📚 סְפָרִים וְאֶנְצִיקְלוֹפֶּדְיוֹת בַּסִּפְרִיָּה</li>
+                            <li>💻 אֲתָרֵי אִינְטֶרְנֶט מְהֵימָנִים (בְּעֶזְרַת מְבֻגָּר)</li>
+                            <li>📺 סִרְטֵי טֶבַע וְסִרְטוֹנֵי מֵידָע</li>
+                            <li>👨‍🏫 רְאָיוֹן עִם אָדָם שֶׁמֵּבִין בְּנוֹשֵׂא (מוּמְחֶה)</li>
+                            <li>🏛️ בִּקּוּר בְּמוּזֵאוֹן הַטֶּבַע אוֹ בְּגַן חַיּוֹת</li>
+                        </ul>
+                    </div>
+                    <div class="tips-box">
+                        <h4>⭐ טִיפִּים לְחִפּוּשׂ מֵידָע:</h4>
+                        <ul class="tips-list">
+                            <li>חַפְּשׂוּ תְּשׁוּבוֹת לִשְׁאֵלוֹת הַחֵקֶר שֶׁלָּכֶם.</li>
+                            <li>הִשְׁתַּמְּשׁוּ בְּכַמָּה מְקוֹרוֹת מֵידָע שׁוֹנִים.</li>
+                            <li>וַדְּאוּ שֶׁהַמֵּידָע שֶׁמְּצָאתֶם נָכוֹן וַאֲמִין.</li>
+                            <li>רִשְׁמוּ בְּצַד אֶת מְקוֹרוֹת הַמֵּידָע שֶׁלָּכֶם.</li>
+                        </ul>
+                    </div>
+                     <div class="worksheet">
+                        <h4>✍️ מְקוֹרוֹת הַמֵּידָע שֶׁלִּי</h4>
+                        <p>רִשְׁמוּ אֶת מְקוֹרוֹת הַמֵּידָע שֶׁבָּהֶם הִשְׁתַּמַּשְׁתֶּם:</p>
+                        <div style="margin: 15px 0;"><strong>מָקוֹר 1:</strong><div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>מָקוֹר 2:</strong><div class="input-line"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- דפי עבודה על בעלי חיים -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">🐾</div><div>הַכָּרַת עוֹלַם הַחַי - דַּפֵּי עֲבוֹדָה</div></div>
+                
+                <!-- דף עבודה 1: מה זה בעל חיים? -->
+                <div class="card">
+                    <h3>🐾 דַּף עֲבוֹדָה 1: מָה זֶה בַּעַל חַיִּים?</h3>
+                    <h4>📖 קְטַע מֵידָע</h4>
+                    <p>בַּעַל חַיִּים הוּא יְצוּר חַי, וְגַם הַצֶּמַח הוּא יְצוּר חַי. שְׁנֵיהֶם זְקוּקִים לְאֶנֶרְגְּיָה כְּדֵי לְהִתְקַיֵּם, אַךְ כָּל אֶחָד מֵהֶם שׁוֹאֵב אוֹתָהּ מִמָּקוֹר אַחֵר. צְמָחִים מְנַצְּלִים אֶת אֶנֶרְגְּיַת הַשֶּׁמֶשׁ, אַךְ הַחַיּוֹת מְקַבְּלוֹת אֶת הָאֶנֶרְגְּיָה הַדְּרוּשָׁה לָהֶן מֵהַמָּזוֹן שֶׁהֵן אוֹכְלוֹת. חֵלֶק מֵהַחַיּוֹת נִזּוֹנוֹת מִצְּמָחִים, חֵלֶק מִבַּעֲלֵי חַיִּים אֲחֵרִים, וְיֵשׁ חַיּוֹת הָאוֹכְלוֹת גַּם צְמָחִים וְגַם בָּשָׂר. יֵשׁ רַבִּים מְאֹד מִינֵי בַּעֲלֵי הַחַיִּים, וְהַמַּדְעָנִים מְמַיְּנִים אוֹתָם לִסְדָרוֹת, לְמִשְׁפָּחוֹת, לְסוּגִים וּלְמִינִים.</p>
+                    <div class="info-box">
+                        <h4>💡 פִּנַּת אוֹצַר מִילִּים</h4>
+                        <p><strong>אֶנֶרְגְּיָה:</strong> כֹּחַ, מֶרֶץ.</p>
+                    </div>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶת שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>עַל אֵיזוֹ שְׁאֵלָה עוֹנֶה קְטַע הַמֵּידָע?</li>
+                        <li>לְמָה זְקוּקִים גַּם הַצֶּמַח וְגַם בַּעֲלֵי הַחַיִּים כְּדֵי לִחְיוֹת?</li>
+                        <li>מֵאַיִן מְקַבֵּל הַצֶּמַח אֶת הָאֶנֶרְגְּיָה שֶׁלּוֹ?</li>
+                        <li>מֵאַיִן מְקַבְּלוֹת הַחַיּוֹת אֶת הָאֶנֶרְגְּיָה שֶׁלָּהֶן?</li>
+                        <li>לְפִי הַקֶּטַע, מִמָּה נִזּוֹנוֹת הַחַיּוֹת? (יֵשְׁנָן 3 אֶפְשָׁרוּיוֹת).</li>
+                        <li>בַּקֶּטַע כָּתוּב: "הַמַּדְעָנִים מְמַיְּנִים אֶת מִינֵי בַּעֲלֵי הַחַיִּים". הַצִּיעוּ דֶּרֶךְ מִשֶּׁלָּכֶם לְמַיֵּן 10 בַּעֲלֵי חַיִּים שׁוֹנִים בְּטַבְלָה.</li>
+                    </ol>
+                </div>
+
+                <!-- דף עבודה 2: מהו יונק? -->
+                <div class="card">
+                    <h3>🦁 דַּף עֲבוֹדָה 2: מַהוּ יוֹנֵק?</h3>
+                    <h4>📖 קְטַע מֵידָע</h4>
+                    <p>יוֹנֵק הוּא בַּעַל חַיִּים בַּעַל שֵׂעָר אוֹ פַּרְוָה, הָעוֹזְרִים לוֹ לִשְׁמֹר עַל חֹם גּוּפוֹ. וַלְדוֹתֵיהֶם (הַתִּינוֹקוֹת) שֶׁל הַיּוֹנְקִים נִזּוֹנִים מֵחָלָב הַנּוֹצָר בְּגוּף אִמָּם. הַיּוֹנְקִים חַיִּים בְּכָל מָקוֹם עַל פְּנֵי כַּדּוּר הָאָרֶץ, גַּם בְּאַנְטְאַרְקְטִיקָה הַקְּפוּאָה וְגַם בְּאַפְרִיקָה הַחַמָּה. מַרְבִּיתָם שׁוֹכְנִים בַּיַּבָּשָׁה. יֵשׁ יוֹנְקִים מְסֻיָּמִים, כְּגוֹן לִוְיָתָן, הַחַיִּים בַּמַּיִם. עֲטַלֵּף הוּא הַיּוֹנֵק הַיָּחִיד הַמְּסֻגָּל לָעוּף.</p>
+                    <div class="info-box">
+                        <h4>💡 פִּנַּת אוֹצַר מִילִּים</h4>
+                        <p><strong>וַלְדוֹתֵיהֶם:</strong> הַתִּינוֹקוֹת שֶׁלָּהֶם.</p>
+                    </div>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶт שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>מַהוּ יוֹנֵק? הַסְבִּירוּ בְּמִילִּים שֶׁלָּכֶם.</li>
+                        <li>לְמָה מְשַׁמְּשִׁים הַשֵּׂעָר אוֹ הַפַּרְוָה שֶׁעַל גּוּף הַיּוֹנֵק?</li>
+                        <li>מִמָּה נִזּוֹנִים הַתִּינוֹקוֹת שֶׁל הַיּוֹנְקִים?</li>
+                        <li>הֵיכָן חַיִּים הַיּוֹנְקִים? תְּנוּ דֻּגְמָה לְמָקוֹם חַם וּלְמָקוֹם קַר.</li>
+                        <li>מִיהוּ הַיּוֹנֵק שֶׁחַי בַּמַּיִם הַמֻּזְכָּר בַּקֶּטַע?</li>
+                        <li>מַה מְּיֻחָד בָּעֲטַלֵּף?</li>
+                        <li>יָעֵל טָעֲנָה שֶׁתַּרְנְגוֹל הוּא אֵינוֹ יוֹנֵק. הַאִם הִיא צוֹדֶקֶת? הַסְבִּירוּ אֶת תְּשׁוּבַתְכֶם בְּעֶזְרַת הַמֵּידָע מֵהַקֶּטַע.</li>
+                        <li>עִרְכוּ רְשִׁימָה שֶׁל עֲשָׂרָה יוֹנְקִים שֶׁאַתֶּם מַכִּירִים.</li>
+                        <li>נַסְּחוּ שְׁתֵּי שְׁאֵלוֹת עַל יוֹנְקִים שֶׁאֵין עֲלֵיהֶן תְּשׁוּבָה בַּקֶּטַע.</li>
+                    </ol>
+                </div>
+
+                 <!-- דף עבודה 3: מה זה זוחל? -->
+                 <div class="card">
+                    <h3>🐍 דַּף עֲבוֹדָה 3: מָה זֶה זוֹחֵל?</h3>
+                    <h4>📖 קְטַע מֵידָע</h4>
+                    <p>תַּנִּינִים, נְחָשִׁים, לְטָאוֹת וְצַבִּים הֵם זוֹחֲלִים. כָּל בַּעֲלֵי הַחַיִּים הָאֵלֶּה הֵם בַּעֲלֵי "דָּם קַר". כְּלוֹמַר, הֵם אֵינָם מְסֻגָּלִים לִשְׁמֹר עַל חֹם גּוּף קָבוּעַ כְּשֶׁמֶּזֶג הָאֲוִיר קַר. הֵם זְקוּקִים לְחֹם הַשֶּׁמֶשׁ, וְלָכֵן רֹב הַזּוֹחֲלִים חַיִּים בָּאֲזוֹרִים חַמִּים. אֵלֶּה הַשּׁוֹכְנִים בִּמְקוֹמוֹת קָרִים, יְשֵׁנִים כָּל הַחֹרֶף וּמִתְעוֹרְרִים בָּאָבִיב. שֵׁנָה זוֹ נִקְרֵאת "תַּרְדֵּמַת חֹרֶף".</p>
+                    <div class="info-box">
+                        <h4>💡 פִּנַּת אוֹצַר מִילִּים</h4>
+                        <p><strong>בַּעֲלֵי דָּם קַר:</strong> חַיּוֹת שֶׁטֶּמְפֶּרָטוּרַת הַגּוּף שֶׁלָּהֶן מִשְׁתַּנָּה בְּהתְאָם לַסְּבִיבָה.</p>
+                        <p><strong>תַּרְדֵּמַת חֹרֶף:</strong> שֵׁנָה עֲמֻקָּה וַאֲרֻכָּה בְּמֶשֶׁךְ כָּל עוֹנַת הַחֹרֶף.</p>
+                    </div>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶт שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>תְּנוּ 3 דֻּגְמָאוֹת לְזוֹחֲלִים הַמֻּזְכָּרִים בַּקֶּטַע.</li>
+                        <li>הַסְבִּירוּ בְּמִילִּים שֶׁלָּכֶם, מָה הַפֵּרוּשׁ "בַּעַל דָּם קַר"?</li>
+                        <li>לְמָה זְקוּקִים הַזּוֹחֲלִים כְּדֵי לְחַמֵּם אֶת גּוּפָם?</li>
+                        <li>מַדּוּעַ חַיִּים רֹב הַזּוֹחֲלִים בָּאֲזוֹרִים חַמִּים?</li>
+                        <li>מָה עוֹשִׂים הַזּוֹחֲלִים הַחַיִּים בִּמְקוֹמוֹת קָרִים בְּמֶשֶׁךְ הַחֹרֶף?</li>
+                        <li>רִשְׁמוּ תְּכוּנָה בּוֹלֶטֶת אַחַת שֶׁיֵּשׁ לְיוֹנְקִים (הֵעָזְרוּ בְּדַף הָעֲבוֹדָה הַקּוֹדֵם).</li>
+                        <li>רִשְׁמוּ תְּכוּנָה בּוֹלֶטֶת אַחַת שֶׁיֵּשׁ לְזוֹחֲלִים.</li>
+                    </ol>
+                    <h4>🎨 פְּעִילוּת יְצִירָתִית</h4>
+                    <p>צַיְּרוּ זוֹחֵל שֶׁאַתֶּם אוֹהֲבִים.</p>
+                </div>
+
+                 <!-- דף עבודה 4: מה זה דג? -->
+                <div class="card">
+                    <h3>🐠 דַּף עֲבוֹדָה 4: מָה זֶה דָּג?</h3>
+                    <h4>📖 קְטַע מֵידָע</h4>
+                    <p>דָּג מְבַלֶּה אֶת כָּל חַיָּיו בַּמַּיִם. חֵלֶק מֵהַדָּגִים שׁוֹכְנִים בַּיָּם, וְחֵלֶק בִּנְהָרוֹת וּבָאֲגַמִּים. גּוּפָם שֶׁל הַדָּגִים מְכֻסֶּה בְּדֶרֶךְ כְּלָל בְּקַשְׂקַשִּׂים. הַדָּגִים, כְּמוֹ כָּל בַּעֲלֵי הַחַיִּים, זְקוּקִים לְחַמְצָן כְּדֵי לִחְיוֹת. אָנוּ מְקַבְּלִים אֶת הַחַמְצָן מֵהָאֲוִיר, אֲבָל הַדָּגִים מְקַבְּלִים אוֹתוֹ מֵהַמַּיִם. הַמַּיִם נִכְנָסִים אֶל פִּי הַדָּג וְעוֹבְרִים דֶּרֶךְ הַזִּימִים שֶׁלּוֹ. הַזִּימִים קוֹלְטִים מִתּוֹךְ הַמַּיִם אֶת הַחַמְצָן.</p>
+                    <div class="info-box">
+                        <h4>💡 פִּנַּת אוֹצַר מִילִּים</h4>
+                        <p><strong>קַשְׂקַשִּׂים:</strong> לוּחִיּוֹת קְטַנּוֹת וְקָשׁוֹת הַמְּכַסּוֹת אֶת עוֹר הַדָּג.</p>
+                        <p><strong>זִימִים:</strong> אֵיבַר הַנְּשִׁימָה שֶׁל הַדָּגִים, בְּעֶזְרָתוֹ הֵם נוֹשְׁמִים מִתַּחַת לַמַּיִם.</p>
+                    </div>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶт שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>הֵיכָן מְבַלֶּה הַדָּג אֶת כָּל חַיָּיו?</li>
+                        <li>בְּמָה מְכֻסֶּה בְּדֶרֶךְ כְּלָל גּוּפָם שֶׁל הַדָּגִים?</li>
+                        <li>לְמָה זְקוּקִים כָּל בַּעֲלֵי הַחַיִּים כְּדֵי לִחְיוֹת?</li>
+                        <li>מֵאַיִן אָנוּ, בְּנֵי הָאָדָם, מְקַבְּלִים חַמְצָן?</li>
+                        <li>הַסְבִּירוּ בְּמִילִּים שֶׁלָּכֶם, כֵּיצַד הַדָּגִים מְקַבְּלִים חַמְצָן מֵהַמַּיִם?</li>
+                        <li>רִשְׁמוּ תְּכוּנָה בּוֹלֶטֶת אַחַת שֶׁיֵּשׁ לַדָּגִים.</li>
+                        <li>נַסְּחוּ שָׁלֹשׁ שְׁאֵלוֹת עַל דָּגִים שֶׁאֵין עֲלֵיהֶן תְּשׁוּבָה בַּקֶּטַע.</li>
+                    </ol>
+                </div>
+                
+                <!-- דף עבודה 5: מה זה חרק? -->
+                <div class="card">
+                    <h3>🐞 דַּף עֲבוֹדָה 5: מָה זֶה חֶרֶק?</h3>
+                    <h4>📖 קְטַע מֵידָע</h4>
+                    <p>לַחֲרָקִים יֵשׁ שֵׁשׁ רַגְלַיִם. גּוּפָם מְכֻסֶּה קְרוּם קָשֶׁה, שֶׁהוּא שֶׁלֶד חִיצוֹנִי. גּוּפוֹ שֶׁל כָּל חֶרֶק מֻרְכָּב מִשְּׁלוֹשָׁה חֲלָקִים: רֹאשׁ, חָזֶה וּבֶטֶן. רֹב הַחֲרָקִים יְכוֹלִים לְעוֹפֵף. לְמַרְבִּיתָם יֵשׁ שְׁנֵי זוּגוֹת כְּנָפַיִם, אֲבָל לַזְּבוּבִים יֵשׁ רַק זוּג כְּנָפַיִם אֶחָד. חֲרָקִים רַבִּים מַרְהִיבִים בְּצִבְעֵיהֶם. צִבְעֵיהֶם הַבּוֹלְטִים מַזְהִירִים אֶת בַּעֲלֵי הַחַיִּים לְבַל יִטְרְפוּ אוֹתָם, כִּי בְּשָׂרָם אֵינוֹ עָרֵב לַחֵךְ.</p>
+                    <div class="info-box">
+                        <h4>💡 פִּנַּת אוֹצַר מִילִּים</h4>
+                        <p><strong>קְרוּם:</strong> שִׁכְבָה דַּקָּה.</p>
+                        <p><strong>מַרְהִיבִים:</strong> יָפִים מְאֹד.</p>
+                        <p><strong>עָרֵב לַחֵךְ:</strong> טָעִים.</p>
+                    </div>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶт שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>מִצְאוּ בַּקֶּטַע שְׁלוֹשָׁה מְאַפְיְנִים שֶׁיֵּשׁ לַחֲרָקִים (לְדֻגְמָה: מִסְפַּר הָרַגְלַיִם).</li>
+                        <li>בְּמָה שׁוֹנִים הַזְּבוּבִים מֵרֹב הַחֲרָקִים הָאֲחֵרִים?</li>
+                        <li>הַסְבִּירוּ אֶת הַמִּשְׁפָּט: "חֲרָקִים רַבִּים מַרְהִיבִים בְּצִבְעֵיהֶם".</li>
+                        <li>לְמָה מְשַׁמְּשִׁים הַצְּבָעִים הַבּוֹלְטִים שֶׁיֵּשׁ לַחֲרָקִים?</li>
+                        <li>הַסְבִּירוּ אֶת הַמִּשְׁפָּט: "בְּשָׂרָם אֵינוֹ עָרֵב לַחֵךְ".</li>
+                        <li>כִּתְבוּ שְׁאֵלָה אַחַת לְכָל מִשְׁפָּט מֻדְגָּשׁ בַּקֶּטַע, שֶׁהַמִּשְׁפָּט הוּא הַתְּשׁוּבָה אֵלֶיהָ.</li>
+                    </ol>
+                </div>
+                
+                <!-- דף עבודה 6: מה זאת ציפור? -->
+                <div class="card">
+                    <h3>🐦 דַּף עֲבוֹדָה 6: מָה זֹאת צִפּוֹר?</h3>
+                    <h4>📖 קִטְעֵי מֵידָע</h4>
+                    <p><strong>1. מָה זֹאת צִפּוֹר?</strong><br>
+                    צִפּוֹר הִיא בַּעַל חַיִּים, שֶׁיֵּשׁ לוֹ נוֹצוֹת וּכְנָפַיִם. צִפֳּרִים חַיּוֹת בְּרֹב אֲזוֹרֵי הָעוֹלָם, וְכִמְעַט כֻּלָּן מְסֻגָּלוֹת לָעוּף. הַצִּפּוֹר הַקְּטַנָּה בְּיוֹתֵר הִיא קוֹלִיבְּרִי זָעִיר, שֶׁאָרְכּוֹ רַק חֲמִשָּׁה סֶנְטִימֶטְרִים. הָעוֹף הַגָּדוֹל בְּיוֹתֵר הוּא הַיָּעֵן, שֶׁגָּבְהוֹ מַגִּיעַ לִשְׁנֵי מֶטְרִים וָחֵצִי.</p>
+                    <p><strong>2. הַנּוֹצוֹת</strong><br>
+                    צִפֳּרִים הֵן בַּעֲלֵי הַחַיִּים הַיְּחִידִים שֶׁיֵּשׁ לָהֶם נוֹצוֹת. הַנּוֹצוֹת נוֹתְנוֹת לַצִּפֳּרִים אֶת צִבְעֵיהֶן וְשׁוֹמְרוֹת עַל חֹם גּוּפָן. הַצִּפֳּרִים מְנַקּוֹת אֶת הַנּוֹצוֹת בְּמַקּוֹרָן וְסָכוֹת אוֹתָן בְּשֶׁמֶן הַנִּפְרָשׁ מִגּוּפָן.</p>
+                    <p><strong>3. הַמָּקוֹר</strong><br>
+                    לְכָל הַצִּפֳּרִים יֵשׁ מַקּוֹר. לְפִי צוּרַת הַמַּקּוֹר אֶפְשָׁר לָדַעַת מִמָּה הֵן נִזּוֹנוֹת. מַקּוֹרֵי הַדְּרוֹרִים קְצָרִים וְעָבִים כְּדֵי לְפַצֵּחַ זְרָעִים. לָעַיִט יֵשׁ מַקּוֹר חַד וְכָפוּף, הַמֻּתְאָם לִקְרִיעַת בָּשָׂר.</p>
+                    <div class="notebook-instruction">📝 הָשִׁיבוּ עַל הַשְּׁאֵלוֹת בְּמַחְבֶּרֶт שָׂפָה</div>
+                    <h4>🤔 שְׁאֵלוֹת לְמַחְשָׁבָה</h4>
+                    <ol>
+                        <li>מָהֶם שְׁנֵי הַמְּאַפְיְנִים הַבּוֹלְטִים שֶׁל צִפּוֹר, הַמֻּזְכָּרִים בִּתְחִלַּת הַקֶּטַע?</li>
+                        <li>מַהִי הַצִּפּוֹר הַקְּטַנָּה בְּיוֹתֵר, וּמַהוּ הָעוֹף הַגָּדוֹל בְּיוֹתֵר?</li>
+                        <li>מָהֶם שְׁנֵי הַתַּפְקִידִים שֶׁל הַנּוֹצוֹת?</li>
+                        <li>מָה נִתָּן לִלְמֹד מִצּוּרַת הַמַּקּוֹר שֶׁל הַצִּפּוֹר?</li>
+                        <li>הַעְתִּיקוּ אֶת הַטַּבְלָה וְהַשְׁלִימוּ אוֹתָהּ בְּעֶזְרַת קְטַע הַמֵּידָע עַל "הַמָּקוֹר":</li>
+                    </ol>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>שֵׁם הַצִּפּוֹר</th>
+                                <th>צוּרַת הַמָּקוֹר</th>
+                                <th>הַמָּזוֹן</th>
+                                <th>פְּעֻלַּת הָאֲכִילָה</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>דְּרוֹר</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                             <tr>
+                                <td>עַיִט</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ארגון המידע -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">4</div><div>שֵׁלָב 4: אִרְגּוּן הַמֵּידָע</div></div>
+                <div class="card">
+                    <h3>📊 בּוֹאוּ נְסַדֵּר אֶת כָּל מָה שֶׁגִּילִּינוּ!</h3>
+                    <p>אַחֲרֵי שֶׁאָסַפְנוּ מֵידָע רַב, חָשׁוּב לְאַרְגֵּן אוֹתוֹ בְּצוּרָה בְּרוּרָה. דֶּרֶךְ מְצֻיֶּנֶת הִיא "כַּרְטִיס בִּקּוּר" לְבַעַל הַחַיִּים.</p>
+                    <div class="worksheet">
+                        <h4>🎴 כַּרְטִיס בִּקּוּר</h4>
+                        <div style="margin: 15px 0;"><strong>שֵׁם בַּעַל הַחַיִּים:</strong><div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>מִשְׁפָּחָה:</strong> (יוֹנֵק, עוֹף, זוֹחֵל, דָּג, חֶרֶק...)<div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>תֵּאוּר הַגּוּף:</strong> (גֹּדֶל, צְבָעִים, חֲלָקִים מְיֻחָדִים)<div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>אֵזוֹר מִחְיָה:</strong> (אֵיפֹה הוּא חַי בָּעוֹלָם? בַּיָּם, בַּיַּבָּשָׁה, בַּמִּדְבָּר?)<div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>מָזוֹן:</strong> (מָה הוּא אוֹכֵל?)<div class="input-line"></div></div>
+                        <div style="margin: 15px 0;"><strong>תְּכוּנָה בּוֹלֶטֶת וְעֻבְדָּה מְעַנְיֶנֶת:</strong><div class="input-line"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- הכנת תוצר -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">5</div><div>שֵׁלָב 5: הֲכָנַת תּוֹצָר</div></div>
+                <div class="card">
+                    <h3>🎨 הִגִּיעַ הַזְּמַן לִהְיוֹת יְצִירָתִיִּים!</h3>
+                    <p>הַתּוֹצָר הוּא הַדֶּרֶךְ שֶׁלָּכֶם לְהַרְאוֹת וּלְשַׁתֵּף אֶת כָּל מָה שֶׁלְּמַדְתֶּם. בַּחֲרוּ אֶת הַדֶּרֶךְ שֶׁהֲכִי מַתְאִימָה לָכֶם.</p>
+                    <div class="steps-container">
+                        <div class="step-card"><div class="step-icon">📊</div><div class="step-title">מַצֶּגֶת</div></div>
+                        <div class="step-card"><div class="step-icon">📖</div><div class="step-title">קוֹמִיקְס</div></div>
+                        <div class="step-card"><div class="step-icon">🎨</div><div class="step-title">צִיּוּר</div></div>
+                        <div class="step-card"><div class="step-icon">✂️</div><div class="step-title">דֶּגֶם / יְצִירָה</div></div>
+                        <div class="step-card"><div class="step-icon">🎬</div><div class="step-title">סִרְטוֹן</div></div>
+                        <div class="step-card"><div class="step-icon">🎭</div><div class="step-title">הַצָּגָה</div></div>
+                        <div class="step-card"><div class="step-icon">🎵</div><div class="step-title">שִׁיר</div></div>
+                        <div class="step-card"><div class="step-icon">🎲</div><div class="step-title">מִשְׂחָק</div></div>
+                    </div>
+                    <div class="tips-box">
+                        <h4>💡 טִיפִּים לְתוֹצָר מְעוּלֶה:</h4>
+                        <ul class="tips-list">
+                            <li>וַדְּאוּ שֶׁהַתּוֹצָר כּוֹלֵל אֶת הַמֵּידָע הָעִקָּרִי שֶׁמְּצָאתֶם.</li>
+                            <li>הִשְׁתַּמְּשׁוּ בִּצְבָעִים וּבְתַצּוּגָה בְּרוּרָה וּמְעַנְיֶנֶת.</li>
+                            <li>הַתּוֹצָר צָרִיךְ לִהְיוֹת אֶסְתֵּטִי וּמְסֻדָּר.</li>
+                            <li>הָעִקָּר הוּא לֵהָנוֹת מֵהַיְּצִירָה!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- הצגת התוצר -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">6</div><div>שֵׁלָב 6: הַצָּגַת הַתּוֹצָר</div></div>
+                <div class="card">
+                    <h3>🎤 כְּלָלִים לַדּוֹבֵר הַמְּצֻיָּן</h3>
+                    <div class="info-box">
+                        <ul class="tips-list" style="font-size: 22px;">
+                            <li><strong>שְׁמִירָה עַל קֶשֶׁר עַיִן:</strong> הִסְתַּכְּלוּ עַל הַחֲבֵרִים בַּכִּיתָּה.</li>
+                            <li><strong>דִּבּוּר בָּרוּר:</strong> דַּבְּרוּ בְּקוֹל רָם, בָּרוּר וְלֹא מַהֵר מִדַּי.</li>
+                            <li><strong>עֲמִידָה יַצִּיבָה:</strong> עִמְדוּ זָקוּף וְשַׁדְּרוּ בִּטָּחוֹן.</li>
+                            <li><strong>הִתְלַהֲבוּת:</strong> הַרְאוּ שֶׁהַנּוֹשֵׂא מְעַנְיֵן אֶתְכֶם!</li>
+                            <li><strong>שִׁמּוּשׁ בָּעֲזָרִים:</strong> הִשְׁתַּמְּשׁוּ בַּתּוֹצָר שֶׁהֲכַנְתֶּם.</li>
+                        </ul>
+                    </div>
+                     <h3 style="margin-top: 30px;">👂 כְּלָלִים לַמַּאֲזִין הַטּוֹב</h3>
+                    <div class="info-box">
+                        <ul class="tips-list" style="font-size: 22px;">
+                            <li><strong>הַקְשָׁבָה:</strong> נַקְשִׁיב לַדּוֹבֵר עַד סוֹף דְּבָרָיו.</li>
+                            <li><strong>רִכּוּז:</strong> נִתְרַכֵּז בְּדִבְרֵי הַדּוֹבֵר וְנִתְעַלֵּם מֵהַפְרָעוֹת.</li>
+                            <li><strong>כָּבוֹד:</strong> נִמָּנַע מִשְּׁאֵלוֹת וְהֶעָרוֹת שֶׁעֲלוּלוֹת לְהַפְרִיעַ לַדּוֹבֵר.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- רפלקציה -->
+            <div class="section">
+                <div class="section-header"><div class="section-number">💭</div><div>מָשׁוֹב וְרֶפְלֶקְצְיָה</div></div>
+                <div class="card">
+                    <h3>🤔 בּוֹאוּ נַחְשֹׁב עַל תַּהֲלִיךְ הַלְּמִידָה שֶׁעָבַרְנוּ</h3>
+                    <p>עָבַרְתֶּם מַסָּע שָׁלֵם! עַכְשָׁיו הַזְּמַן לַעֲצֹר לְרֶגַע וְלַחְשֹׁב: מָה לָמַדְנוּ? מָה הָיָה טוֹב? וּמָה נִרְצֶה לְשַׁפֵּר בַּפַּעַם הַבָּאָה?</p>
+                    <div class="worksheet">
+                        <h4>✍️ הַמָּשׁוֹב הָאִישִׁי שֶׁלִּי</h4>
+                        <div class="reflection-grid">
+                            <div class="reflection-row">
+                                <div class="reflection-topic"><strong>בְּחִירַת הַנּוֹשֵׂא:</strong> הָיִיתִי מְרֻצֶּה מֵהַבְּחִירָה שֶׁלִּי?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                             <div class="reflection-row">
+                                <div class="reflection-topic"><strong>שְׁאִילַת הַשְּׁאֵלוֹת:</strong> הַשְּׁאֵלוֹת שֶׁלִּי הָיוּ בְּרוּרוֹת וּמְעַנְיְנוֹת?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                            <div class="reflection-row">
+                                <div class="reflection-topic"><strong>אִסּוּף הַמֵּידָע:</strong> הִצְלַחְתִּי לִמְצֹא מֵידָע מִמְּקוֹרוֹת מְגֻוָּנִים?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                            <div class="reflection-row">
+                                <div class="reflection-topic"><strong>אִרְגּוּן וְסִכּוּם:</strong> הִצְלַחְתִּי לְסַכֵּם אֶת הַמֵּידָע בְּבֵרוּר?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                            <div class="reflection-row">
+                                <div class="reflection-topic"><strong>הֲכָנַת הַתּוֹצָר:</strong> הַתּוֹצָר שֶׁהֵכַנְתִּי יָצָא בָּרוּר, אֶסְתֵּטִי וּמְעַנְיֵן?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                             <div class="reflection-row">
+                                <div class="reflection-topic"><strong>הַצָּגַת הַתּוֹצָר:</strong> יִשַּׂמְתִּי אֶת כְּלָלֵי הַדִּבּוּר בִּפְנֵי קהל?</div>
+                                <div class="reflection-faces"><span class="face">😊</span><span class="face">😐</span><span class="face">😟</span></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 20px 0;"><strong>מַה עָשִׂיתִי הֲכִי טוֹב בְּתַהֲלִיךְ הַחֵקֶר? (הַחֹזְקוֹת שֶׁלִּי)</strong><div class="input-line"></div></div>
+                        <div style="margin: 20px 0;"><strong>עִם אֵילוּ קְשָׁיִים וְאֶתְגָּרִים הִתְמוֹדַדְתִּי?</strong><div class="input-line"></div></div>
+                        <div style="margin: 20px 0;"><strong>מַה לָּמַדְתִּי עַל עַצְמִי בְּעִקְבוֹת הַחֵקֶר?</strong><div class="input-line"></div></div>
+                    </div>
+                    <div class="info-box" style="text-align: center; margin-top: 30px; background-color: #fff9c4;">
+                        <h2 style="color: #f57f17; margin-bottom: 15px;">🎉 כָּל הַכָּבוֹד! 🎉</h2>
+                        <p style="font-size: 24px;">סִיַּמְתֶּם אֶת מַסַּע הַחֵקֶר בְּהַצְלָחָה!</p>
+                        <p style="font-size: 22px; margin-top: 10px;">אַתֶּם חוֹקְרִים צְעִירִים וּמְצֻיָּנִים! 🔬🌟</p>
+                    </div>
+                </div>
+            </div>
+            <button class="print-button" onclick="window.print()">🖨️ הַדְפָּסַת הַחוֹבֶרֶת</button>
+        </div>
+    </div>
+</body>
+</html>
