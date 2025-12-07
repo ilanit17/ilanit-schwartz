@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מצגת: איך פותרים שאלת הוכחה? (עם קישורים)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* מסגרת המצגת */
+        .presentation-container {
+            width: 90%;
+            max-width: 1100px;
+            aspect-ratio: 16/9;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* עיצוב השקפים */
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px 80px;
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* כפתורי ניווט */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #2980b9;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-btn:hover {
+            background-color: #2980b9;
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .prev-btn { right: 20px; }
+        .next-btn { left: 20px; }
+
+        /* כפתורי קישורים (חדש) */
+        .link-buttons-container {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            text-decoration: none;
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-2px);
+            background-color: #219150;
+        }
+
+        .link-btn.secondary {
+            background-color: #8e44ad;
+        }
+        .link-btn.secondary:hover {
+            background-color: #732d91;
+        }
+
+        /* מונה שקפים */
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #bdc3c7;
+            background: rgba(255,255,255,0.9);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* טיפוגרפיה */
+        h1 {
+            font-family: 'Varela Round', sans-serif;
+            font-size: 48px;
+            color: #2980b9;
+            margin: 10px 0 20px 0;
+        }
+
+        h2 {
+            font-size: 32px;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 26px;
+            line-height: 1.5;
+            color: #34495e;
+            max-width: 90%;
+        }
+
+        /* אזור הדוגמה */
+        .example-container {
+            background-color: #eafaf1; /* ירוק בהיר */
+            border: 2px dashed #27ae60;
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: #27ae60;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .text-passage {
+            font-family: 'Times New Roman', serif;
+            font-size: 28px;
+            line-height: 1.6;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .highlight-word {
+            background-color: #f1c40f; /* צהוב */
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+
+        .highlight-proof {
+            background-color: #82e0aa; /* ירוק */
+            padding: 0 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .step-number {
+            background-color: #e67e22;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin: 0 auto 10px auto;
+        }
+
+        /* רשימות */
+        ul {
+            text-align: right;
+            list-style-type: none;
+            padding: 0;
+            display: inline-block;
+        }
+        ul li { margin-bottom: 10px; }
+        ul li::before { content: "✅ "; margin-left: 10px; }
+
+        .credit {
+            font-size: 18px; 
+            color: #7f8c8d; 
+            font-weight:bold;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    
+    <button class="nav-btn prev-btn" id="prevBtn" onclick="changeSlide(-1)">❯</button>
+    <button class="nav-btn next-btn" id="nextBtn" onclick="changeSlide(1)">❮</button>
+
+    <!-- שקף 1: פתיחה -->
+    <div class="slide active">
+        <div style="font-size: 70px;">🔎</div>
+        <h1>אֵיךְ פֹּותְרִים שְׁאֵלַת הֹוכָחָה?</h1>
+        <h2>מַדְרִיךְ צַעַד אַחַר צַעַד</h2>
+        <p>נִלְמַד כֵּיצַד לְפַצֵּחַ שְׁאֵלֹות "נָכֹון/לֹא נָכֹון" וּלְהָבִיא הֹוכָחָה מְדֻיֶּקֶת.</p>
+        
+        <div class="link-buttons-container">
+            <a href="https://drive.google.com/file/d/1aHLEujwYCFAOUG3Mp5mMuxs_oiz2DMxC/view?usp=drive_link" target="_blank" class="link-btn">
+                📄 לְהֹורָדַת דַּף הָעֲבֹודָה
+            </a>
+            <a href="https://drive.google.com/file/d/1Ovd28EPN5V0xUv_5R2I-h1sR-EvRArDA/view?usp=drive_link" target="_blank" class="link-btn secondary">
+                🔑 לְהֹורָדַת דַּף הַתְּשׁוּבֹות
+            </a>
+        </div>
+
+        <p class="credit">אִילָנִית שְׁווַרְץ - קְרִיאָה לַהֲבָנָה</p>
+    </div>
+
+    <!-- שקף 2: מטרות השיעור -->
+    <div class="slide">
+        <div style="font-size: 60px;">🎯</div>
+        <h1>מַטְּרֹות הַשִּׁעוּר</h1>
+        <ul>
+            <li>נָבִין לָמָּה חָשׁוּב לְהָבִיא הֹוכָחָה.</li>
+            <li>נַכִּיר אֶת 5 הַשְּׁלַבִּים לְפִתְרֹון נָכֹון.</li>
+            <li>נִרְאֶה דֻּגְמָה "חַיָּה" לְכָל שָׁלָב.</li>
+        </ul>
+    </div>
+
+    <!-- שקף 3: שאלה למחשבה -->
+    <div class="slide">
+        <div style="font-size: 60px;">🤔</div>
+        <h1>לָמָּה זֶה חָשׁוּב?</h1>
+        <p>מַדּוּעַ אֲנַחְנוּ לֹא מִסְתַּפְּקִים בְּסִמּוּן "נָכֹון" אוֹ "לֹא נָכֹון",<br>אֶלָּא מְבַקְּשִׁים גַּם <strong>הֹוכָחָה</strong>?</p>
+    </div>
+
+    <!-- שקף 4: התשובה -->
+    <div class="slide">
+        <div style="font-size: 60px;">💡</div>
+        <h1>חֲשִׁיבּוּת הַהֹוכָחָה</h1>
+        <p><strong>1. דִּיּוּק:</strong> זֶה מוֹנֵעַ מֵאִתָּנוּ לְנַחֵשׁ וְעוֹזֵר לִבְדֹּק שֶׁלֹּא טָעִינוּ.</p>
+        <p><strong>2. הֲבָנָה:</strong> זֶה מַרְאֶה שֶׁהֵבַנּוּ בֶּאֱמֶת אֶת מָה שֶׁקָּרָאנוּ.</p>
+        <p><strong>3. בִּטָּחֹון:</strong> כְּשֶׁיֵּשׁ לָנוּ הֹוכָחָה, אֲנַחְנוּ יוֹדְעִים שֶׁהַתְּשׁוּבָה נְכוֹנָה!</p>
+    </div>
+
+    <!-- שקף 5: הצגת הדוגמה -->
+    <div class="slide">
+        <h1>הַדֻּגְמָה שֶׁתְּלַוֶּה אוֹתָנוּ</h1>
+        <p>לְאֹורֶךְ הַשְּׁלַבִּים, נִשְׁתַּמֵּשׁ בְּפִסְקָה מִתּוֹךְ הַמָּשָׁל "הַשּׁוּעָל וְהָעֲנָבִים":</p>
+        <div class="example-container">
+            <span class="example-title">הַטֶּקְסְט שֶׁלָּנוּ:</span>
+            <div class="text-passage">
+                "בְּיוֹם קַיִץ חַם אֶחָד טִיֵּל לוֹ שׁוּעָל בְּמֶרְחָבָיו שֶׁל בֻּסְתָּן פֵּרוֹת..."
+            </div>
+        </div>
+        <p style="margin-top: 15px;">בּוֹאוּ נִתְחִיל!</p>
+    </div>
+
+    <!-- שקף 6: שלב 1 -->
+    <div class="slide">
+        <div class="step-number">1</div>
+        <h1>קֹורְאִים אֶת הַשְּׁאֵלָה (פַּעֲמַיִם!)</h1>
+        <p>קֹדֶם כֹּל, מְבִינִים מָה הַמִּשְׁפָּט שֶׁעָלָיו אֲנַחְנוּ צְרִיכִים לְהַחְלִיט.</p>
+        
+        <div class="example-container">
+            <span class="example-title">הַמְּשִׂימָה שֶׁלָּנוּ:</span>
+            <p style="font-size: 24px; font-weight: bold; color: #2c3e50;">
+                הַשּׁוּעָל טִיֵּל בַּבֻּסְתָּן בְּיוֹם חֹרֶף קַר וְגָשׁוּם.
+            </p>
+            <p style="font-size: 18px; color: #777;">(נָכֹון / לֹא נָכֹון?)</p>
+        </div>
+    </div>
+
+    <!-- שקף 7: שלב 2 -->
+    <div class="slide">
+        <div class="step-number">2</div>
+        <h1>מְסַמְּנִים מִלֹּות מַפְתֵּחַ</h1>
+        <p>מְסַמְּנִים בַּשְּׁאֵלָה אֶת מִלֹּות הַמַּפְתֵּחַ שֶׁיַּעַזְרוּ לָנוּ לִמְצֹא אֶת הַתְּשׁוּבָה.</p>
+        
+        <div class="example-container">
+            <span class="example-title">בַּמִּשְׁפָּט שֶׁלָּנוּ:</span>
+            <p style="font-size: 24px;">
+                הַשּׁוּעָל טִיֵּל בַּבֻּסְתָּן <span class="highlight-word">בְּיוֹם חֹרֶף קַר וְגָשׁוּם</span>.
+            </p>
+            <p style="font-size: 18px; color: #555;">(אֲנַחְנוּ צְרִיכִים לִבְדֹּק: הַאִם זֶה הָיָה בַּחֹרֶף? הַאִם הָיָה קַר וְגָשׁוּם?)</p>
+        </div>
+    </div>
+
+    <!-- שקף 8: שלב 3 -->
+    <div class="slide">
+        <div class="step-number">3</div>
+        <h1>קְרִיאָה מְרַפְרֶפֶת (סְרִיקָה)</h1>
+        <p>חֹוזְרִים לַטֶּקְסְט וּמְחַפְּשִׂים אֶת הַנּוֹשֵׂא (מָתַי זֶה קָרָה?).</p>
+        
+        <div class="example-container">
+            <span class="example-title">מְחַפְּשִׂים בַּטֶּקְסְט:</span>
+            <div class="text-passage">
+                "<span style="border-bottom: 2px solid orange;">בְּיוֹם קַיִץ חַם אֶחָד</span> טִיֵּל לוֹ שׁוּעָל בְּמֶרְחָבָיו שֶׁל בֻּסְתָּן פֵּרוֹת..."
+            </div>
+            <p style="font-size: 18px; color: #555;">מָצָאנוּ! כָּתוּב כָּאן עַל הַזְּמַן וּמֶזֶג הָאֲוִיר.</p>
+        </div>
+    </div>
+
+    <!-- שקף 9: שלב 4 -->
+    <div class="slide">
+        <div class="step-number">4</div>
+        <h1>מַדְגִּישִׁים אֶת הַהֹוכָחָה</h1>
+        <p>מַדְגִּישִׁים בַּטֶּקְסְט אֶת הַמִּילִים שֶׁמּוֹכִיחוֹת שֶׁהַמִּשְׁפָּט נָכֹון אוֹ לֹא נָכֹון.</p>
+        
+        <div class="example-container">
+            <span class="example-title">הַהֹוכָחָה שֶׁלָּנוּ:</span>
+            <div class="text-passage">
+                "<span class="highlight-proof">בְּיוֹם קַיִץ חַם אֶחָד</span> טִיֵּל לוֹ שׁוּעָל..."
+            </div>
+            <p style="font-size: 18px; color: #555;">הַטֶּקְסְט אוֹמֵר "קַיִץ חַם". הַשְּׁאֵלָה אָמְרָה "חֹרֶף קַר".</p>
+        </div>
+    </div>
+
+    <!-- שקף 10: שלב 5 -->
+    <div class="slide">
+        <div class="step-number">5</div>
+        <h1>הַכְרָעָה וְהַעְתָּקָה</h1>
+        <p>מַחְלִיטִים עַל הַתְּשׁוּבָה וּמַעְתִּיקִים אֶת הַהֹוכָחָה שֶׁמָּצָאנוּ.</p>
+        
+        <div class="example-container">
+            <span class="example-title">הַתְּשׁוּבָה הַסּוֹפִית:</span>
+            <div style="background: white; padding: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: right; width: 80%; margin: 0 auto;">
+                <p>הַשּׁוּעָל טִיֵּל בַּבֻּסְתָּן בְּיוֹם חֹרֶף קַר וְגָשׁוּם.</p>
+                <p>⭕ נָכֹון &nbsp;&nbsp; 🔘 <strong>לֹא נָכֹון</strong></p>
+                <hr>
+                <p><strong>הֹוכָחָה:</strong> "בְּיוֹם קַיִץ חַם אֶחָד טִיֵּל לוֹ שׁוּעָל..."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- שקף 11: סיכום -->
+    <div class="slide">
+        <div style="font-size: 60px;">📝</div>
+        <h1>סִכּוּם הַתַּהֲלִיךְ</h1>
+        <ul style="font-size: 24px;">
+            <li>1. קֹורְאִים הֵיטֵב אֶת הַשְּׁאֵלָה.</li>
+            <li>2. מְסַמְּנִים מִלֹּות מַפְתֵּחַ בַּשְּׁאֵלָה.</li>
+            <li>3. סֹורְקִים אֶת הַטֶּקְסְט וּמְזַהִים אֶת הַנּוֹשֵׂא.</li>
+            <li>4. מַדְגִּישִׁים אֶת הַהֹוכָחָה בַּטֶּקְסְט.</li>
+            <li>5. מַחְלִיטִים (נָכֹון/לֹא נָכֹון) וּמַעְתִּיקִים.</li>
+        </ul>
+    </div>
+
+    <!-- שקף 12: סיום -->
+    <div class="slide">
+        <div style="font-size: 80px;">🚀</div>
+        <h1>מוּכָנִים לְתַרְגֵּל?</h1>
+        <p>עַכְשָׁיו, כְּשֶׁיֵּשׁ לָכֶם אֶת הַכֵּלִים וְרָאִיתֶם אֶת הַדֻּגְמָה,<br>בֹּואוּ נִפְתַּח אֶת דַּפֵּי הָעֲבֹודָה!</p>
+        
+        <div class="link-buttons-container">
+            <a href="https://drive.google.com/file/d/1aHLEujwYCFAOUG3Mp5mMuxs_oiz2DMxC/view?usp=drive_link" target="_blank" class="link-btn">
+                📄 לְהֹורָדַת דַּף הָעֲבֹודָה
+            </a>
+            <a href="https://drive.google.com/file/d/1Ovd28EPN5V0xUv_5R2I-h1sR-EvRArDA/view?usp=drive_link" target="_blank" class="link-btn secondary">
+                🔑 לְהֹורָדַת דַּף הַתְּשׁוּבֹות
+            </a>
+        </div>
+
+        <h2 style="margin-top:20px;">בְּהַצְלָחָה!</h2>
+    </div>
+
+    <div class="slide-counter" id="slideCounter">1 / 12</div>
+
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('slideCounter');
+
+    function updateView() {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active');
+            if (index === currentSlide) {
+                slide.classList.add('active');
+            }
+        });
+
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+        counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+
+    function changeSlide(direction) {
+        if (direction === 1 && currentSlide < slides.length - 1) {
+            currentSlide++;
+        } else if (direction === -1 && currentSlide > 0) {
+            currentSlide--;
+        }
+        updateView();
+    }
+
+    updateView();
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "ArrowLeft") changeSlide(1);
+        else if (event.key === "ArrowRight") changeSlide(-1);
+    });
+</script>
+
+</body>
+</html>
