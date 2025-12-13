@@ -1,894 +1,1500 @@
-<div class="progress-container">
-        <div class="progress-label" id="progressLabel">התקדמות: 0 מתוך 8 שלבים</div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מהלך עבודה על טקסט - קידום שטף קריאה</title>
+    
+    <!-- ייבוא גופנים מודרניים מגוגל פונטס -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* פלטת צבעים חדשנית ומעודנת */
+            --primary: #6366f1;       /* Indigo Modern */
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;     /* Soft Emerald */
+            --accent: #f59e0b;        /* Warm Amber */
+            --text-main: #1e293b;     /* Slate 800 */
+            --text-muted: #64748b;    /* Slate 500 */
+            --bg-body: #f8fafc;       /* Very light gray-blue */
+            --bg-card: #ffffff;
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-warm: linear-gradient(135deg, #fca5a5 0%, #fb7185 100%);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif; /* גופן קריא ונעים לטקסט רץ */
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .stage-number, .nav-button {
+            font-family: 'Rubik', sans-serif; /* גופן עגול ומודרני לכותרות */
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: transparent; /* רקע שקוף כדי לאפשר לעיצוב לנשום */
+            border-radius: var(--radius);
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* עיצוב הכותרת העליונה - מרחפת ונבונה */
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px); /* אפקט זכוכית */
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-main);
+            padding: 25px 40px;
+            text-align: center;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255,255,255,0.5);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; /* טקסט גרדיאנט */
+            text-shadow: none;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            opacity: 1;
+        }
+
+        .stage-indicator {
+            background: var(--bg-body);
+            color: var(--primary);
+            padding: 6px 18px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 12px;
+            font-weight: 600;
+            font-size: 0.95em;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .content-wrapper {
+            position: relative;
+            min-height: 600px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 10px; /* Padding creates frame for inner content */
+            overflow: hidden;
+        }
+
+        .page {
+            display: none;
+            padding: 50px;
+            animation: slideUp FadeIn 0.5s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page Styling */
+        .home-intro h2 {
+            color: var(--primary-dark);
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); /* כתום עדין מאוד */
+            color: #9a3412;
+            padding: 30px;
+            border-radius: 16px;
+            margin: 30px auto;
+            max-width: 900px;
+            font-size: 1.2em;
+            line-height: 1.8;
+            border: 1px solid #fed7aa;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Grid of Stages */
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stage-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-main);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.15);
+            border-color: #c7d2fe;
+        }
+
+        .stage-card:hover::before {
+            opacity: 1;
+        }
+
+        .stage-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            background: #f1f5f9;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .stage-number {
+            font-size: 0.9em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stage-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .stage-description {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Content Boxes Styling */
+        .instructions, .tip-box, .hint-box, .example-box {
+            border-radius: 16px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            border-right: 5px solid;
+        }
+
+        .instructions {
+            background: #fffbeb; /* Light yellow */
+            border-right-color: var(--accent);
+            color: #78350f;
+        }
+        .instructions h3 { color: #b45309; font-size: 1.3em; margin-bottom: 10px;}
+
+        .tip-box {
+            background: #ecfdf5; /* Light green */
+            border-right-color: var(--secondary);
+            color: #064e3b;
+        }
+        .tip-box h4 { color: #059669; margin-bottom: 10px; }
+
+        .hint-box {
+            background: #eff6ff; /* Light blue */
+            border-right-color: var(--primary);
+            color: #1e3a8a;
+        }
+
+        .text-box {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 16px;
+            font-size: 1.6em;
+            line-height: 2.4;
+            text-align: right;
+            color: #334155;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .text-box h3 {
+            color: var(--primary);
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .highlight-example {
+            background: var(--gradient-main);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin: 25px 0;
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 1.8;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        .activity-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 35px;
+            margin: 25px 0;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .question {
+            background: #f8fafc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+            font-size: 1.15em;
+            transition: transform 0.2s;
+        }
+        
+        .question:hover {
+            transform: translateX(-5px);
+            background: #f1f5f9;
+        }
+
+        .question strong { color: var(--primary); }
+
+        /* Word Cards */
+        .word-family, .word-bank {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .word-card, .word-tag {
+            background: white;
+            color: var(--primary);
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 2px solid #e0e7ff;
+            transition: all 0.2s;
+        }
+
+        .word-card:hover, .word-tag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        .sentence-strip {
+            background: #fff;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            font-size: 1.2em;
+            position: relative;
+            padding-right: 50px;
+            transition: border-color 0.3s;
+        }
+        
+        .sentence-strip:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .sentence-strip::before {
+            content: '📌'; /* אייקון נקי יותר */
+            position: absolute;
+            right: 15px;
+            font-size: 1.3em;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .sentence, .correct-sentence {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+            font-size: 1.2em;
+        }
+        
+        .correct-sentence {
+            background: #f0fdf4;
+            border-right-color: var(--secondary);
+        }
+
+        .stage-label, .exercise-number {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
+            font-size: 1em;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+        }
+
+        .exercise-text {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 16px;
+            font-size: 1.3em;
+            line-height: 2.4;
+            border: 1px solid #e2e8f0;
+            border-right: none; /* ביטול הקו הימני העבה מהקוד המקורי */
+        }
+
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 5px;
+            text-align: center;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .morphology-pattern {
+            background: linear-gradient(120deg, #e0e7ff 0%, #fae8ff 100%);
+            color: var(--text-main);
+            padding: 40px;
+            margin: 25px 0;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+            border: 1px solid #c7d2fe;
+        }
+
+        .morphology-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 20px 0;
+            font-size: 1.3em;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .morphology-table th {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+            border: none;
+        }
+
+        .morphology-table td {
+            border: none;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 18px;
+            text-align: center;
+            background: white;
+        }
+        
+        .morphology-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .morphology-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            text-align: center;
+            color: #14532d;
+        }
+
+        .success-box h3 {
+            color: #166534;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(255,255,255,0.8);
+            border-top: 1px solid #e2e8f0;
+            gap: 20px;
+            margin-top: 20px;
+            border-radius: var(--radius);
+        }
+
+        .nav-button {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button#nextBtn {
+            background: var(--primary);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button#nextBtn:hover {
+            background: var(--primary-dark);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-button.secondary {
+            background: white;
+            color: var(--text-muted);
+            border: 2px solid #e2e8f0;
+            box-shadow: none;
+        }
+
+        .nav-button.secondary:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+            background: #f8fafc;
+        }
+
+        .nav-button.success {
+            background: var(--secondary);
+        }
+
+        .nav-button.success:hover {
+            background: #059669;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 20px 40px;
+            background: transparent;
+        }
+
+        .progress-label {
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-main);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 1.5em; }
+            .page { padding: 25px 15px; }
+            .text-box { padding: 20px; font-size: 1.3em; }
+            .stages-grid { grid-template-columns: 1fr; }
+            .navigation { flex-direction: column-reverse; padding: 20px; gap: 15px; }
+            .nav-button { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 מהלך עבודה על טקסט "מכונית חשמלית"</h1>
+            <p>קידום שטף קריאה בתמיכה מורפולוגית</p>
+            <div class="stage-indicator" id="stageIndicator">דף הבית</div>
         </div>
-    </div>
 
-    <div class="content-wrapper">
-        <!-- Home Page -->
-        <div class="page active" id="page-home">
-            <div class="home-intro">
-                <h2>🌟 ברוכים הבאים! 🌟</h2>
-                <p>
-                    מהלך זה מדגים גישה מורפולוגית לקידום שטף קריאה באמצעות עבודה מובנית על טקסט קצר ומוכר.
-                </p>
-                <p>
-                    המהלך כולל <strong>8 שלבים מדורגים</strong> המתחילים בהיכרות עם הטקסט וקריאה משותפת,
-                    ממשיכים בפעילויות זיהוי ואיתור, ומסתיימים בעבודה מורפולוגית מתקדמת על הדגם "ית-יות".
-                </p>
-
-                <div class="highlight-box">
-                    💡 <strong>העיקרון המנחה:</strong><br>
-                    הטקסט הופך מ"מפחיד" ל"מוכר" באמצעות:<br>
-                    ✓ חשיפה חוזרת ומדורגת<br>
-                    ✓ עבודה ממוקדת על מבנה מורפולוגי<br>
-                    ✓ הדרגתיות - מהקל אל הקשה<br>
-                    ✓ הצלחה מובטחת בכל שלב
-                </div>
-            </div>
-
-            <div class="instructions">
-                <h3>📋 לחצו על כל שלב כדי להתחיל:</h3>
-                <p>השתמשו בכפתורי הניווט בתחתית העמוד כדי לנוע בין השלבים.</p>
-            </div>
-
-            <div class="stages-grid">
-                <div class="stage-card" onclick="goToPage('stage1')">
-                    <div class="stage-icon">📖</div>
-                    <div class="stage-number">א</div>
-                    <div class="stage-title">הכרת הטקסט</div>
-                    <div class="stage-description">
-                        קריאת המורה, הצגת הנושא, יצירת היכרות ראשונית
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage2')">
-                    <div class="stage-icon">🎵</div>
-                    <div class="stage-number">ב-ה</div>
-                    <div class="stage-title">קריאה משותפת</div>
-                    <div class="stage-description">
-                        מעקב, קריאה משותפת, קריאת מקהלה, קריאה אישית
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage3')">
-                    <div class="stage-icon">🔍</div>
-                    <div class="stage-number">ו</div>
-                    <div class="stage-title">"איפה כתוב?"</div>
-                    <div class="stage-description">
-                        איתור מידע ספציפי, סריקה, זיהוי מילות מפתח
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage4')">
-                    <div class="stage-icon">🔤</div>
-                    <div class="stage-number">ז</div>
-                    <div class="stage-title">"מה כתוב?"</div>
-                    <div class="stage-description">
-                        זיהוי מילים, התאמת מילים להגדרות, חיזוק אוצר מילים
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage5')">
-                    <div class="stage-icon">🎯</div>
-                    <div class="stage-number">ח</div>
-                    <div class="stage-title">זיהוי משפטים</div>
-                    <div class="stage-description">
-                        פירוק לרצועות, זיהוי חלקי משפט, זיהוי לפי תוכן
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage6')">
-                    <div class="stage-icon">🔀</div>
-                    <div class="stage-number">ט</div>
-                    <div class="stage-title">סידור משפטים</div>
-                    <div class="stage-description">
-                        סידור משפטים מעורבבים, חיפוש רמזים, הבנת רצף
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage7')">
-                    <div class="stage-icon">✏️</div>
-                    <div class="stage-number">י</div>
-                    <div class="stage-title">השלמת חסרים</div>
-                    <div class="stage-description">
-                        אותיות שימוש, הברות סופיות, מילים, סידור
-                    </div>
-                </div>
-
-                <div class="stage-card" onclick="goToPage('stage8')">
-                    <div class="stage-icon">⚡</div>
-                    <div class="stage-number">יא</div>
-                    <div class="stage-title">דגם מורפולוגי</div>
-                    <div class="stage-description">
-                        למידת הדגם ית-יות, תרגול, יצירת משפטים חדשים
-                    </div>
-                </div>
+        <div class="progress-container">
+            <div class="progress-label" id="progressLabel">התקדמות: 0 מתוך 8 שלבים</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
             </div>
         </div>
 
-        <!-- Stage 1 -->
-        <div class="page" id="page-stage1">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">📖 שלב א: הכרת הטקסט</h2>
-            
-            <div class="instructions">
-                <h3>📋 הוראות למורה:</h3>
-                <ol>
-                    <li><strong>הקריאי את כותרת הטקסט</strong> ושאלי את הילדים מה ידוע להם על מכונית חשמלית</li>
-                    <li><strong>ניתן להראות סרטון קצר</strong> על מכונית חשמלית (אופציונלי - למשל מיוטיוב)</li>
-                    <li><strong>המורה קוראת את הטקסט בשלמותו</strong> תוך שהיא מורה עם האצבע על מקום המילה שקוראת</li>
-                </ol>
+        <div class="content-wrapper">
+            <!-- Home Page -->
+            <div class="page active" id="page-home">
+                <div class="home-intro">
+                    <h2>🌟 ברוכים הבאים! 🌟</h2>
+                    <p>
+                        מהלך זה מדגים גישה מורפולוגית לקידום שטף קריאה באמצעות עבודה מובנית על טקסט קצר ומוכר.
+                    </p>
+                    <p>
+                        המהלך כולל <strong>8 שלבים מדורגים</strong> המתחילים בהיכרות עם הטקסט וקריאה משותפת,
+                        ממשיכים בפעילויות זיהוי ואיתור, ומסתיימים בעבודה מורפולוגית מתקדמת על הדגם "ית-יות".
+                    </p>
+
+                    <div class="highlight-box">
+                        💡 <strong>העיקרון המנחה:</strong><br>
+                        הטקסט הופך מ"מפחיד" ל"מוכר" באמצעות:<br>
+                        ✓ חשיפה חוזרת ומדורגת<br>
+                        ✓ עבודה ממוקדת על מבנה מורפולוגי<br>
+                        ✓ הדרגתיות - מהקל אל הקשה<br>
+                        ✓ הצלחה מובטחת בכל שלב
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h3>📋 לחצו על כל שלב כדי להתחיל:</h3>
+                    <p>השתמשו בכפתורי הניווט בתחתית העמוד כדי לנוע בין השלבים.</p>
+                </div>
+
+                <div class="stages-grid">
+                    <div class="stage-card" onclick="goToPage('stage1')">
+                        <div class="stage-icon">📖</div>
+                        <div class="stage-number">א</div>
+                        <div class="stage-title">הכרת הטקסט</div>
+                        <div class="stage-description">
+                            קריאת המורה, הצגת הנושא, יצירת היכרות ראשונית
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage2')">
+                        <div class="stage-icon">🎵</div>
+                        <div class="stage-number">ב-ה</div>
+                        <div class="stage-title">קריאה משותפת</div>
+                        <div class="stage-description">
+                            מעקב, קריאה משותפת, קריאת מקהלה, קריאה אישית
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage3')">
+                        <div class="stage-icon">🔍</div>
+                        <div class="stage-number">ו</div>
+                        <div class="stage-title">"איפה כתוב?"</div>
+                        <div class="stage-description">
+                            איתור מידע ספציפי, סריקה, זיהוי מילות מפתח
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage4')">
+                        <div class="stage-icon">🔤</div>
+                        <div class="stage-number">ז</div>
+                        <div class="stage-title">"מה כתוב?"</div>
+                        <div class="stage-description">
+                            זיהוי מילים, התאמת מילים להגדרות, חיזוק אוצר מילים
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage5')">
+                        <div class="stage-icon">🎯</div>
+                        <div class="stage-number">ח</div>
+                        <div class="stage-title">זיהוי משפטים</div>
+                        <div class="stage-description">
+                            פירוק לרצועות, זיהוי חלקי משפט, זיהוי לפי תוכן
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage6')">
+                        <div class="stage-icon">🔀</div>
+                        <div class="stage-number">ט</div>
+                        <div class="stage-title">סידור משפטים</div>
+                        <div class="stage-description">
+                            סידור משפטים מעורבבים, חיפוש רמזים, הבנת רצף
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage7')">
+                        <div class="stage-icon">✏️</div>
+                        <div class="stage-number">י</div>
+                        <div class="stage-title">השלמת חסרים</div>
+                        <div class="stage-description">
+                            אותיות שימוש, הברות סופיות, מילים, סידור
+                        </div>
+                    </div>
+
+                    <div class="stage-card" onclick="goToPage('stage8')">
+                        <div class="stage-icon">⚡</div>
+                        <div class="stage-number">יא</div>
+                        <div class="stage-title">דגם מורפולוגי</div>
+                        <div class="stage-description">
+                            למידת הדגם ית-יות, תרגול, יצירת משפטים חדשים
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="text-box">
-                <h3>מכונית חשמלית</h3>
-                מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.<br>
-                היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.<br>
-                מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.<br>
-                הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 טיפים חשובים:</h4>
-                <ul>
-                    <li><strong>תני לילדים לשתף</strong> מה הם יודעים על מכוניות חשמליות - זה מפעיל ידע קודם ומעלה סקרנות</li>
-                    <li><strong>קריאת המורה צריכה להיות</strong> איטית, ברורה, עם אינטונציה נכונה והקפדה על סימני פיסוק</li>
-                    <li><strong>הצבעה על המילים</strong> עוזרת לילדים לעקוב ולחבר בין הצליל למילה הכתובה - זה קריטי!</li>
-                    <li><strong>אל תדרשי מהילדים לקרוא</strong> בשלב זה - רק להקשיב ולעקוב</li>
-                </ul>
-            </div>
-
-            <div class="highlight-example">
-                🎯 מטרת השלב:<br>
-                יצירת היכרות ראשונית עם הטקסט והקלת החרדה מהקריאה.<br>
-                הילדים שומעים קריאה נכונה ורואים את המילים.
-            </div>
-        </div>
-
-        <!-- Stage 2 -->
-        <div class="page" id="page-stage2">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🎵 שלבים ב-ה: קריאה משותפת ומקהלה</h2>
-            
-            <div class="instructions">
-                <h3>📋 הוראות למורה:</h3>
-                <ol>
-                    <li><strong>שלב ב: </strong>הילדים מראים עם האצבע היכן לקרוא והמורה קוראת</li>
-                    <li><strong>שלב ג: </strong>התלמידים והמורה קוראים יחד את הטקסט</li>
-                    <li><strong>שלב ד: </strong>התלמידים קוראים לבד את הטקסט בקריאת מקהלה</li>
-                    <li><strong>שלב ה: </strong>כל תלמיד קורא משפט מהטקסט</li>
-                </ol>
-            </div>
-
-            <div class="highlight-example">
-                🎵 קריאת מקהלה = ביטחון!<br>
-                הילדים שומעים את עצמם קוראים מבלי להרגיש לחץ.<br>
-                כל חזרה מגבירה את השטף והביטחון.
-            </div>
-
-            <div class="text-box" style="font-size: 1.3em; line-height: 2.2;">
-                <strong style="color: #667eea; display: block; margin-bottom: 20px;">דוגמה לחלוקת משפטים לקריאה אישית (שלב ה):</strong>
+            <!-- Stage 1 -->
+            <div class="page" id="page-stage1">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">📖 שלב א: הכרת הטקסט</h2>
                 
-                <div class="sentence">
-                    <strong>תלמיד 1:</strong> מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                <div class="instructions">
+                    <h3>📋 הוראות למורה:</h3>
+                    <ol>
+                        <li><strong>הקריאי את כותרת הטקסט</strong> ושאלי את הילדים מה ידוע להם על מכונית חשמלית</li>
+                        <li><strong>ניתן להראות סרטון קצר</strong> על מכונית חשמלית (אופציונלי - למשל מיוטיוב)</li>
+                        <li><strong>המורה קוראת את הטקסט בשלמותו</strong> תוך שהיא מורה עם האצבע על מקום המילה שקוראת</li>
+                    </ol>
                 </div>
-                
-                <div class="sentence">
-                    <strong>תלמיד 2:</strong> היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
-                </div>
-                
-                <div class="sentence">
-                    <strong>תלמיד 3:</strong> מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
-                </div>
-                
-                <div class="sentence">
-                    <strong>תלמיד 4:</strong> הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
-                </div>
-            </div>
 
-            <div class="tip-box">
-                <h4>💡 למה זה עובד?</h4>
-                <ul>
-                    <li><strong>חזרות מרובות</strong> על אותו טקסט מפחיתות עומס קוגניטיבי</li>
-                    <li><strong>הילדים עוקבים</strong> אחר הטקסט ושומעים קריאה באינטונציה נכונה</li>
-                    <li><strong>כל חזרה</strong> מגבירה את הביטחון והשטף - המילים הופכות מוכרות</li>
-                    <li><strong>בקריאת מקהלה</strong> גם ילדים חלשים יכולים להצטרף בלי פחד</li>
-                    <li><strong>בקריאה אישית</strong> כבר יש היכרות ולכן פחות חרדה</li>
-                </ul>
-            </div>
-
-            <div class="instructions">
-                <h3>🎯 טיפים ליישום:</h3>
-                <ol>
-                    <li>תני לילדים לבחור באיזה משפט הם רוצים לקרוא (מעלה מוטיבציה)</li>
-                    <li>אפשרי לקרוא כל משפט פעמיים - פעם אחת על ידי תלמיד חלש ופעם שנייה על ידי תלמיד חזק</li>
-                    <li>עודדי מחיאות כפיים אחרי כל קריאה מוצלחת</li>
-                    <li>שימי לב שכל הילדים מצביעים במקום הנכון גם כשלא הם קוראים</li>
-                </ol>
-            </div>
-        </div>
-
-        <!-- Stage 3 -->
-        <div class="page" id="page-stage3">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔍 שלב ו: פעילות "איפה כתוב?"</h2>
-            
-            <div class="instructions">
-                <h3>📋 הוראות למורה:</h3>
-                <p>המורה מקריאה את ההוראות והתלמידים מבצעים: <strong>מרקרו את מקום התשובה בטקסט</strong></p>
-                <p style="margin-top: 15px;">התלמידים עובדים על העתק מודפס של הטקסט ומסמנים במרקר את המשפט/הביטוי המתאים.</p>
-            </div>
-
-            <div class="activity-box">
-                <h3>🔍 שאלות לתלמידים:</h3>
-                
-                <div class="question">
-                    <strong>1.</strong> איפה כתוב שמכונית חשמלית פועלת על חשמל ולא על דלק?
-                </div>
-                
-                <div class="question">
-                    <strong>2.</strong> איפה כתוב שאפשר לטעון את הסוללה בבית?
-                </div>
-                
-                <div class="question">
-                    <strong>3.</strong> איפה כתוב שמכוניות חשמליות אינן מזהמות את האוויר?
-                </div>
-                
-                <div class="question">
-                    <strong>4.</strong> איפה כתוב שהמנוע החשמלי כמעט ולא משמיע רעש?
-                </div>
-                
-                <div class="question">
-                    <strong>5.</strong> איפה כתוב שמכוניות חשמליות שקטות יותר ממכוניות רגילות?
-                </div>
-            </div>
-
-            <div class="highlight-example">
-                🎯 מה קורה כאן?<br>
-                הילדים "סורקים" את הטקסט בחיפוש אחר מידע ספציפי -<br>
-                זו מיומנות קריאה חשובה שמגבירה את השטף!
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 למורה - נקודות חשובות:</h4>
-                <ul>
-                    <li><strong>שימי לב:</strong> הילדים לא צריכים לקרוא את כל הטקסט בכל פעם</li>
-                    <li><strong>הם לומדים</strong> לזהות מילות מפתח ולנווט בטקסט ביעילות</li>
-                    <li><strong>זוהי התחלה</strong> של קריאה סלקטיבית ואסטרטגית</li>
-                    <li><strong>עודדי</strong> את הילדים לחפש מילות מפתח כמו "חשמל", "סוללה", "רעש"</li>
-                    <li><strong>אפשרי</strong> לתת זמן מוגבל לכל שאלה כדי להגביר קצב</li>
-                    <li><strong>בדקי</strong> יחד עם הכיתה - בקשי מתלמידים לקרוא בקול מה סימנו</li>
-                </ul>
-            </div>
-
-            <div class="instructions">
-                <h3>📝 רעיונות להרחבה:</h3>
-                <p style="margin-top: 10px;">• אפשר לשחק "מרוץ" - מי מוצא הכי מהר?</p>
-                <p>• אפשר לעבוד בזוגות - תלמיד אחד שואל והשני מחפש</p>
-                <p>• אפשר להוסיף שאלות מורכבות יותר: "איפה כתוב על יתרון סביבתי?"</p>
-            </div>
-        </div>
-
-        <!-- Stage 4 -->
-        <div class="page" id="page-stage4">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔤 שלב ז: פעילות "מה כתוב?"</h2>
-            
-            <div class="instructions">
-                <h3>📋 הוראות למורה:</h3>
-                <p><strong>חלק א: </strong>הקיפו בעיגול את המילים הבאות בטקסט</p>
-                <p style="margin-top: 10px;"><strong>חלק ב: </strong>מצאו בקטע את המילה המתאימה להגדרה בסוגריים</p>
-            </div>
-
-            <div class="activity-box">
-                <h3>🔤 חלק א: מילים לחיפוש בטקסט</h3>
-                <p style="margin-bottom: 20px;">התלמידים מחפשים ומקיפים בעיגול את המילים הבאות:</p>
-                <div class="word-family">
-                    <div class="word-card">חַשְׁמַל</div>
-                    <div class="word-card">סוֹלְלָה</div>
-                    <div class="word-card">טְעִינָה</div>
-                    <div class="word-card">מְזַהֲמוֹת</div>
-                    <div class="word-card">שְׁקֵטוֹת</div>
-                    <div class="word-card">מָנוֹעַ</div>
-                    <div class="word-card">פּוֹלְטוֹת</div>
-                    <div class="word-card">רַעַש</div>
-                </div>
-            </div>
-
-            <div class="activity-box">
-                <h3>📝 חלק ב: מצאו את המילה המתאימה להגדרה</h3>
-                
-                <div class="question">
-                    <strong>1.</strong> _____________ (רכב שפועל על חשמל)
-                </div>
-                
-                <div class="question">
-                    <strong>2.</strong> _____________ (חומר שמכוניות רגילות משתמשות בו)
-                </div>
-                
-                <div class="question">
-                    <strong>3.</strong> _____________ (דבר שהמנוע החשמלי כמעט לא משמיע)
-                </div>
-                
-                <div class="question">
-                    <strong>4.</strong> _____________ (גזים שמכוניות חשמליות לא פולטות)
-                </div>
-                
-                <div class="question">
-                    <strong>5.</strong> _____________ (המקום שעליו מכוניות חשמליות שומרות)
-                </div>
-            </div>
-
-            <div class="highlight-example">
-                🎯 בשלב זה: מעבר מזיהוי ויזואלי למשמעות!<br>
-                הילדים מחברים בין המילה הכתובה למשמעותה
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 החשיבות של שלב זה:</h4>
-                <ul>
-                    <li><strong>חיזוק הקשר</strong> בין צורה ומשמעות של מילים</li>
-                    <li><strong>הרחבת אוצר המילים</strong> בהקשר משמעותי</li>
-                    <li><strong>תרגול הבנת הנקרא</strong> תוך כדי קריאה</li>
-                    <li><strong>זיהוי מילים</strong> לפי תכונותיהן ולא רק לפי צורתן</li>
-                    <li><strong>עבודה עם הגדרות</strong> מכינה לעבודה עם מילונים</li>
-                </ul>
-            </div>
-
-            <div class="activity-box">
-                <h3>🎮 פעילות נוספת: "מצאו את המילה"</h3>
-                <p>אפשר להוסיף חידות כמו:</p>
-                <div class="question">
-                    • אני תחנה מיוחדת לתדלוק מכוניות חשמליות: _____________
-                </div>
-                <div class="question">
-                    • אני מאחסנת חשמל במכונית: _____________
-                </div>
-                <div class="question">
-                    • אני מפעיל את המכונית החשמלית: _____________
-                </div>
-            </div>
-        </div>
-
-        <!-- Stage 5 -->
-        <div class="page" id="page-stage5">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🎯 שלב ח: זיהוי משפטים</h2>
-            
-            <div class="instructions">
-                <h3>📋 הקדמה:</h3>
-                <p>שלב זה מורכב מ-3 תתי-שלבים מדורגים. המורה מכינה את 4 משפטי הטקסט על רצועות נייר/כרטיסיות נפרדות.</p>
-            </div>
-
-            <div class="activity-box">
-                <div class="stage-label">שלב 1: פירוק הטקסט למשפטים</div>
-                <p style="margin: 15px 0;">גזרו את המשפטים הבאים לפי הקווים והציגו אותם:</p>
-                
-                <div class="sentence-strip">
-                    מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
-                </div>
-                
-                <div class="sentence-strip">
-                    היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
-                </div>
-                
-                <div class="sentence-strip">
-                    מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
-                </div>
-                
-                <div class="sentence-strip">
+                <div class="text-box">
+                    <h3>מכונית חשמלית</h3>
+                    מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.<br>
+                    היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.<br>
+                    מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.<br>
                     הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
                 </div>
-                
-                <p style="margin-top: 20px;"><strong>המורה מציגה את הכרטיסיות בסדר המקורי ומבקשת מהתלמידים לקרוא אותן.</strong></p>
-            </div>
 
-            <div class="activity-box">
-                <div class="stage-label">שלב 2: זיהוי חלקי משפטים</div>
-                <p style="margin: 15px 0;">המורה שואלת והתלמידים מצביעים על הכרטיסייה הנכונה:</p>
-                <ol>
-                    <li>איפה כתוב "פועל על חשמל"?</li>
-                    <li>איפה כתוב "מצוידת בסוללה"?</li>
-                    <li>איפה כתוב "אינן מזהמות את האוויר"?</li>
-                    <li>איפה כתוב "המנוע החשמלי"?</li>
-                </ol>
-            </div>
-
-            <div class="activity-box">
-                <div class="stage-label">שלב 3: זיהוי משפטים מתוך תוכנם</div>
-                <p style="margin: 15px 0;">שאלות מורכבות יותר - הבנת התוכן:</p>
-                <ol>
-                    <li>איפה כתוב על מה מכונית חשמלית מופעלת?</li>
-                    <li>איפה כתוב מה יש במכונית חשמלית שמאפשר לה לנסוע?</li>
-                    <li>איפה כתוב איזה יתרון יש למכוניות חשמליות לסביבה?</li>
-                    <li>איפה כתוב מדוע מכוניות חשמליות שקטות יותר?</li>
-                </ol>
-            </div>
-
-            <div class="highlight-example">
-                🎯 המהלך: מזיהוי ויזואלי → זיהוי חלקי → הבנת תוכן<br>
-                בהדרגה, המורה משנה את סדר הכרטיסיות!
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 הערות חשובות למורה:</h4>
-                <ul>
-                    <li><strong>בכל שלב</strong> - ודאי שכל התלמידים מצליחים לזהות את המשפטים הנדרשים</li>
-                    <li><strong>עזרי לתלמידים</strong> המתקשים ברמזים: "חפשו את המילה 'חשמל'", "חפשו את המילה 'סוללה'"</li>
-                    <li><strong>כשתלמידים מצליחים</strong> בקלות בשלב מסוים, התקדמי לשלב הבא</li>
-                    <li><strong>העיקרון המנחה:</strong> להציב בכל שלב אתגר שאת בטוחה שהילדים יצליחו בו ב-100%</li>
-                    <li><strong>שני את הסדר</strong> בהדרגה - קודם משפטים סמוכים, אחר כך סדר אקראי לגמרי</li>
-                    <li><strong>המטרה הסופית:</strong> שהתלמידים יוכלו לזהות את המשפטים גם כשהם בסדר שונה לחלוטין</li>
-                </ul>
-            </div>
-
-            <div class="instructions">
-                <h3>🎨 טיפ ליישום:</h3>
-                <p>אפשר להדפיס את המשפטים על כרטיסים צבעוניים, או לכתוב אותם על הלוח ולכסות/לחשוף לפי הצורך.</p>
-            </div>
-        </div>
-
-        <!-- Stage 6 -->
-        <div class="page" id="page-stage6">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔀 שלב ט: סידור משפטים</h2>
-            
-            <div class="instructions">
-                <h3>📋 הוראות לתלמידים:</h3>
-                <ol>
-                    <li>לפניכם ארבעה משפטים מהטקסט על מכונית חשמלית</li>
-                    <li>המשפטים מעורבבים ואינם בסדר הנכון</li>
-                    <li>סדרו את המשפטים לפי הסדר המקורי של הטקסט</li>
-                    <li>שימו לב לרמזים שעוזרים לנו לדעת מה בא אחרי מה</li>
-                </ol>
-            </div>
-
-            <div class="activity-box">
-                <h3>🔀 המשפטים המעורבבים - סדרו אותם!</h3>
-                <p style="margin-bottom: 20px;">כתבו את המספר המתאים ליד כל משפט:</p>
-                
-                <div class="sentence-strip">
-                    ____ הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
+                <div class="tip-box">
+                    <h4>💡 טיפים חשובים:</h4>
+                    <ul>
+                        <li><strong>תני לילדים לשתף</strong> מה הם יודעים על מכוניות חשמליות - זה מפעיל ידע קודם ומעלה סקרנות</li>
+                        <li><strong>קריאת המורה צריכה להיות</strong> איטית, ברורה, עם אינטונציה נכונה והקפדה על סימני פיסוק</li>
+                        <li><strong>הצבעה על המילים</strong> עוזרת לילדים לעקוב ולחבר בין הצליל למילה הכתובה - זה קריטי!</li>
+                        <li><strong>אל תדרשי מהילדים לקרוא</strong> בשלב זה - רק להקשיב ולעקוב</li>
+                    </ul>
                 </div>
-                
-                <div class="sentence-strip">
-                    ____ היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
-                </div>
-                
-                <div class="sentence-strip">
-                    ____ מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
-                </div>
-                
-                <div class="sentence-strip">
-                    ____ מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
+
+                <div class="highlight-example">
+                    🎯 מטרת השלב:<br>
+                    יצירת היכרות ראשונית עם הטקסט והקלת החרדה מהקריאה.<br>
+                    הילדים שומעים קריאה נכונה ורואים את המילים.
                 </div>
             </div>
 
-            <div class="hint-box">
-                <h4>🔍 רמזים לסידור:</h4>
-                <ul>
-                    <li><strong>המשפט הראשון</strong> מציג את הנושא - "מכונית חשמלית היא..."</li>
-                    <li><strong>המילה "היא"</strong> במשפט השני מתייחסת למכונית שהוזכרה</li>
-                    <li><strong>המילה "הן"</strong> במשפטים האחרונים מתייחסת ל"מכוניות" ברבים</li>
-                    <li><strong>לוגיקה:</strong> קודם מסבירים מה זה, אחר כך את התכונות</li>
-                </ul>
-            </div>
-
-            <div class="highlight-example">
-                🎯 מה קורה כאן?<br>
-                הילדים לומדים לחפש רמזים לשוניים (מילות קישור, שמות גוף)<br>
-                ורמזים תוכניים (סדר לוגי של הצגת מידע)
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 למורה - הערות חשובות:</h4>
-                <ul>
-                    <li><strong>תני לתלמידים</strong> לעבוד באופן עצמאי תחילה</li>
-                    <li><strong>עודדי אותם</strong> לחפש רמזים במשפטים שיעזרו להם לקבוע את הסדר</li>
-                    <li><strong>בקשי מהתלמידים</strong> להסביר למה בחרו בסדר מסוים</li>
-                    <li><strong>לתלמידים מתקשים</strong> - שאלי: "איזה משפט צריך להיות ראשון לדעתכם?"</li>
-                    <li><strong>אפשר לעבוד</strong> בזוגות או בקבוצות קטנות</li>
-                    <li><strong>דונו</strong> בכיתה על האסטרטגיות שהשתמשו בהן</li>
-                </ul>
-            </div>
-
-            <div class="answer-box">
-                <h3>✅ הסדר הנכון:</h3>
+            <!-- Stage 2 -->
+            <div class="page" id="page-stage2">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🎵 שלבים ב-ה: קריאה משותפת ומקהלה</h2>
                 
-                <div class="correct-sentence">
-                    <strong>1.</strong> מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                <div class="instructions">
+                    <h3>📋 הוראות למורה:</h3>
+                    <ol>
+                        <li><strong>שלב ב: </strong>הילדים מראים עם האצבע היכן לקרוא והמורה קוראת</li>
+                        <li><strong>שלב ג: </strong>התלמידים והמורה קוראים יחד את הטקסט</li>
+                        <li><strong>שלב ד: </strong>התלמידים קוראים לבד את הטקסט בקריאת מקהלה</li>
+                        <li><strong>שלב ה: </strong>כל תלמיד קורא משפט מהטקסט</li>
+                    </ol>
                 </div>
-                
-                <div class="correct-sentence">
-                    <strong>2.</strong> היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
-                </div>
-                
-                <div class="correct-sentence">
-                    <strong>3.</strong> מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
-                </div>
-                
-                <div class="correct-sentence">
-                    <strong>4.</strong> הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
-                </div>
-            </div>
-        </div>
 
-        <!-- Stage 7 -->
-        <div class="page" id="page-stage7">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">✏️ שלב י: השלמת חסרים</h2>
-            
-            <div class="instructions">
-                <h3>📋 בשלב זה נעבוד על 4 סוגי השלמות:</h3>
-                <ol>
-                    <li><strong>תרגיל 1:</strong> השלמת אותיות שימוש החסרות (ב, ל, מ, ש, כ...)</li>
-                    <li><strong>תרגיל 2:</strong> השלמת הברות סופיות</li>
-                    <li><strong>תרגיל 3:</strong> השלמת מילים חסרות</li>
-                    <li><strong>תרגיל 4:</strong> סידור מילים לפי הסדר בטקסט</li>
-                </ol>
-            </div>
+                <div class="highlight-example">
+                    🎵 קריאת מקהלה = ביטחון!<br>
+                    הילדים שומעים את עצמם קוראים מבלי להרגיש לחץ.<br>
+                    כל חזרה מגבירה את השטף והביטחון.
+                </div>
 
-            <div class="activity-box">
-                <div class="exercise-number">תרגיל 1: השלמת אותיות השימוש</div>
-                <div class="exercise-text">
-                    מכונית חַשְׁמַלִית היא רכב <span class="blank">__</span>פועל על חַשְׁמַל <span class="blank">__</span>מקום על דֶּלֶק<br><br>
+                <div class="text-box" style="font-size: 1.3em; line-height: 2.2;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 20px;">דוגמה לחלוקת משפטים לקריאה אישית (שלב ה):</strong>
                     
-                    היא מְצֻיֶּדֶת <span class="blank">__</span>סוֹלְלָה גדולה <span class="blank">__</span>אפשר לִטְעוֹן <span class="blank">__</span>תחנות טְעִינָה מְיֻחָדוֹת או <span class="blank">__</span>בית<br><br>
+                    <div class="sentence">
+                        <strong>תלמיד 1:</strong> מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                    </div>
                     
-                    מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את <span class="blank">__</span>אוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים <span class="blank">__</span>סְבִיבָה<br><br>
+                    <div class="sentence">
+                        <strong>תלמיד 2:</strong> היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
+                    </div>
                     
-                    הן גם שְׁקֵטוֹת יותר <span class="blank">__</span>מְכוֹנִיּוֹת רגילות, כי <span class="blank">__</span>מָנוֹעַ <span class="blank">__</span>חשמלי שלהן כמעט <span class="blank">__</span>לא מַשְׁמִיעַ רַעַש
+                    <div class="sentence">
+                        <strong>תלמיד 3:</strong> מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
+                    </div>
+                    
+                    <div class="sentence">
+                        <strong>תלמיד 4:</strong> הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 למה זה עובד?</h4>
+                    <ul>
+                        <li><strong>חזרות מרובות</strong> על אותו טקסט מפחיתות עומס קוגניטיבי</li>
+                        <li><strong>הילדים עוקבים</strong> אחר הטקסט ושומעים קריאה באינטונציה נכונה</li>
+                        <li><strong>כל חזרה</strong> מגבירה את הביטחון והשטף - המילים הופכות מוכרות</li>
+                        <li><strong>בקריאת מקהלה</strong> גם ילדים חלשים יכולים להצטרף בלי פחד</li>
+                        <li><strong>בקריאה אישית</strong> כבר יש היכרות ולכן פחות חרדה</li>
+                    </ul>
+                </div>
+
+                <div class="instructions">
+                    <h3>🎯 טיפים ליישום:</h3>
+                    <ol>
+                        <li>תני לילדים לבחור באיזה משפט הם רוצים לקרוא (מעלה מוטיבציה)</li>
+                        <li>אפשרי לקרוא כל משפט פעמיים - פעם אחת על ידי תלמיד חלש ופעם שנייה על ידי תלמיד חזק</li>
+                        <li>עודדי מחיאות כפיים אחרי כל קריאה מוצלחת</li>
+                        <li>שימי לב שכל הילדים מצביעים במקום הנכון גם כשלא הם קוראים</li>
+                    </ol>
                 </div>
             </div>
 
-            <div class="activity-box">
-                <div class="exercise-number">תרגיל 2: השלמת הברות סופיות</div>
-                <div class="exercise-text">
-                    מכו<span class="blank">___</span> חַשְׁמַלִי<span class="blank">___</span> היא רכב שפו<span class="blank">___</span> על חַשְׁמַ<span class="blank">___</span> במקום על דֶּלֶ<span class="blank">___</span><br><br>
-                    
-                    היא מְצֻיֶּ<span class="blank">___</span> בְּסוֹלְלָ<span class="blank">___</span> גדו<span class="blank">___</span> שאפשר לִטְעוֹ<span class="blank">___</span> בתחנות טְעִינָ<span class="blank">___</span> מְיֻחָ<span class="blank">___</span> או בבי<span class="blank">___</span><br><br>
-                    
-                    מכוניות חַשְׁמַלִ<span class="blank">___</span> אֵינָ<span class="blank">___</span> מְזַהֲ<span class="blank">___</span> את האוויר כי הן לא פּוֹלְ<span class="blank">___</span> גַזִי<span class="blank">___</span> מַזִי<span class="blank">___</span> לַסְבִיבָ<span class="blank">___</span><br><br>
-                    
-                    הן גם שְׁקֵ<span class="blank">___</span> יותר מִמְּכוֹנִ<span class="blank">___</span> רגִי<span class="blank">___</span>, כי הַמָ<span class="blank">___</span> החשמלי של<span class="blank">___</span> כמעט ולא מַשְׁמִי<span class="blank">___</span> רַעַ<span class="blank">___</span>
-                </div>
-            </div>
-
-            <div class="activity-box">
-                <div class="exercise-number">תרגיל 3: השלמת מילים חסרות</div>
-                <div class="exercise-text">
-                    מכונית חַשְׁמַלִית היא <span class="blank" style="min-width: 120px;">________</span> שפועל על חַשְׁמַל במקום על <span class="blank" style="min-width: 100px;">________</span><br><br>
-                    
-                    היא מְצֻיֶּדֶת בְּסוֹלְלָה <span class="blank" style="min-width: 100px;">________</span> שאפשר לִטְעוֹן בתחנות <span class="blank" style="min-width: 100px;">________</span> מְיֻחָדוֹת או בבית<br><br>
-                    
-                    מכוניות חַשְׁמַלִיּוֹת אֵינָן <span class="blank" style="min-width: 120px;">________</span> את האוויר כי הן לא פּוֹלְטוֹת <span class="blank" style="min-width: 100px;">________</span> מַזִיקִים לַסְבִיבָה<br><br>
-                    
-                    הן גם <span class="blank" style="min-width: 100px;">________</span> יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא <span class="blank" style="min-width: 120px;">________</span> רַעַש
-                </div>
-            </div>
-
-            <div class="highlight-example">
-                🎯 מה קורה בשלב זה?<br>
-                הילדים עובדים על רמות שונות של המילה - מהאות הקטנה ועד למילה השלמה.<br>
-                זה מחזק את הייצוג הפנימי של המילים ומשפר את השטף!
-            </div>
-
-            <div class="tip-box">
-                <h4>💡 טיפים למורה:</h4>
-                <ul>
-                    <li><strong>התחילי מהקל אל הקשה</strong> - אותיות שימוש → הברות → מילים</li>
-                    <li><strong>בתרגילי ההשלמה</strong> הילדים חוזרים לטקסט המקורי לבדיקה</li>
-                    <li><strong>זוהי הזדמנות</strong> לחזק את תשומת הלב לפרטים במילה</li>
-                    <li><strong>עודדי</strong> את הילדים לקרוא את המשפט כולו אחרי ההשלמה</li>
-                    <li><strong>שימי לב</strong> שהילדים לא "מנחשים" אלא חוזרים לטקסט</li>
-                    <li><strong>אפשר לעבוד</strong> בזוגות - אחד קורא ואחד משלים</li>
-                </ul>
-            </div>
-
-            <div class="activity-box">
-                <div class="exercise-number">תרגיל 4: סידור מילים לפי הסדר בטקסט</div>
-                <p style="margin-bottom: 15px;">סדרו את המילים הבאות לפי הסדר שבו הן מופיעות בטקסט:</p>
-                <div class="exercise-text">
-                    <strong>מילים לסידור:</strong><br>
-                    חשמל • סוללה • טעינה • מזהמות • גזים • סביבה • שקטות • מנוע • רעש
-                </div>
-                <p style="margin-top: 15px; font-size: 0.95em; color: #666;">
-                    💡 טיפ: חפשו כל מילה בטקסט וכתבו את המספר שלה לפי הסדר
-                </p>
-            </div>
-        </div>
-
-        <!-- Stage 8 -->
-        <div class="page" id="page-stage8">
-            <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">⚡ שלב יא: דגם מורפולוגי - הסיומת "ית-יות"</h2>
-            
-            <div class="instructions">
-                <h3>📋 הקדמה:</h3>
-                <p>בשפה העברית, ישנם שמות עצם ותארים ממין נקבה שמסתיימים בסיומת <strong>"ית"</strong> בצורת היחיד.</p>
-                <p>כאשר הופכים אותם לצורת רבים, הם מקבלים את הסיומת <strong>"יּוֹת"</strong>.</p>
-            </div>
-
-            <div class="morphology-pattern">
-                💡 הדגם המורפולוגי<br>
-                <div style="margin-top: 20px;">
-                    מְכוֹנִ<span style="color: #ff6b6b;">ית</span>
-                    <span class="arrow">→</span>
-                    מְכוֹנִ<span style="color: #ff6b6b;">יּוֹת</span>
-                </div>
-                <div style="margin-top: 15px;">
-                    צִבְעוֹנִ<span style="color: #ff6b6b;">ית</span>
-                    <span class="arrow">→</span>
-                    צִבְעוֹנִ<span style="color: #ff6b6b;">יּוֹת</span>
-                </div>
-            </div>
-
-            <div class="activity-box">
-                <h3>📊 חלק א: טבלה - מיחיד לרבים</h3>
-                <p style="margin-bottom: 15px;">השלימו את הטבלה:</p>
-                <table class="morphology-table">
-                    <tr>
-                        <th>יחיד</th>
-                        <th>רבים</th>
-                    </tr>
-                    <tr>
-                        <td>מְכוֹנִית</td>
-                        <td>מְכוֹנִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>צִבְעוֹנִית</td>
-                        <td>צִבְעוֹנִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>זְכוּכִית</td>
-                        <td>זְכוּכִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>מְקוֹרִית</td>
-                        <td>מְקוֹרִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>חַלּוֹנִית</td>
-                        <td>חַלּוֹנִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>מַפִּית</td>
-                        <td>מַפִּיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>תַּבְנִית</td>
-                        <td>תַּבְנִיּוֹת</td>
-                    </tr>
-                    <tr>
-                        <td>עִתִּידִית</td>
-                        <td>עִתִּידִיּוֹת</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="example-box">
-                <h4>📝 כלל חשוב: צירוף שם עצם ותואר</h4>
-                <p><strong>כאשר יש צירוף של שם עצם ותואר שמסתיימים ב-"ית", שניהם יקבלו את הסיומת "יּוֹת" בצורת הרבים:</strong></p>
-                <div style="margin-top: 20px; font-size: 1.3em;">
-                    <strong>דוגמה:</strong><br>
-                    יחיד: מְכוֹנִית צִבְעוֹנִית<br>
-                    רבים: מְכוֹנִיּוֹת צִבְעוֹנִיּוֹת
-                </div>
-            </div>
-
-            <div class="activity-box">
-                <h3>✏️ חלק ב: השלימו את הצירופים</h3>
+            <!-- Stage 3 -->
+            <div class="page" id="page-stage3">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔍 שלב ו: פעילות "איפה כתוב?"</h2>
                 
-                <div class="completion-exercise">
-                    <strong>1.</strong> יחידה: חַלּוֹנִית קִדְמִית<br>
-                    רבות: <span class="blank">______________</span>
-                </div>
-                
-                <div class="completion-exercise">
-                    <strong>2.</strong> יחידה: זְכוּכִית אֲחוֹרִית<br>
-                    רבות: <span class="blank">______________</span>
-                </div>
-                
-                <div class="completion-exercise">
-                    <strong>3.</strong> יחידה: מַפִּית בְּסִיסִית<br>
-                    רבות: <span class="blank">______________</span>
-                </div>
-                
-                <div class="completion-exercise">
-                    <strong>4.</strong> יחידה: תַּבְנִית עִתִּידִית<br>
-                    רבות: <span class="blank">______________</span>
+                <div class="instructions">
+                    <h3>📋 הוראות למורה:</h3>
+                    <p>המורה מקריאה את ההוראות והתלמידים מבצעים: <strong>מרקרו את מקום התשובה בטקסט</strong></p>
+                    <p style="margin-top: 15px;">התלמידים עובדים על העתק מודפס של הטקסט ומסמנים במרקר את המשפט/הביטוי המתאים.</p>
                 </div>
 
-                <div style="margin-top: 25px;">
-                    <strong>מחסן תארים לעזרה:</strong>
-                    <div class="word-bank">
-                        <div class="word-tag">קִדְמִית</div>
-                        <div class="word-tag">אֲחוֹרִית</div>
-                        <div class="word-tag">בְּסִיסִית</div>
-                        <div class="word-tag">עִתִּידִית</div>
-                        <div class="word-tag">מְקוֹרִית</div>
-                        <div class="word-tag">אִישִׁית</div>
+                <div class="activity-box">
+                    <h3>🔍 שאלות לתלמידים:</h3>
+                    
+                    <div class="question">
+                        <strong>1.</strong> איפה כתוב שמכונית חשמלית פועלת על חשמל ולא על דלק?
+                    </div>
+                    
+                    <div class="question">
+                        <strong>2.</strong> איפה כתוב שאפשר לטעון את הסוללה בבית?
+                    </div>
+                    
+                    <div class="question">
+                        <strong>3.</strong> איפה כתוב שמכוניות חשמליות אינן מזהמות את האוויר?
+                    </div>
+                    
+                    <div class="question">
+                        <strong>4.</strong> איפה כתוב שהמנוע החשמלי כמעט ולא משמיע רעש?
+                    </div>
+                    
+                    <div class="question">
+                        <strong>5.</strong> איפה כתוב שמכוניות חשמליות שקטות יותר ממכוניות רגילות?
+                    </div>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 מה קורה כאן?<br>
+                    הילדים "סורקים" את הטקסט בחיפוש אחר מידע ספציפי -<br>
+                    זו מיומנות קריאה חשובה שמגבירה את השטף!
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 למורה - נקודות חשובות:</h4>
+                    <ul>
+                        <li><strong>שימי לב:</strong> הילדים לא צריכים לקרוא את כל הטקסט בכל פעם</li>
+                        <li><strong>הם לומדים</strong> לזהות מילות מפתח ולנווט בטקסט ביעילות</li>
+                        <li><strong>זוהי התחלה</strong> של קריאה סלקטיבית ואסטרטגית</li>
+                        <li><strong>עודדי</strong> את הילדים לחפש מילות מפתח כמו "חשמל", "סוללה", "רעש"</li>
+                        <li><strong>אפשרי</strong> לתת זמן מוגבל לכל שאלה כדי להגביר קצב</li>
+                        <li><strong>בדקי</strong> יחד עם הכיתה - בקשי מתלמידים לקרוא בקול מה סימנו</li>
+                    </ul>
+                </div>
+
+                <div class="instructions">
+                    <h3>📝 רעיונות להרחבה:</h3>
+                    <p style="margin-top: 10px;">• אפשר לשחק "מרוץ" - מי מוצא הכי מהר?</p>
+                    <p>• אפשר לעבוד בזוגות - תלמיד אחד שואל והשני מחפש</p>
+                    <p>• אפשר להוסיף שאלות מורכבות יותר: "איפה כתוב על יתרון סביבתי?"</p>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="page" id="page-stage4">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔤 שלב ז: פעילות "מה כתוב?"</h2>
+                
+                <div class="instructions">
+                    <h3>📋 הוראות למורה:</h3>
+                    <p><strong>חלק א: </strong>הקיפו בעיגול את המילים הבאות בטקסט</p>
+                    <p style="margin-top: 10px;"><strong>חלק ב: </strong>מצאו בקטע את המילה המתאימה להגדרה בסוגריים</p>
+                </div>
+
+                <div class="activity-box">
+                    <h3>🔤 חלק א: מילים לחיפוש בטקסט</h3>
+                    <p style="margin-bottom: 20px;">התלמידים מחפשים ומקיפים בעיגול את המילים הבאות:</p>
+                    <div class="word-family">
+                        <div class="word-card">חַשְׁמַל</div>
+                        <div class="word-card">סוֹלְלָה</div>
+                        <div class="word-card">טְעִינָה</div>
+                        <div class="word-card">מְזַהֲמוֹת</div>
+                        <div class="word-card">שְׁקֵטוֹת</div>
+                        <div class="word-card">מָנוֹעַ</div>
+                        <div class="word-card">פּוֹלְטוֹת</div>
+                        <div class="word-card">רַעַש</div>
+                    </div>
+                </div>
+
+                <div class="activity-box">
+                    <h3>📝 חלק ב: מצאו את המילה המתאימה להגדרה</h3>
+                    
+                    <div class="question">
+                        <strong>1.</strong> _____________ (רכב שפועל על חשמל)
+                    </div>
+                    
+                    <div class="question">
+                        <strong>2.</strong> _____________ (חומר שמכוניות רגילות משתמשות בו)
+                    </div>
+                    
+                    <div class="question">
+                        <strong>3.</strong> _____________ (דבר שהמנוע החשמלי כמעט לא משמיע)
+                    </div>
+                    
+                    <div class="question">
+                        <strong>4.</strong> _____________ (גזים שמכוניות חשמליות לא פולטות)
+                    </div>
+                    
+                    <div class="question">
+                        <strong>5.</strong> _____________ (המקום שעליו מכוניות חשמליות שומרות)
+                    </div>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 בשלב זה: מעבר מזיהוי ויזואלי למשמעות!<br>
+                    הילדים מחברים בין המילה הכתובה למשמעותה
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 החשיבות של שלב זה:</h4>
+                    <ul>
+                        <li><strong>חיזוק הקשר</strong> בין צורה ומשמעות של מילים</li>
+                        <li><strong>הרחבת אוצר המילים</strong> בהקשר משמעותי</li>
+                        <li><strong>תרגול הבנת הנקרא</strong> תוך כדי קריאה</li>
+                        <li><strong>זיהוי מילים</strong> לפי תכונותיהן ולא רק לפי צורתן</li>
+                        <li><strong>עבודה עם הגדרות</strong> מכינה לעבודה עם מילונים</li>
+                    </ul>
+                </div>
+
+                <div class="activity-box">
+                    <h3>🎮 פעילות נוספת: "מצאו את המילה"</h3>
+                    <p>אפשר להוסיף חידות כמו:</p>
+                    <div class="question">
+                        • אני תחנה מיוחדת לתדלוק מכוניות חשמליות: _____________
+                    </div>
+                    <div class="question">
+                        • אני מאחסנת חשמל במכונית: _____________
+                    </div>
+                    <div class="question">
+                        • אני מפעיל את המכונית החשמלית: _____________
                     </div>
                 </div>
             </div>
 
-            <div class="activity-box">
-                <h3>🎨 חלק ג: יצירת משפטים</h3>
-                <p style="margin-bottom: 20px;">חברו משפטים משלכם עם צירופים של שם עצם ותואר המסתיימים ב"ית", ואחר כך הפכו אותם לצורת רבים:</p>
+            <!-- Stage 5 -->
+            <div class="page" id="page-stage5">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🎯 שלב ח: זיהוי משפטים</h2>
                 
+                <div class="instructions">
+                    <h3>📋 הקדמה:</h3>
+                    <p>שלב זה מורכב מ-3 תתי-שלבים מדורגים. המורה מכינה את 4 משפטי הטקסט על רצועות נייר/כרטיסיות נפרדות.</p>
+                </div>
+
+                <div class="activity-box">
+                    <div class="stage-label">שלב 1: פירוק הטקסט למשפטים</div>
+                    <p style="margin: 15px 0;">גזרו את המשפטים הבאים לפי הקווים והציגו אותם:</p>
+                    
+                    <div class="sentence-strip">
+                        מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
+                    </div>
+                    
+                    <p style="margin-top: 20px;"><strong>המורה מציגה את הכרטיסיות בסדר המקורי ומבקשת מהתלמידים לקרוא אותן.</strong></p>
+                </div>
+
+                <div class="activity-box">
+                    <div class="stage-label">שלב 2: זיהוי חלקי משפטים</div>
+                    <p style="margin: 15px 0;">המורה שואלת והתלמידים מצביעים על הכרטיסייה הנכונה:</p>
+                    <ol>
+                        <li>איפה כתוב "פועל על חשמל"?</li>
+                        <li>איפה כתוב "מצוידת בסוללה"?</li>
+                        <li>איפה כתוב "אינן מזהמות את האוויר"?</li>
+                        <li>איפה כתוב "המנוע החשמלי"?</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <div class="stage-label">שלב 3: זיהוי משפטים מתוך תוכנם</div>
+                    <p style="margin: 15px 0;">שאלות מורכבות יותר - הבנת התוכן:</p>
+                    <ol>
+                        <li>איפה כתוב על מה מכונית חשמלית מופעלת?</li>
+                        <li>איפה כתוב מה יש במכונית חשמלית שמאפשר לה לנסוע?</li>
+                        <li>איפה כתוב איזה יתרון יש למכוניות חשמליות לסביבה?</li>
+                        <li>איפה כתוב מדוע מכוניות חשמליות שקטות יותר?</li>
+                    </ol>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 המהלך: מזיהוי ויזואלי → זיהוי חלקי → הבנת תוכן<br>
+                    בהדרגה, המורה משנה את סדר הכרטיסיות!
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 הערות חשובות למורה:</h4>
+                    <ul>
+                        <li><strong>בכל שלב</strong> - ודאי שכל התלמידים מצליחים לזהות את המשפטים הנדרשים</li>
+                        <li><strong>עזרי לתלמידים</strong> המתקשים ברמזים: "חפשו את המילה 'חשמל'", "חפשו את המילה 'סוללה'"</li>
+                        <li><strong>כשתלמידים מצליחים</strong> בקלות בשלב מסוים, התקדמי לשלב הבא</li>
+                        <li><strong>העיקרון המנחה:</strong> להציב בכל שלב אתגר שאת בטוחה שהילדים יצליחו בו ב-100%</li>
+                        <li><strong>שני את הסדר</strong> בהדרגה - קודם משפטים סמוכים, אחר כך סדר אקראי לגמרי</li>
+                        <li><strong>המטרה הסופית:</strong> שהתלמידים יוכלו לזהות את המשפטים גם כשהם בסדר שונה לחלוטין</li>
+                    </ul>
+                </div>
+
+                <div class="instructions">
+                    <h3>🎨 טיפ ליישום:</h3>
+                    <p>אפשר להדפיס את המשפטים על כרטיסים צבעוניים, או לכתוב אותם על הלוח ולכסות/לחשוף לפי הצורך.</p>
+                </div>
+            </div>
+
+            <!-- Stage 6 -->
+            <div class="page" id="page-stage6">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">🔀 שלב ט: סידור משפטים</h2>
+                
+                <div class="instructions">
+                    <h3>📋 הוראות לתלמידים:</h3>
+                    <ol>
+                        <li>לפניכם ארבעה משפטים מהטקסט על מכונית חשמלית</li>
+                        <li>המשפטים מעורבבים ואינם בסדר הנכון</li>
+                        <li>סדרו את המשפטים לפי הסדר המקורי של הטקסט</li>
+                        <li>שימו לב לרמזים שעוזרים לנו לדעת מה בא אחרי מה</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <h3>🔀 המשפטים המעורבבים - סדרו אותם!</h3>
+                    <p style="margin-bottom: 20px;">כתבו את המספר המתאים ליד כל משפט:</p>
+                    
+                    <div class="sentence-strip">
+                        ____ הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        ____ היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        ____ מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                    </div>
+                    
+                    <div class="sentence-strip">
+                        ____ מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
+                    </div>
+                </div>
+
+                <div class="hint-box">
+                    <h4>🔍 רמזים לסידור:</h4>
+                    <ul>
+                        <li><strong>המשפט הראשון</strong> מציג את הנושא - "מכונית חשמלית היא..."</li>
+                        <li><strong>המילה "היא"</strong> במשפט השני מתייחסת למכונית שהוזכרה</li>
+                        <li><strong>המילה "הן"</strong> במשפטים האחרונים מתייחסת ל"מכוניות" ברבים</li>
+                        <li><strong>לוגיקה:</strong> קודם מסבירים מה זה, אחר כך את התכונות</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 מה קורה כאן?<br>
+                    הילדים לומדים לחפש רמזים לשוניים (מילות קישור, שמות גוף)<br>
+                    ורמזים תוכניים (סדר לוגי של הצגת מידע)
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 למורה - הערות חשובות:</h4>
+                    <ul>
+                        <li><strong>תני לתלמידים</strong> לעבוד באופן עצמאי תחילה</li>
+                        <li><strong>עודדי אותם</strong> לחפש רמזים במשפטים שיעזרו להם לקבוע את הסדר</li>
+                        <li><strong>בקשי מהתלמידים</strong> להסביר למה בחרו בסדר מסוים</li>
+                        <li><strong>לתלמידים מתקשים</strong> - שאלי: "איזה משפט צריך להיות ראשון לדעתכם?"</li>
+                        <li><strong>אפשר לעבוד</strong> בזוגות או בקבוצות קטנות</li>
+                        <li><strong>דונו</strong> בכיתה על האסטרטגיות שהשתמשו בהן</li>
+                    </ul>
+                </div>
+
+                <div class="answer-box">
+                    <h3>✅ הסדר הנכון:</h3>
+                    
+                    <div class="correct-sentence">
+                        <strong>1.</strong> מכונית חַשְׁמַלִית היא רכב שפועל על חַשְׁמַל במקום על דֶּלֶק.
+                    </div>
+                    
+                    <div class="correct-sentence">
+                        <strong>2.</strong> היא מְצֻיֶּדֶת בְּסוֹלְלָה גדולה שאפשר לִטְעוֹן בתחנות טְעִינָה מְיֻחָדוֹת או בבית.
+                    </div>
+                    
+                    <div class="correct-sentence">
+                        <strong>3.</strong> מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את האוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים לַסְבִיבָה.
+                    </div>
+                    
+                    <div class="correct-sentence">
+                        <strong>4.</strong> הן גם שְׁקֵטוֹת יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא מַשְׁמִיעַ רַעַש.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 7 -->
+            <div class="page" id="page-stage7">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">✏️ שלב י: השלמת חסרים</h2>
+                
+                <div class="instructions">
+                    <h3>📋 בשלב זה נעבוד על 4 סוגי השלמות:</h3>
+                    <ol>
+                        <li><strong>תרגיל 1:</strong> השלמת אותיות שימוש החסרות (ב, ל, מ, ש, כ...)</li>
+                        <li><strong>תרגיל 2:</strong> השלמת הברות סופיות</li>
+                        <li><strong>תרגיל 3:</strong> השלמת מילים חסרות</li>
+                        <li><strong>תרגיל 4:</strong> סידור מילים לפי הסדר בטקסט</li>
+                    </ol>
+                </div>
+
+                <div class="activity-box">
+                    <div class="exercise-number">תרגיל 1: השלמת אותיות השימוש</div>
+                    <div class="exercise-text">
+                        מכונית חַשְׁמַלִית היא רכב <span class="blank">__</span>פועל על חַשְׁמַל <span class="blank">__</span>מקום על דֶּלֶק<br><br>
+                        
+                        היא מְצֻיֶּדֶת <span class="blank">__</span>סוֹלְלָה גדולה <span class="blank">__</span>אפשר לִטְעוֹן <span class="blank">__</span>תחנות טְעִינָה מְיֻחָדוֹת או <span class="blank">__</span>בית<br><br>
+                        
+                        מכוניות חַשְׁמַלִיּוֹת אֵינָן מְזַהֲמוֹת את <span class="blank">__</span>אוויר כי הן לא פּוֹלְטוֹת גַזִים מַזִיקִים <span class="blank">__</span>סְבִיבָה<br><br>
+                        
+                        הן גם שְׁקֵטוֹת יותר <span class="blank">__</span>מְכוֹנִיּוֹת רגילות, כי <span class="blank">__</span>מָנוֹעַ <span class="blank">__</span>חשמלי שלהן כמעט <span class="blank">__</span>לא מַשְׁמִיעַ רַעַש
+                    </div>
+                </div>
+
+                <div class="activity-box">
+                    <div class="exercise-number">תרגיל 2: השלמת הברות סופיות</div>
+                    <div class="exercise-text">
+                        מכו<span class="blank">___</span> חַשְׁמַלִי<span class="blank">___</span> היא רכב שפו<span class="blank">___</span> על חַשְׁמַ<span class="blank">___</span> במקום על דֶּלֶ<span class="blank">___</span><br><br>
+                        
+                        היא מְצֻיֶּ<span class="blank">___</span> בְּסוֹלְלָ<span class="blank">___</span> גדו<span class="blank">___</span> שאפשר לִטְעוֹ<span class="blank">___</span> בתחנות טְעִינָ<span class="blank">___</span> מְיֻחָ<span class="blank">___</span> או בבי<span class="blank">___</span><br><br>
+                        
+                        מכוניות חַשְׁמַלִ<span class="blank">___</span> אֵינָ<span class="blank">___</span> מְזַהֲ<span class="blank">___</span> את האוויר כי הן לא פּוֹלְ<span class="blank">___</span> גַזִי<span class="blank">___</span> מַזִי<span class="blank">___</span> לַסְבִיבָ<span class="blank">___</span><br><br>
+                        
+                        הן גם שְׁקֵ<span class="blank">___</span> יותר מִמְּכוֹנִ<span class="blank">___</span> רגִי<span class="blank">___</span>, כי הַמָ<span class="blank">___</span> החשמלי של<span class="blank">___</span> כמעט ולא מַשְׁמִי<span class="blank">___</span> רַעַ<span class="blank">___</span>
+                    </div>
+                </div>
+
+                <div class="activity-box">
+                    <div class="exercise-number">תרגיל 3: השלמת מילים חסרות</div>
+                    <div class="exercise-text">
+                        מכונית חַשְׁמַלִית היא <span class="blank" style="min-width: 120px;">________</span> שפועל על חַשְׁמַל במקום על <span class="blank" style="min-width: 100px;">________</span><br><br>
+                        
+                        היא מְצֻיֶּדֶת בְּסוֹלְלָה <span class="blank" style="min-width: 100px;">________</span> שאפשר לִטְעוֹן בתחנות <span class="blank" style="min-width: 100px;">________</span> מְיֻחָדוֹת או בבית<br><br>
+                        
+                        מכוניות חַשְׁמַלִיּוֹת אֵינָן <span class="blank" style="min-width: 120px;">________</span> את האוויר כי הן לא פּוֹלְטוֹת <span class="blank" style="min-width: 100px;">________</span> מַזִיקִים לַסְבִיבָה<br><br>
+                        
+                        הן גם <span class="blank" style="min-width: 100px;">________</span> יותר מִמְּכוֹנִיּוֹת רגילות, כי הַמָּנוֹעַ החשמלי שלהן כמעט ולא <span class="blank" style="min-width: 120px;">________</span> רַעַש
+                    </div>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 מה קורה בשלב זה?<br>
+                    הילדים עובדים על רמות שונות של המילה - מהאות הקטנה ועד למילה השלמה.<br>
+                    זה מחזק את הייצוג הפנימי של המילים ומשפר את השטף!
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 טיפים למורה:</h4>
+                    <ul>
+                        <li><strong>התחילי מהקל אל הקשה</strong> - אותיות שימוש → הברות → מילים</li>
+                        <li><strong>בתרגילי ההשלמה</strong> הילדים חוזרים לטקסט המקורי לבדיקה</li>
+                        <li><strong>זוהי הזדמנות</strong> לחזק את תשומת הלב לפרטים במילה</li>
+                        <li><strong>עודדי</strong> את הילדים לקרוא את המשפט כולו אחרי ההשלמה</li>
+                        <li><strong>שימי לב</strong> שהילדים לא "מנחשים" אלא חוזרים לטקסט</li>
+                        <li><strong>אפשר לעבוד</strong> בזוגות - אחד קורא ואחד משלים</li>
+                    </ul>
+                </div>
+
+                <div class="activity-box">
+                    <div class="exercise-number">תרגיל 4: סידור מילים לפי הסדר בטקסט</div>
+                    <p style="margin-bottom: 15px;">סדרו את המילים הבאות לפי הסדר שבו הן מופיעות בטקסט:</p>
+                    <div class="exercise-text">
+                        <strong>מילים לסידור:</strong><br>
+                        חשמל • סוללה • טעינה • מזהמות • גזים • סביבה • שקטות • מנוע • רעש
+                    </div>
+                    <p style="margin-top: 15px; font-size: 0.95em; color: #666;">
+                        💡 טיפ: חפשו כל מילה בטקסט וכתבו את המספר שלה לפי הסדר
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stage 8 -->
+            <div class="page" id="page-stage8">
+                <h2 style="color: #667eea; font-size: 2.5em; margin-bottom: 20px; text-align: center;">⚡ שלב יא: דגם מורפולוגי - הסיומת "ית-יות"</h2>
+                
+                <div class="instructions">
+                    <h3>📋 הקדמה:</h3>
+                    <p>בשפה העברית, ישנם שמות עצם ותארים ממין נקבה שמסתיימים בסיומת <strong>"ית"</strong> בצורת היחיד.</p>
+                    <p>כאשר הופכים אותם לצורת רבים, הם מקבלים את הסיומת <strong>"יּוֹת"</strong>.</p>
+                </div>
+
+                <div class="morphology-pattern">
+                    💡 הדגם המורפולוגי<br>
+                    <div style="margin-top: 20px;">
+                        מְכוֹנִ<span style="color: #ff6b6b;">ית</span>
+                        <span class="arrow">→</span>
+                        מְכוֹנִ<span style="color: #ff6b6b;">יּוֹת</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        צִבְעוֹנִ<span style="color: #ff6b6b;">ית</span>
+                        <span class="arrow">→</span>
+                        צִבְעוֹנִ<span style="color: #ff6b6b;">יּוֹת</span>
+                    </div>
+                </div>
+
+                <div class="activity-box">
+                    <h3>📊 חלק א: טבלה - מיחיד לרבים</h3>
+                    <p style="margin-bottom: 15px;">השלימו את הטבלה:</p>
+                    <table class="morphology-table">
+                        <tr>
+                            <th>יחיד</th>
+                            <th>רבים</th>
+                        </tr>
+                        <tr>
+                            <td>מְכוֹנִית</td>
+                            <td>מְכוֹנִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>צִבְעוֹנִית</td>
+                            <td>צִבְעוֹנִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>זְכוּכִית</td>
+                            <td>זְכוּכִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>מְקוֹרִית</td>
+                            <td>מְקוֹרִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>חַלּוֹנִית</td>
+                            <td>חַלּוֹנִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>מַפִּית</td>
+                            <td>מַפִּיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>תַּבְנִית</td>
+                            <td>תַּבְנִיּוֹת</td>
+                        </tr>
+                        <tr>
+                            <td>עִתִּידִית</td>
+                            <td>עִתִּידִיּוֹת</td>
+                        </tr>
+                    </table>
+                </div>
+
                 <div class="example-box">
-                    <strong>דוגמה:</strong><br>
-                    יחידה: <em>העיתונאית העצמאית כתבה מאמר מעניין.</em><br>
-                    רבות: <em>העיתונאיות העצמאיות כתבו מאמר מעניין.</em>
-                </div>
-
-                <div style="margin-top: 25px;">
-                    <strong>מחסן מילים לעזרה:</strong>
-                    <div class="word-bank">
-                        <div class="word-tag">עצמאית</div>
-                        <div class="word-tag">עיתונאית</div>
-                        <div class="word-tag">חברותית</div>
-                        <div class="word-tag">ספורטאית</div>
-                        <div class="word-tag">תחרותית</div>
-                        <div class="word-tag">תרבותית</div>
-                        <div class="word-tag">איכותית</div>
-                        <div class="word-tag">מדענית</div>
-                        <div class="word-tag">ציבורית</div>
-                        <div class="word-tag">קיצונית</div>
-                        <div class="word-tag">שלילית</div>
-                        <div class="word-tag">חיובית</div>
+                    <h4>📝 כלל חשוב: צירוף שם עצם ותואר</h4>
+                    <p><strong>כאשר יש צירוף של שם עצם ותואר שמסתיימים ב-"ית", שניהם יקבלו את הסיומת "יּוֹת" בצורת הרבים:</strong></p>
+                    <div style="margin-top: 20px; font-size: 1.3em;">
+                        <strong>דוגמה:</strong><br>
+                        יחיד: מְכוֹנִית צִבְעוֹנִית<br>
+                        רבים: מְכוֹנִיּוֹת צִבְעוֹנִיּוֹת
                     </div>
                 </div>
-            </div>
 
-            <div class="highlight-example">
-                🎯 מה השגנו?<br>
-                הילדים לומדים דגם מורפולוגי שיעזור להם לקרוא מאות מילים נוספות!<br>
-                זוהי העברה - Transfer - מהטקסט הספציפי לכלל רחב
-            </div>
+                <div class="activity-box">
+                    <h3>✏️ חלק ב: השלימו את הצירופים</h3>
+                    
+                    <div class="completion-exercise">
+                        <strong>1.</strong> יחידה: חַלּוֹנִית קִדְמִית<br>
+                        רבות: <span class="blank">______________</span>
+                    </div>
+                    
+                    <div class="completion-exercise">
+                        <strong>2.</strong> יחידה: זְכוּכִית אֲחוֹרִית<br>
+                        רבות: <span class="blank">______________</span>
+                    </div>
+                    
+                    <div class="completion-exercise">
+                        <strong>3.</strong> יחידה: מַפִּית בְּסִיסִית<br>
+                        רבות: <span class="blank">______________</span>
+                    </div>
+                    
+                    <div class="completion-exercise">
+                        <strong>4.</strong> יחידה: תַּבְנִית עִתִּידִית<br>
+                        רבות: <span class="blank">______________</span>
+                    </div>
 
-            <div class="tip-box">
-                <h4>💡 למורה - זהו שיא המהלך!</h4>
-                <ul>
-                    <li><strong>הילדים עברו</strong> מהטקסט הספציפי להבנה מורפולוגית כללית</li>
-                    <li><strong>הם יכולים כעת</strong> להכליל את הדגם למילים חדשות</li>
-                    <li><strong>זוהי למידה מורפולוגית אמיתית</strong> - הבנת מבנה ויישום שלו</li>
-                    <li><strong>המשך העבודה:</strong> חפשו מילים נוספות בספרי קריאה שמתאימות לדגם זה!</li>
-                    <li><strong>אפשר להרחיב:</strong> תבקשו מהילדים למצוא מילים ב"ית" בבית ולהביא לכיתה</li>
-                    <li><strong>חגיגה:</strong> זהו הסיום - חגגו את ההצלחה של הילדים! 🎉</li>
-                </ul>
-            </div>
+                    <div style="margin-top: 25px;">
+                        <strong>מחסן תארים לעזרה:</strong>
+                        <div class="word-bank">
+                            <div class="word-tag">קִדְמִית</div>
+                            <div class="word-tag">אֲחוֹרִית</div>
+                            <div class="word-tag">בְּסִיסִית</div>
+                            <div class="word-tag">עִתִּידִית</div>
+                            <div class="word-tag">מְקוֹרִית</div>
+                            <div class="word-tag">אִישִׁית</div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="success-box">
-                <h3>🎊 סיימתם את המהלך בהצלחה! 🎊</h3>
-                <p>עברתם 8 שלבים מדורגים מהיכרות ראשונית עם הטקסט<br>
-                ועד ללמידה מורפולוגית מתקדמת!</p>
-                <p style="margin-top: 20px;">הילדים כעת יודעים לקרוא את הטקסט בשטף<br>
-                ומבינים דגם מורפולוגי שיעזור להם במאות מילים נוספות.</p>
-                <p style="margin-top: 20px; font-weight: bold;">כל הכבוד! 👏</p>
+                <div class="activity-box">
+                    <h3>🎨 חלק ג: יצירת משפטים</h3>
+                    <p style="margin-bottom: 20px;">חברו משפטים משלכם עם צירופים של שם עצם ותואר המסתיימים ב"ית", ואחר כך הפכו אותם לצורת רבים:</p>
+                    
+                    <div class="example-box">
+                        <strong>דוגמה:</strong><br>
+                        יחידה: <em>העיתונאית העצמאית כתבה מאמר מעניין.</em><br>
+                        רבות: <em>העיתונאיות העצמאיות כתבו מאמר מעניין.</em>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <strong>מחסן מילים לעזרה:</strong>
+                        <div class="word-bank">
+                            <div class="word-tag">עצמאית</div>
+                            <div class="word-tag">עיתונאית</div>
+                            <div class="word-tag">חברותית</div>
+                            <div class="word-tag">ספורטאית</div>
+                            <div class="word-tag">תחרותית</div>
+                            <div class="word-tag">תרבותית</div>
+                            <div class="word-tag">איכותית</div>
+                            <div class="word-tag">מדענית</div>
+                            <div class="word-tag">ציבורית</div>
+                            <div class="word-tag">קיצונית</div>
+                            <div class="word-tag">שלילית</div>
+                            <div class="word-tag">חיובית</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-example">
+                    🎯 מה השגנו?<br>
+                    הילדים לומדים דגם מורפולוגי שיעזור להם לקרוא מאות מילים נוספות!<br>
+                    זוהי העברה - Transfer - מהטקסט הספציפי לכלל רחב
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 למורה - זהו שיא המהלך!</h4>
+                    <ul>
+                        <li><strong>הילדים עברו</strong> מהטקסט הספציפי להבנה מורפולוגית כללית</li>
+                        <li><strong>הם יכולים כעת</strong> להכליל את הדגם למילים חדשות</li>
+                        <li><strong>זוהי למידה מורפולוגית אמיתית</strong> - הבנת מבנה ויישום שלו</li>
+                        <li><strong>המשך העבודה:</strong> חפשו מילים נוספות בספרי קריאה שמתאימות לדגם זה!</li>
+                        <li><strong>אפשר להרחיב:</strong> תבקשו מהילדים למצוא מילים ב"ית" בבית ולהביא לכיתה</li>
+                        <li><strong>חגיגה:</strong> זהו הסיום - חגגו את ההצלחה של הילדים! 🎉</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h3>🎊 סיימתם את המהלך בהצלחה! 🎊</h3>
+                    <p>עברתם 8 שלבים מדורגים מהיכרות ראשונית עם הטקסט<br>
+                    ועד ללמידה מורפולוגית מתקדמת!</p>
+                    <p style="margin-top: 20px;">הילדים כעת יודעים לקרוא את הטקסט בשטף<br>
+                    ומבינים דגם מורפולוגי שיעזור להם במאות מילים נוספות.</p>
+                    <p style="margin-top: 20px; font-weight: bold;">כל הכבוד! 👏</p>
+                </div>
             </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button secondary" id="prevBtn" onclick="previousPage()">
+                → הקודם
+            </button>
+            <button class="nav-button secondary" id="homeBtn" onclick="goToPage('home')">
+                🏠 חזרה לתפריט
+            </button>
+            <button class="nav-button" id="nextBtn" onclick="nextPage()">
+                הבא ←
+            </button>
         </div>
     </div>
 
-    <div class="navigation">
-        <button class="nav-button secondary" id="prevBtn" onclick="previousPage()">
-            → הקודם
-        </button>
-        <button class="nav-button secondary" id="homeBtn" onclick="goToPage('home')">
-            🏠 חזרה לתפריט
-        </button>
-        <button class="nav-button" id="nextBtn" onclick="nextPage()">
-            הבא ←
-        </button>
-    </div>
-</div>
-
-<script>
-    const pages = ['home', 'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stage8'];
-    const stageNames = {
-        'home': 'דף הבית',
-        'stage1': 'שלב א: הכרת הטקסט',
-        'stage2': 'שלבים ב-ה: קריאה משותפת',
-        'stage3': 'שלב ו: "איפה כתוב?"',
-        'stage4': 'שלב ז: "מה כתוב?"',
-        'stage5': 'שלב ח: זיהוי משפטים',
-        'stage6': 'שלב ט: סידור משפטים',
-        'stage7': 'שלב י: השלמת חסרים',
-        'stage8': 'שלב יא: דגם מורפולוגי'
-    };
-    
-    let currentPageIndex = 0;
-
-    function goToPage(pageId) {
-        const pageIndex = pages.indexOf(pageId);
-        if (pageIndex === -1) return;
+    <script>
+        const pages = ['home', 'stage1', 'stage2', 'stage3', 'stage4', 'stage5', 'stage6', 'stage7', 'stage8'];
+        const stageNames = {
+            'home': 'דף הבית',
+            'stage1': 'שלב א: הכרת הטקסט',
+            'stage2': 'שלבים ב-ה: קריאה משותפת',
+            'stage3': 'שלב ו: "איפה כתוב?"',
+            'stage4': 'שלב ז: "מה כתוב?"',
+            'stage5': 'שלב ח: זיהוי משפטים',
+            'stage6': 'שלב ט: סידור משפטים',
+            'stage7': 'שלב י: השלמת חסרים',
+            'stage8': 'שלב יא: דגם מורפולוגי'
+        };
         
-        // Hide all pages
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
+        let currentPageIndex = 0;
+
+        function goToPage(pageId) {
+            const pageIndex = pages.indexOf(pageId);
+            if (pageIndex === -1) return;
+            
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById('page-' + pageId).classList.add('active');
+            currentPageIndex = pageIndex;
+            
+            // Update stage indicator
+            document.getElementById('stageIndicator').textContent = stageNames[pageId];
+            
+            // Update progress
+            updateProgress();
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextPage() {
+            if (currentPageIndex < pages.length - 1) {
+                goToPage(pages[currentPageIndex + 1]);
+            }
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                goToPage(pages[currentPageIndex - 1]);
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Disable/enable previous button
+            if (currentPageIndex === 0) {
+                prevBtn.disabled = true;
+                prevBtn.style.opacity = '0.5';
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+            }
+            
+            // Disable/enable and style next button
+            if (currentPageIndex === pages.length - 1) {
+                nextBtn.disabled = true;
+                nextBtn.style.opacity = '0.5';
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+            }
+            
+            // Change next button text on last stage
+            if (currentPageIndex === pages.length - 1) {
+                nextBtn.textContent = '✅ סיום';
+                nextBtn.classList.add('success');
+            } else {
+                nextBtn.textContent = 'הבא ←';
+                nextBtn.classList.remove('success');
+            }
+        }
+
+        function updateProgress() {
+            const totalStages = pages.length - 1; // excluding home
+            const currentStage = Math.max(0, currentPageIndex - 1); // home doesn't count
+            const percentage = currentPageIndex === 0 ? 0 : ((currentStage + 1) / totalStages) * 100;
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            if (currentPageIndex === 0) {
+                document.getElementById('progressLabel').textContent = 'התקדמות: 0 מתוך 8 שלבים';
+            } else {
+                document.getElementById('progressLabel').textContent = 
+                    `התקדמות: ${currentStage + 1} מתוך ${totalStages} שלבים`;
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                nextPage();
+            } else if (e.key === 'ArrowRight') {
+                previousPage();
+            } else if (e.key === 'Home') {
+                goToPage('home');
+            }
         });
-        
-        // Show selected page
-        document.getElementById('page-' + pageId).classList.add('active');
-        currentPageIndex = pageIndex;
-        
-        // Update stage indicator
-        document.getElementById('stageIndicator').textContent = stageNames[pageId];
-        
-        // Update progress
-        updateProgress();
-        
-        // Update navigation buttons
-        updateNavigationButtons();
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
-    function nextPage() {
-        if (currentPageIndex < pages.length - 1) {
-            goToPage(pages[currentPageIndex + 1]);
-        }
-    }
-
-    function previousPage() {
-        if (currentPageIndex > 0) {
-            goToPage(pages[currentPageIndex - 1]);
-        }
-    }
-
-    function updateNavigationButtons() {
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        
-        // Disable/enable previous button
-        if (currentPageIndex === 0) {
-            prevBtn.disabled = true;
-            prevBtn.style.opacity = '0.5';
-        } else {
-            prevBtn.disabled = false;
-            prevBtn.style.opacity = '1';
-        }
-        
-        // Disable/enable and style next button
-        if (currentPageIndex === pages.length - 1) {
-            nextBtn.disabled = true;
-            nextBtn.style.opacity = '0.5';
-        } else {
-            nextBtn.disabled = false;
-            nextBtn.style.opacity = '1';
-        }
-        
-        // Change next button text on last stage
-        if (currentPageIndex === pages.length - 1) {
-            nextBtn.textContent = '✅ סיום';
-            nextBtn.classList.add('success');
-        } else {
-            nextBtn.textContent = 'הבא ←';
-            nextBtn.classList.remove('success');
-        }
-    }
-
-    function updateProgress() {
-        const totalStages = pages.length - 1; // excluding home
-        const currentStage = Math.max(0, currentPageIndex - 1); // home doesn't count
-        const percentage = currentPageIndex === 0 ? 0 : ((currentStage + 1) / totalStages) * 100;
-        
-        document.getElementById('progressFill').style.width = percentage + '%';
-        
-        if (currentPageIndex === 0) {
-            document.getElementById('progressLabel').textContent = 'התקדמות: 0 מתוך 8 שלבים';
-        } else {
-            document.getElementById('progressLabel').textContent = 
-                `התקדמות: ${currentStage + 1} מתוך ${totalStages} שלבים`;
-        }
-    }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            nextPage();
-        } else if (e.key === 'ArrowRight') {
-            previousPage();
-        } else if (e.key === 'Home') {
-            goToPage('home');
-        }
-    });
-
-    // Initialize
-    goToPage('home');
-</script>
+        // Initialize
+        goToPage('home');
+    </script>
+</body>
+</html>
