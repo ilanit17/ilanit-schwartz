@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ארגז כלים לשטף קריאה - כיתה ד'</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals (Cream, Stone, Amber, Soft Blue) to reduce visual stress/glare -->
+    <!-- Application Structure Plan: A dashboard-style layout divided into 'Understanding', 'Interactive Tools', 'Strategies', and 'Tracking'. This structure moves from theory to practice, allowing the teacher to immediately test tools (like the reading ruler) in the browser, providing a direct 'try-before-you-buy' experience for classroom implementation. -->
+    <!-- Visualization & Content Choices: 
+         1. Interactive Reading Ruler: JS-driven overlay -> Simulates the physical tool -> Goal: Change/Assist. 
+         2. Visual Chunker: JS text processing to color-code segments -> Goal: Inform/Support Orthographic processing.
+         3. Strategy Grid: Flexbox cards -> Goal: Organize methods (Echo reading, etc.).
+         4. Progress Chart: Chart.js Line Chart -> Goal: Motivate -> Visualizes WPM improvement. 
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #FDFBF7; /* Creamy white to reduce glare */
+            color: #2D2A26;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5F5F4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D6D3D1;
+            border-radius: 4px;
+        }
+
+        /* Chart Container Styling as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Reading Ruler Styles */
+        #text-display-area {
+            position: relative;
+            line-height: 2.5;
+            font-size: 1.25rem;
+        }
+        .ruler-mask {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2.8rem;
+            background-color: rgba(255, 247, 0, 0.2); /* Highlighter yellow low opacity */
+            border-top: 2px solid rgba(0,0,0,0.1);
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            pointer-events: none;
+            transition: top 0.2s ease;
+            mix-blend-mode: multiply;
+            display: none;
+        }
+        .focus-mode-overlay {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 10;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-stone-100 border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">📖</span>
+                    <h1 class="text-xl font-bold text-stone-800">קוראים להצלחה</h1>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <button onclick="scrollToSection('tools')" class="text-stone-600 hover:text-amber-700 px-3 py-2 rounded-md text-sm font-medium transition">כלים דיגיטליים</button>
+                    <button onclick="scrollToSection('strategies')" class="text-stone-600 hover:text-amber-700 px-3 py-2 rounded-md text-sm font-medium transition">אסטרטגיות</button>
+                    <button onclick="scrollToSection('tracking')" class="text-stone-600 hover:text-amber-700 px-3 py-2 rounded-md text-sm font-medium transition">מעקב</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 space-y-12 max-w-5xl">
+
+        <!-- Intro Section -->
+        <section class="text-center space-y-4">
+            <h2 class="text-3xl font-bold text-stone-800">קידום שטף קריאה - כיתה ד'</h2>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                האתר הזה מרכז כלים ושיטות עבודה המותאמים ספציפית לדיסלקציה אורתוגרפית וויזואלית.
+                בכיתה ד', הפערים מעמיקים כי הטקסטים הופכים צפופים יותר. כאן תמצאו פתרונות טכנולוגיים ופדגוגיים
+                לעקיפת הקושי הוויזואלי ושיפור העיבוד האורתוגרפי, מעבר לשיטות המסורתיות.
+            </p>
+        </section>
+
+        <!-- Section 1: Digital Tools (Interactive) -->
+        <section id="tools" class="bg-white rounded-xl shadow-sm border border-stone-100 p-6">
+            <div class="mb-6 border-b border-stone-100 pb-4">
+                <h3 class="text-2xl font-bold text-amber-700 flex items-center gap-2">
+                    <span>🛠️</span> המעבדה הוויזואלית
+                </h3>
+                <p class="text-stone-500 mt-2">
+                    חלק זה מדגים כלים טכנולוגיים המפחיתים עומס חזותי. עבור ילדים עם דיסלקציה ויזואלית, השורות "מרצדות" או מתחברות.
+                    הכלים למטה מדמים סרגל קריאה ("חלון") ושיטת צביעה מורפולוגית לעזרה בעיבוד אורתוגרפי.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Tool 1: The Reading Ruler -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-lg text-stone-700">סרגל מיקוד (Typoscope)</h4>
+                        <div class="flex gap-2">
+                            <button id="toggle-ruler" class="bg-stone-200 hover:bg-stone-300 px-3 py-1 rounded text-sm transition">הפעל סרגל</button>
+                            <button id="toggle-mask" class="bg-stone-200 hover:bg-stone-300 px-3 py-1 rounded text-sm transition">הסתר רקע</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 h-64 overflow-y-auto relative" id="reader-container">
+                        <div id="ruler" class="ruler-mask z-20"></div>
+                        <div id="top-mask" class="focus-mode-overlay top-0 hidden z-10"></div>
+                        <div id="bottom-mask" class="focus-mode-overlay bottom-0 hidden z-10"></div>
+                        
+                        <div id="text-display-area" class="text-stone-800 px-2 cursor-pointer">
+                            בֹּקֶר אֶחָד, כְּשֶׁהַשֶּׁמֶשׁ זָרְחָה בַּמִּזְרָח, יָצָא דָּנִי לְטִיּוּל. הַצִּפֳּרִים צִיְּצוּ עַל הָעֵצִים וְהָרוּחַ נָשְׁבָה בְּקַלּוּת. הוּא רָאָה פַּרְפַּר כָּחֹל עָף מֵעַל הַפְּרָחִים הַצְּהֻבִּים. דָּנִי חִיֵּךְ וְהִמְשִׁיךְ לָלֶכֶת בַּשְּׁבִיל הַמְּפֻתָּל שֶׁהוֹבִיל אֶל הַנַּחַל. הַמַּיִם בַּנַּחַל זָרְמוּ בְּשֶׁקֶט וְהָיוּ צְלוּלִים וּנְעִימִים לְמַרְאֶה.
+                            <br><br>
+                            לְפֶתַע, שָׁמַע רַעַשׁ מוּזָר מֵאֲחוֹרֵי הַשִּׂיחַ. הוּא עָצַר וְהִקְשִׁיב בִּתְשׂוּמַת לֵב. הַאִם זֶה הָיָה חָתוּל? אוּלַי זֶה הָיָה אַרְנָב? הוּא הִתְקָרֵב בִּזְהִירוּת וְרָאָה גּוּר כְּלָבִים קָטָן וּמָתוֹק מְכַשְׁכֵּשׁ בִּזְנָבוֹ.
+                        </div>
+                    </div>
+                    <p class="text-xs text-stone-500">לחצו על השורות כדי להזיז את הסרגל, או השתמשו בכפתורים.</p>
+                </div>
+
+                <!-- Tool 2: Visual Chunking -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-lg text-stone-700">מפרק מילים ויזואלי</h4>
+                        <button id="chunk-btn" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm transition shadow-sm">פרק מילים</button>
+                    </div>
+                    <textarea id="input-text" class="w-full p-2 border border-stone-300 rounded h-24 text-right" placeholder="הקלידו או הדביקו כאן מילים ארוכות שקשה לקרוא..."></textarea>
+                    <div id="chunk-result" class="bg-white border border-amber-200 rounded h-32 p-4 text-xl overflow-y-auto leading-loose" dir="rtl">
+                        <span class="text-stone-400 text-sm">התוצאה תופיע כאן בצבעים מתחלפים...</span>
+                    </div>
+                    <p class="text-xs text-stone-500">מסייע בפירוק "גושי" טקסט גדולים ליחידות קטנות יותר לעיבוד.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Strategies (Content) -->
+        <section id="strategies" class="space-y-6">
+            <div class="bg-stone-50 p-4 rounded-lg border-l-4 border-amber-500">
+                <h3 class="text-xl font-bold text-stone-800">אסטרטגיות עבודה בכיתה ובבית</h3>
+                <p class="mt-2 text-stone-600">
+                    מעבר לעזרים חיצוניים, שיפור השטף דורש אימון מכוון. להלן ארבע שיטות מוכחות מחקרית לעבודה עם ילדים בכיתה ד', המשלבות אלמנטים משחקיים וחזרתיים. לחצו על הכרטיסיות להרחבה.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="strategy-grid">
+                <!-- Cards injected via JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Tracking & Analytics -->
+        <section id="tracking" class="bg-white rounded-xl shadow-sm border border-stone-100 p-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-amber-700 flex items-center gap-2">
+                    <span>📈</span> מעקב ומוטיבציה
+                </h3>
+                <p class="text-stone-500 mt-2">
+                    אחת הבעיות הגדולות היא תחושת המסוגלות. הצגת גרף התקדמות ויזואלי (ולא רק ציון) עוזרת לילד לראות את השיפור שלו עצמו.
+                    הגרף למטה מדגים מעקב אחר "קריאה חוזרת" – שיפור המהירות באותו טקסט לאחר מספר אימונים.
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="w-full md:w-1/3 space-y-4">
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <h5 class="font-bold text-blue-800">למה למדוד?</h5>
+                        <p class="text-sm text-blue-700 mt-1">ילדים עם דיסלקציה לעיתים לא חשים בשיפור הקטן. הגרף הופך את המאמץ השקוף למוחשי.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-stone-600">הוסף מדידה חדשה (מילים לדקה):</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="wpm-input" class="border border-stone-300 rounded px-2 py-1 w-20" placeholder="60">
+                            <button id="add-data-btn" class="bg-stone-800 text-white px-3 py-1 rounded hover:bg-stone-700 transition">עדכן גרף</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3">
+                    <div class="chart-container shadow-inner bg-stone-50 rounded-lg border border-stone-100 p-2">
+                        <canvas id="fluencyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-300 py-8 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">נוצר עבור מורות ומורים בכיתות ד' ❤️</p>
+            <p class="text-sm text-stone-500">כלי עזר להוראה מותאמת | ללא שמירת מידע בשרת</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- State Management ---
+        const appState = {
+            rulerActive: false,
+            maskActive: false,
+            strategies: [
+                {
+                    title: "קריאה בהד (Echo Reading)",
+                    icon: "🗣️",
+                    desc: "המורה קורא משפט באינטונציה מוגזמת, והילד חוזר אחריו בדיוק. זה משחרר את הילד מפיענוח ומאפשר לו לחוות שטף.",
+                    detail: "מתאים לטקסטים קצרים ורגשיים. עוזר מאוד לדיסלקציה ויזואלית כי הילד שומע את המילים לפני שהוא רואה אותן, מה שמקל על העומס."
+                },
+                {
+                    title: "תיאטרון קריאה (Readers Theater)",
+                    icon: "🎭",
+                    desc: "הפכת הטקסט למחזה. הילד מקבל תפקיד ומתאמן רק על השורות שלו שוב ושוב עד לשליטה מלאה.",
+                    detail: "החזרתיות כאן היא טבעית ולא 'עונש'. הילד מתאמן על אותן מילים בהקשר חברתי, מה שבונה ביטחון עצמי."
+                },
+                {
+                    title: "קריאה בצמדים (Paired Reading)",
+                    icon: "👥",
+                    desc: "קוראים יחד בקול רם. כשהילד מרגיש בטוח, הוא מסמן למורה להנמיך קול, וכשהוא נתקע, המורה מצטרף בעדינות.",
+                    detail: "שיטה זו מפחיתה חרדה בצורה משמעותית. הילד לא נשאר לבד מול המילה הקשה."
+                },
+                {
+                    title: "זיהוי שורשים וצבעים",
+                    icon: "🎨",
+                    desc: "סימון שורש המילה בצבע אחד והמוספיות בצבע אחר. עוזר לפרק מילים ארוכות ('וכשהתלבשנו').",
+                    detail: "קריטי לדיסלקציה אורתוגרפית. המוח לומד לזהות תבניות (מורפמות) במקום לנסות לפענח אות אות."
+                }
+            ],
+            chartData: [25, 32, 30, 41, 45, 52] // Initial mock data
+        };
+
+        // --- DOM Elements ---
+        const rulerBtn = document.getElementById('toggle-ruler');
+        const maskBtn = document.getElementById('toggle-mask');
+        const ruler = document.getElementById('ruler');
+        const topMask = document.getElementById('top-mask');
+        const bottomMask = document.getElementById('bottom-mask');
+        const textDisplay = document.getElementById('text-display-area');
+        const strategyGrid = document.getElementById('strategy-grid');
+        const chunkBtn = document.getElementById('chunk-btn');
+        const inputText = document.getElementById('input-text');
+        const chunkResult = document.getElementById('chunk-result');
+        const wpmInput = document.getElementById('wpm-input');
+        const addDataBtn = document.getElementById('add-data-btn');
+
+        // --- Ruler / Typoscope Logic ---
+        function updateRulerPosition(e) {
+            if (!appState.rulerActive) return;
+            
+            const rect = textDisplay.getBoundingClientRect();
+            // Calculate relative Y within the container
+            let clientY = e.clientY;
+            // Handle touch
+            if(e.touches && e.touches.length > 0) {
+                clientY = e.touches[0].clientY;
+            }
+
+            const relativeY = clientY - rect.top;
+            
+            // Snap to approximate line height (approx 2.5rem = 40px)
+            const lineHeight = 40; 
+            const snappedY = Math.floor(relativeY / lineHeight) * lineHeight;
+
+            // Boundary checks
+            if (snappedY >= 0 && snappedY < rect.height) {
+                ruler.style.top = `${snappedY}px`;
+                
+                if (appState.maskActive) {
+                    topMask.style.height = `${snappedY}px`;
+                    topMask.style.display = 'block';
+                    
+                    bottomMask.style.top = `${snappedY + 45}px`; // 45 is ruler height roughly
+                    bottomMask.style.height = `${rect.height - (snappedY + 45)}px`;
+                    bottomMask.style.display = 'block';
+                }
+            }
+        }
+
+        rulerBtn.addEventListener('click', () => {
+            appState.rulerActive = !appState.rulerActive;
+            ruler.style.display = appState.rulerActive ? 'block' : 'none';
+            rulerBtn.textContent = appState.rulerActive ? 'הסתר סרגל' : 'הפעל סרגל';
+            rulerBtn.className = appState.rulerActive 
+                ? "bg-amber-600 text-white px-3 py-1 rounded text-sm transition"
+                : "bg-stone-200 hover:bg-stone-300 px-3 py-1 rounded text-sm transition";
+            
+            if(!appState.rulerActive) {
+                // Reset mask if ruler is off
+                appState.maskActive = false;
+                maskBtn.textContent = 'הסתר רקע';
+                topMask.style.display = 'none';
+                bottomMask.style.display = 'none';
+            }
+        });
+
+        maskBtn.addEventListener('click', () => {
+            if (!appState.rulerActive) return; // Only works if ruler is on
+            appState.maskActive = !appState.maskActive;
+            maskBtn.textContent = appState.maskActive ? 'הצג רקע' : 'הסתר רקע';
+            
+            if (!appState.maskActive) {
+                topMask.style.display = 'none';
+                bottomMask.style.display = 'none';
+            }
+        });
+
+        // Mouse move and Touch move listeners for the ruler
+        textDisplay.addEventListener('mousemove', updateRulerPosition);
+        textDisplay.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevent scrolling while using ruler
+            updateRulerPosition(e);
+        }, { passive: false });
+        
+        // Also allow clicking a line to snap directly
+        textDisplay.addEventListener('click', (e) => {
+             updateRulerPosition(e);
+        });
+
+
+        // --- Visual Chunking Logic ---
+        chunkBtn.addEventListener('click', () => {
+            const rawText = inputText.value.trim() || "אנציקלופדיה סופרקליפרג'ליסטיק";
+            const words = rawText.split(' ');
+            
+            const processedHtml = words.map(word => {
+                if (word.length < 4) return `<span class="inline-block mx-1">${word}</span>`;
+                
+                // Simple visualization logic: Split every 2-3 chars and color alternating
+                // Note: This isn't grammatical syllable splitting (which is hard in JS without a dictionary),
+                // but purely visual chunking to aid the eye, which helps visual dyslexia.
+                let chunks = [];
+                let i = 0;
+                while (i < word.length) {
+                    // Randomize slightly between 2 and 3 for natural feel or fixed 2
+                    let len = 2;
+                    chunks.push(word.substr(i, len));
+                    i += len;
+                }
+                
+                return `<span class="inline-block mx-1">` + 
+                    chunks.map((chunk, idx) => {
+                        const colorClass = idx % 2 === 0 ? 'text-stone-800 font-bold' : 'text-amber-600 font-medium';
+                        return `<span class="${colorClass}">${chunk}</span>`;
+                    }).join('') + 
+                    `</span>`;
+            }).join(' ');
+
+            chunkResult.innerHTML = processedHtml;
+        });
+
+        // --- Strategy Cards Render ---
+        function renderStrategies() {
+            strategyGrid.innerHTML = appState.strategies.map((strat, index) => `
+                <div class="bg-white border border-stone-200 rounded-lg p-5 hover:shadow-md transition cursor-pointer group" onclick="toggleStrategy(${index})">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl bg-stone-100 p-2 rounded-full">${strat.icon}</span>
+                            <h4 class="font-bold text-lg text-stone-800 group-hover:text-amber-700 transition">${strat.title}</h4>
+                        </div>
+                        <span class="text-stone-400 text-sm">▼</span>
+                    </div>
+                    <p class="text-stone-600 mt-3 text-sm">${strat.desc}</p>
+                    <div id="strat-detail-${index}" class="hidden mt-4 pt-4 border-t border-stone-100 text-sm text-stone-500 bg-stone-50 p-3 rounded">
+                        <strong>למה זה עובד?</strong><br>${strat.detail}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.toggleStrategy = (index) => {
+            const el = document.getElementById(`strat-detail-${index}`);
+            el.classList.toggle('hidden');
+        };
+
+        renderStrategies();
+
+        // --- Chart.js Progress Tracker ---
+        const ctx = document.getElementById('fluencyChart').getContext('2d');
+        
+        let fluencyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['שבוע 1', 'שבוע 2', 'שבוע 3', 'שבוע 4', 'שבוע 5', 'שבוע 6'],
+                datasets: [{
+                    label: 'מספר מילים נכונות בדקה (WPM)',
+                    data: appState.chartData,
+                    borderColor: '#D97706', // Amber 600
+                    backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#B45309',
+                    pointRadius: 6,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Rubik' } }
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#2D2A26',
+                        bodyColor: '#2D2A26',
+                        borderColor: '#E7E5E4',
+                        borderWidth: 1,
+                        padding: 10,
+                        titleFont: { family: 'Rubik' },
+                        bodyFont: { family: 'Rubik' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'מילים בדקה', font: { family: 'Rubik' } },
+                        grid: { color: '#F5F5F4' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Rubik' } }
+                    }
+                }
+            }
+        });
+
+        // Add Data Logic
+        addDataBtn.addEventListener('click', () => {
+            const val = parseInt(wpmInput.value);
+            if (val && val > 0) {
+                const weekNum = fluencyChart.data.labels.length + 1;
+                fluencyChart.data.labels.push(`שבוע ${weekNum}`);
+                fluencyChart.data.datasets[0].data.push(val);
+                fluencyChart.update();
+                wpmInput.value = '';
+            }
+        });
+
+        // --- Navigation Scroll ---
+        window.scrollToSection = (id) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+
+    </script>
+</body>
+</html>
