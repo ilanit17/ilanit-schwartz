@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אימון מורפולוגי - כל הבניינים (מתוקן)</title>
+    
+    <!-- טעינת ספריות -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    
+    <!-- עיצוב -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/earlyaccess/notosanshebrew.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans Hebrew', 'Rubik', sans-serif;
+            background-color: #f8fafc;
+        }
+        .nikud {
+            font-family: 'Noto Sans Hebrew', serif;
+            font-feature-settings: "hebr" on;
+            line-height: 1.3;
+        }
+        /* צבעים חזקים וברורים */
+        .root-letter { color: #1d4ed8; font-weight: 700; } /* כחול - שורש */
+        .affix-letter { color: #be123c; font-weight: 500; } /* אדום - מוספיות */
+        .no-select { user-select: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align:center; margin-top: 100px; color: #666;">
+            <h1 style="font-size: 24px;">טוען מערכת...</h1>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // === מאגר שורשים ===
+        const roots = [
+            { id: 'ktb', letters: ['כּ', 'ת', 'ב'], raw: ['כ','ת','ב'], name: 'כ.ת.ב', meaning: 'לכתוב (בניין קל)' },
+            { id: 'lmd', letters: ['ל', 'מ', 'ד'], raw: ['ל','מ','ד'], name: 'ל.מ.ד', meaning: 'ללמוד' },
+            { id: 'lbsh', letters: ['ל', 'ב', 'ש'], raw: ['ל','ב','ש'], name: 'ל.ב.ש', meaning: 'ללבוש (הפעיל/התפעל)' },
+            { id: 'spr', letters: ['ס', 'פ', 'ר'], raw: ['ס','פ','ר'], name: 'ס.פ.ר', meaning: 'לספר (פיעל/פועל)' },
+            { id: 'pqd', letters: ['פ', 'ק', 'ד'], raw: ['פ','ק','ד'], name: 'פ.ק.ד', meaning: 'לפקוד (נפעל)' },
+            { id: 'shmr', letters: ['ש', 'מ', 'ר'], raw: ['ש','מ','ר'], name: 'ש.מ.ר', meaning: 'לשמור' }
+        ];
+
+        // === פונקציות עזר לניקוד ===
+        const removeDagesh = (letter) => letter ? letter.replace('ּ', '') : '';
+        const addDagesh = (letter) => letter && !letter.includes('ּ') ? letter + 'ּ' : letter;
+
+        // === גנרטורים (יצירת מילים) ===
+
+        // --- בניין קל (פעל) ---
+        const paalPast = (root) => {
+            const [r1, r2, r3] = root.letters;
+            return [
+                { p: 'מדבר (אני)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נוכח (אתה)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תָּ',c:'affix'}] },
+                { p: 'נוכחת (את)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תְּ',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נסתרת (היא)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3+'ָה',c:'affix'}] },
+                { p: 'מדברים (אנו)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'נוּ',c:'affix'}] },
+                { p: 'נוכחים (אתם)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תֶּם',c:'affix'}] },
+                { p: 'נוכחות (אתן)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תֶּן',c:'affix'}] },
+                { p: 'נסתרים (הם)', segs: [{t:r1+'ָ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'וּ',c:'affix'}] }
+            ];
+        };
+
+        const paalPresent = (root) => {
+            const [r1, r2, r3] = root.letters;
+            // תיקון: הפרדת ה-ו' (חולם) מהשורש כדי שתהיה אדומה
+            return [
+                { p: 'יחיד', segs: [{t:r1,c:'root'}, {t:'וֹ',c:'affix'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] }, // כּ-וֹ-תֵב
+                { p: 'יחידה', segs: [{t:r1,c:'root'}, {t:'וֹ',c:'affix'}, {t:r2+'ֶ',c:'root'}, {t:r3+'ֶ',c:'root'}, {t:'ת',c:'affix'}] },
+                { p: 'רבים', segs: [{t:r1,c:'root'}, {t:'וֹ',c:'affix'}, {t:r2+'ְ',c:'root'}, {t:r3+'ִים',c:'affix'}] },
+                { p: 'רבות', segs: [{t:r1,c:'root'}, {t:'וֹ',c:'affix'}, {t:r2+'ְ',c:'root'}, {t:r3+'וֹת',c:'affix'}] }
+            ];
+        };
+
+        const paalFuture = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const [_, r2, r3] = root.letters;
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'אֶ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נוכח (אתה)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נוכחת (את)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'ִי',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:'יִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נסתרת (היא)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'מדברים (אנו)', segs: [{t:'נִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נוכחים (אתם)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'וּ',c:'affix'}] },
+                { p: 'נוכחות (אתן)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְנָה',c:'affix'}] },
+                { p: 'נסתרים (הם)', segs: [{t:'יִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'וּ',c:'affix'}] },
+                { p: 'נסתרות (הן)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְנָה',c:'affix'}] }
+            ];
+        };
+
+        const paalImperative = (root) => {
+             const r1 = root.letters[0]; 
+             const [_, r2, r3] = root.letters;
+             return [
+                 { p: 'נוכח (אתה)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                 { p: 'נוכחת (את)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'ִי',c:'affix'}] },
+                 { p: 'נוכחים (אתם)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ְ',c:'root'}, {t:r3,c:'root'}, {t:'וּ',c:'affix'}] },
+                 { p: 'נוכחות (אתן)', segs: [{t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְנָה',c:'affix'}] }
+             ];
+        };
+
+        // --- בניין נפעל ---
+        const nifalPast = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const [_, r2, r3] = root.letters;
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'נִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נוכח (אתה)', segs: [{t:'נִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תָּ',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:'נִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'מדברים (אנו)', segs: [{t:'נִ',c:'affix'}, {t:r1+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'נוּ',c:'affix'}] },
+            ];
+        };
+
+        const nifalFuture = (root) => {
+            const r1 = addDagesh(root.letters[0]);
+            const [_, r2, r3] = root.letters;
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'אֶ',c:'affix'}, {t:r1+'ָ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נוכח (אתה)', segs: [{t:'תִּ',c:'affix'}, {t:r1+'ָ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+                { p: 'נסתר (הוא)', segs: [{t:'יִ',c:'affix'}, {t:r1+'ָ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+
+        const nifalImperative = (root) => {
+            const r1 = addDagesh(root.letters[0]);
+            const [_, r2, r3] = root.letters;
+            return [
+                { p: 'נוכח (אתה)', segs: [{t:'הִ',c:'affix'}, {t:r1+'ָ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+
+        // --- בניין פיעל ---
+        const pielPast = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const r2 = addDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                { p: 'מדבר (אני)', segs: [{t:r1+'ִ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:r1+'ִ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+
+        const pielPresent = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const r2 = addDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                { p: 'יחיד', segs: [{t:'מְ',c:'affix'}, {t:r1+'ַ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+
+        // --- בניין פועל ---
+        const pualPast = (root) => {
+            const r1 = removeDagesh(root.letters[0]); 
+            const r2 = addDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                { p: 'מדבר (אני)', segs: [{t:r1+'ֻ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:r1+'ֻ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+
+        // --- בניין הפעיל ---
+        const hifilPast = (root) => {
+            const r1_clean = removeDagesh(root.letters[0]);
+            const r2_raw = root.raw[1];
+            const bgdkpt = ['ב','ג','ד','כ','פ','ת'];
+            const r2 = bgdkpt.includes(r2_raw) ? addDagesh(root.letters[1]) : removeDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+
+            // תיקון: הפרדת ה-י' של התבנית כדי שתהיה אדומה
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'הִ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] }, // הִלְבַּשְׁתִּי
+                { p: 'נסתר (הוא)', segs: [{t:'הִ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ִ',c:'root'}, {t:'י',c:'affix'}, {t:r3,c:'root'}] }, // הִלְבִּישׁ
+            ];
+        };
+
+        const hifilPresent = (root) => {
+            const r1_clean = removeDagesh(root.letters[0]);
+            const r2_raw = root.raw[1];
+            const bgdkpt = ['ב','ג','ד','כ','פ','ת'];
+            const r2 = bgdkpt.includes(r2_raw) ? addDagesh(root.letters[1]) : removeDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            
+            // תיקון: מ-ל-ב-י-ש -> י' אדומה
+            return [
+                 { p: 'יחיד', segs: [{t:'מַ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ִ',c:'root'}, {t:'י',c:'affix'}, {t:r3,c:'root'}] }
+            ];
+        };
+        
+        const hifilFuture = (root) => {
+            const r1_clean = removeDagesh(root.letters[0]);
+            const r2_raw = root.raw[1];
+            const bgdkpt = ['ב','ג','ד','כ','פ','ת'];
+            const r2 = bgdkpt.includes(r2_raw) ? addDagesh(root.letters[1]) : removeDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            
+            return [
+                 { p: 'מדבר (אני)', segs: [{t:'אַ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ִ',c:'root'}, {t:'י',c:'affix'}, {t:r3,c:'root'}] } // אַלְבִּישׁ
+            ];
+        };
+
+        // --- בניין הופעל ---
+        const hufalPast = (root) => {
+            const r1_clean = removeDagesh(root.letters[0]);
+            const r2_raw = root.raw[1];
+            const bgdkpt = ['ב','ג','ד','כ','פ','ת'];
+            const r2 = bgdkpt.includes(r2_raw) ? addDagesh(root.letters[1]) : removeDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'הֻ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:'הֻ',c:'affix'}, {t:r1_clean+'ְ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3,c:'root'}] }
+            ];
+        };
+
+        // --- בניין התפעל ---
+        const hitpaelPast = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const r2 = addDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                { p: 'מדבר (אני)', segs: [{t:'הִתְ',c:'affix'}, {t:r1+'ַ',c:'root'}, {t:r2+'ַ',c:'root'}, {t:r3+'ְ',c:'root'}, {t:'תִּי',c:'affix'}] },
+                { p: 'נסתר (הוא)', segs: [{t:'הִתְ',c:'affix'}, {t:r1+'ַ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+            ];
+        };
+        
+        const hitpaelFuture = (root) => {
+            const r1 = removeDagesh(root.letters[0]);
+            const r2 = addDagesh(root.letters[1]);
+            const r3 = root.letters[2];
+            return [
+                 { p: 'מדבר (אני)', segs: [{t:'אֶתְ',c:'affix'}, {t:r1+'ַ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] },
+                 { p: 'נוכח (אתה)', segs: [{t:'תִּתְ',c:'affix'}, {t:r1+'ַ',c:'root'}, {t:r2+'ֵ',c:'root'}, {t:r3,c:'root'}] }
+            ];
+        };
+
+        // === מבנה המידע ===
+        const binyanim = {
+            paal: {
+                name: 'בניין פָּעַל (קל)',
+                desc: 'הבניין הבסיסי ביותר. פעיל.',
+                tenses: {
+                    past: { name: 'עבר', gen: paalPast },
+                    present: { name: 'הווה', gen: paalPresent },
+                    future: { name: 'עתיד', gen: paalFuture },
+                    imperative: { name: 'ציווי', gen: paalImperative }
+                }
+            },
+            nifal: {
+                name: 'בניין נִפְעַל',
+                desc: 'בדרך כלל סביל של בניין קל. (נִפְקַד)',
+                tenses: {
+                    past: { name: 'עבר', gen: nifalPast },
+                    future: { name: 'עתיד', gen: nifalFuture },
+                    imperative: { name: 'ציווי', gen: nifalImperative }
+                }
+            },
+            piel: {
+                name: 'בניין פִּעֵל',
+                desc: 'בניין כבד, פעיל. דגש חזק בעה"פ. (סִפֵּר)',
+                tenses: {
+                    past: { name: 'עבר', gen: pielPast },
+                    present: { name: 'הווה', gen: pielPresent }
+                }
+            },
+            pual: {
+                name: 'בניין פֻּעַל',
+                desc: 'סביל של פִּעֵל. קובוץ בפה"פ. (סֻפַּר)',
+                tenses: {
+                    past: { name: 'עבר', gen: pualPast }
+                }
+            },
+            hifil: {
+                name: 'בניין הִפְעִיל',
+                desc: 'פעיל, גורם לפעולה. ה\' תחילית. (הִלְבִּישׁ)',
+                tenses: {
+                    past: { name: 'עבר', gen: hifilPast },
+                    present: { name: 'הווה', gen: hifilPresent },
+                    future: { name: 'עתיד', gen: hifilFuture }
+                }
+            },
+            hufal: {
+                name: 'בניין הֻפְעַל',
+                desc: 'סביל של הפעיל. ה\' בקובוץ. (הֻלְבַּשׁ)',
+                tenses: {
+                    past: { name: 'עבר', gen: hufalPast }
+                }
+            },
+            hitpael: {
+                name: 'בניין הִתְפַּעֵל',
+                desc: 'רפלקסיבי/הדדי. תחילית הִתְ. (הִתְלַבֵּשׁ)',
+                tenses: {
+                    past: { name: 'עבר', gen: hitpaelPast },
+                    future: { name: 'עתיד', gen: hitpaelFuture }
+                }
+            }
+        };
+
+        // === רכיב תצוגת מילה ===
+        function WordDisplay({ word }) {
+            return (
+                <div className="flex flex-col items-center animate-fade-in my-8">
+                    <div className="text-gray-500 mb-2 text-lg font-medium">{word.p}</div>
+                    <div className="flex flex-row items-center justify-center gap-1 text-7xl md:text-8xl nikud cursor-default" dir="rtl">
+                        {word.segs.map((seg, idx) => (
+                            <span 
+                                key={idx} 
+                                className={`${seg.c === 'root' ? 'root-letter' : 'affix-letter'} transition-colors duration-300 hover:opacity-80`}
+                            >
+                                {seg.t}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // === האפליקציה הראשית ===
+        function App() {
+            const [selectedBinyan, setSelectedBinyan] = useState(null);
+            const [selectedRoot, setSelectedRoot] = useState(null);
+            const [selectedTense, setSelectedTense] = useState(null);
+            const [wordIndex, setWordIndex] = useState(0);
+
+            const resetTense = () => { setSelectedTense(null); setWordIndex(0); };
+            const resetRoot = () => { setSelectedRoot(null); resetTense(); };
+            const resetBinyan = () => { setSelectedBinyan(null); resetRoot(); };
+
+            // שלב 1: בחירת בניין
+            if (!selectedBinyan) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center p-6 max-w-5xl mx-auto">
+                        <header className="text-center mb-12">
+                            <h1 className="text-5xl font-black text-slate-800 mb-4">אימון מורפולוגי עברי</h1>
+                            <p className="text-xl text-slate-500">בחרו בניין כדי להתחיל לתרגל את נטיית הפועל</p>
+                        </header>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                            {Object.entries(binyanim).map(([key, data]) => (
+                                <button 
+                                    key={key}
+                                    onClick={() => setSelectedBinyan(key)}
+                                    className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl border border-slate-200 hover:border-blue-500 transition-all text-right group"
+                                >
+                                    <h3 className="text-2xl font-bold text-slate-800 group-hover:text-blue-600 mb-2">{data.name}</h3>
+                                    <p className="text-slate-500">{data.desc}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            // שלב 2: בחירת שורש
+            if (!selectedRoot) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center p-6 max-w-4xl mx-auto">
+                        <button onClick={resetBinyan} className="self-start mb-8 text-slate-500 hover:text-blue-600 font-bold flex items-center gap-2">
+                             → חזרה לבחירת בניין
+                        </button>
+                        <h2 className="text-4xl font-bold text-slate-800 mb-2">{binyanim[selectedBinyan].name}</h2>
+                        <p className="text-xl text-slate-500 mb-10">בחרו שורש לתרגול</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+                            {roots.map(root => (
+                                <button 
+                                    key={root.id}
+                                    onClick={() => setSelectedRoot(root)}
+                                    className="bg-white p-6 rounded-xl shadow-sm hover:shadow-lg border border-slate-200 hover:border-blue-500 transition-all text-center"
+                                >
+                                    <div className="text-4xl font-black text-blue-700 mb-2 nikud">{root.name}</div>
+                                    <div className="text-sm text-slate-500">{root.meaning}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            // שלב 3: בחירת זמן
+            if (!selectedTense) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center p-6 max-w-4xl mx-auto">
+                        <button onClick={resetRoot} className="self-start mb-8 text-slate-500 hover:text-blue-600 font-bold flex items-center gap-2">
+                             → חזרה לבחירת שורש
+                        </button>
+                        <h2 className="text-4xl font-bold text-slate-800 mb-2">{binyanim[selectedBinyan].name}</h2>
+                        <div className="text-2xl text-blue-700 font-bold mb-10 nikud">שורש: {selectedRoot.name}</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
+                            {Object.entries(binyanim[selectedBinyan].tenses).map(([key, data]) => (
+                                <button 
+                                    key={key}
+                                    onClick={() => setSelectedTense(key)}
+                                    className="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg border border-slate-200 hover:border-blue-500 transition-all"
+                                >
+                                    <div className="text-2xl font-bold text-slate-800 text-center">{data.name}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            // שלב 4: תרגול
+            const tenseData = binyanim[selectedBinyan].tenses[selectedTense];
+            const words = tenseData.gen(selectedRoot);
+            const currentWord = words[wordIndex];
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center bg-white p-6 relative">
+                    <div className="absolute top-6 right-6 flex gap-3">
+                        <button onClick={resetTense} className="px-4 py-2 bg-slate-100 rounded-lg font-bold hover:bg-slate-200 text-slate-600 text-sm">שנה זמן</button>
+                        <button onClick={resetRoot} className="px-4 py-2 bg-slate-100 rounded-lg font-bold hover:bg-slate-200 text-slate-600 text-sm">שנה שורש</button>
+                        <button onClick={resetBinyan} className="px-4 py-2 bg-slate-100 rounded-lg font-bold hover:bg-slate-200 text-slate-600 text-sm">שנה בניין</button>
+                    </div>
+
+                    <div className="text-center mb-4">
+                        <h2 className="text-3xl font-bold text-slate-800">{tenseData.name}</h2>
+                        <h3 className="text-xl text-blue-600 nikud mt-1 font-bold">{selectedRoot.name}</h3>
+                    </div>
+
+                    <WordDisplay word={currentWord} />
+
+                    <div className="flex items-center gap-6 mt-8">
+                        <button 
+                            onClick={() => setWordIndex(i => Math.max(0, i - 1))}
+                            disabled={wordIndex === 0}
+                            className="px-6 py-3 bg-slate-100 hover:bg-slate-200 disabled:opacity-30 rounded-xl font-bold text-lg transition-colors"
+                        >
+                            הקודם
+                        </button>
+                        <div className="text-slate-400 font-mono">
+                            {wordIndex + 1} / {words.length}
+                        </div>
+                        <button 
+                            onClick={() => setWordIndex(i => Math.min(words.length - 1, i + 1))}
+                            disabled={wordIndex === words.length - 1}
+                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-30 rounded-xl font-bold text-lg shadow-lg shadow-blue-200 transition-all"
+                        >
+                            הבא
+                        </button>
+                    </div>
+
+                    <div className="absolute bottom-8 flex gap-8 text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-full bg-blue-700"></span>
+                            <span className="text-slate-600">אותיות שורש</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-full bg-rose-700"></span>
+                            <span className="text-slate-600">מוספיות (תבנית)</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
