@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדריך אסטרטגיות קריאה</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { margin: 0; padding: 0; background-color: #fef3e2; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const strategiesData = {
+          preReading: {
+            title: "אסטרטגיות טרום-קריאה",
+            icon: "🔍",
+            color: "#7C3AED",
+            strategies: [
+              {
+                id: "prior-knowledge",
+                name: "העלאת ידע קודם",
+                icon: "💡",
+                goal: "הפעלת ידע קיים לקראת הקריאה",
+                whenToUse: "לפני כל קריאת טקסט חדש",
+                teachingSteps: [
+                  "כתבו את נושא הטקסט על הלוח",
+                  "שאלו: 'מה אתם כבר יודעים על הנושא הזה?'",
+                  "רשמו את התשובות על הלוח במפת חשיבה",
+                  "קשרו את הידע הקודם לציפיות מהטקסט",
+                  "הסבירו כיצד ידע קודם עוזר להבנה"
+                ],
+                example: {
+                  text: "לפני קריאת טקסט על דבורים, המורה שואלת: 'מה אתם יודעים על דבורים?' התלמידים מעלים: גרות בכוורת, מייצרות דבש, עוקצות...",
+                  activity: "התלמידים מסווגים את הידע שלהם לקטגוריות: מראה, התנהגות, מקום מגורים, תפקיד בטבע"
+                },
+                navigationCard: {
+                  title: "מגדלת הידע הקודם שלי",
+                  questions: [
+                    "מה אני כבר יודע/ת על הנושא?",
+                    "איפה שמעתי או קראתי על זה?",
+                    "מה זה מזכיר לי מהחיים שלי?",
+                    "מה אני רוצה ללמוד?"
+                  ]
+                }
+              },
+              {
+                id: "predictions",
+                name: "העלאת השערות",
+                icon: "🔮",
+                goal: "פיתוח ציפיות וסקרנות לגבי הטקסט",
+                whenToUse: "לפני הקריאה ובמהלכה",
+                teachingSteps: [
+                  "הציגו את כותרת הטקסט על הלוח",
+                  "שאלו: 'על מה לדעתכם ידבר הטקסט?'",
+                  "רשמו את ההשערות בתיבת השערות",
+                  "הדגישו את ההבדל בין ניחוש להשערה מנומקת",
+                  "עודדו תלמידים לנמק את ההשערות",
+                  "במהלך הקריאה - בדקו ועדכנו את ההשערות"
+                ],
+                example: {
+                  text: "כותרת: 'המסע הארוך של הפרפר'\nהשערות אפשריות: הטקסט יספר על נדידת פרפרים, על מחזור החיים של פרפר, על פרפר שהלך לאיבוד...",
+                  activity: "לאחר קריאת כל קטע, מסמנים V להשערה שאוששה, X להשערה שהופרכה, ומוסיפים השערות חדשות"
+                },
+                navigationCard: {
+                  title: "מכונת הזמן של השערות",
+                  questions: [
+                    "מה אני חושב/ת שיקרה?",
+                    "למה אני חושב/ת כך?",
+                    "איזה רמזים יש לי מהכותרת/התמונה?",
+                    "האם ההשערה שלי התאמתה?"
+                  ]
+                }
+              },
+              {
+                id: "text-type",
+                name: "זיהוי סוג הטקסט",
+                icon: "📋",
+                goal: "הבנת סגנון הכתיבה והתאמת הקריאה",
+                whenToUse: "בתחילת כל טקסט חדש",
+                teachingSteps: [
+                  "הציגו את ארבעת סוגי הטקסטים: מידעי, סיפורי, טיעוני, תיאורי",
+                  "הסבירו את המאפיינים של כל סוג",
+                  "הראו דוגמאות לכל סוג",
+                  "תרגלו זיהוי סוג הטקסט לפי כותרת ומשפטים ראשונים",
+                  "הסבירו כיצד סוג הטקסט משפיע על אופן הקריאה"
+                ],
+                example: {
+                  text: "טקסט מידעי: 'הדבורה היא חרק ממשפחת הדבוראיים...'\nטקסט סיפורי: 'יום אחד יצאה דבורה קטנה מהכוורת...'\nטקסט טיעוני: 'יש להגן על הדבורים כי...'",
+                  activity: "התלמידים מקבלים 5 קטעי פתיחה ומזהים את סוג כל טקסט"
+                },
+                navigationCard: {
+                  title: "זכוכית מגדלת של מבנה הטקסט",
+                  questions: [
+                    "האם זה טקסט מידעי, סיפורי, טיעוני או תיאורי?",
+                    "מה הסימנים שעזרו לי לזהות?",
+                    "איך כדאי לי לקרוא טקסט כזה?"
+                  ]
+                }
+              }
+            ]
+          },
+          duringReading: {
+            title: "אסטרטגיות במהלך הקריאה",
+            icon: "📖",
+            color: "#059669",
+            strategies: [
+              {
+                id: "unknown-words",
+                name: "התמודדות עם מילים לא מוכרות",
+                icon: "🔤",
+                goal: "פיתוח עצמאות בפענוח מילים קשות",
+                whenToUse: "בכל פעם שנתקלים במילה לא מוכרת",
+                teachingSteps: [
+                  "הסבירו שיש כמה דרכים להבין מילה לא מוכרת",
+                  "למדו את שיטת ההקשר: קראו את המשפט כולו, קראו משפטים לפני ואחרי",
+                  "למדו את שיטת השורש: חפשו מילה קטנה בתוך המילה, חשבו על מילים דומות",
+                  "למדו שימוש במילון כאפשרות אחרונה",
+                  "תרגלו עם דוגמאות מגוונות",
+                  "הדגימו 'חשיבה בקול' בזמן התמודדות עם מילה קשה"
+                ],
+                example: {
+                  text: "משפט: 'הציפור השתקשקה על הענף בקול מצלצל'\nלפי הקשר: הציפור עושה משהו על ענף + קול מצלצל = כנראה שרה/הוציאה קולות",
+                  activity: "התלמידים מקבלים טקסט עם 5 מילים מסומנות ומנסים לפרש כל אחת בשתי דרכים"
+                },
+                navigationCard: {
+                  title: "כרטיסיית 6 העצות לפירוש מילה",
+                  questions: [
+                    "קראתי את כל המשפט?",
+                    "קראתי קדימה ואחורה?",
+                    "חיפשתי מילה קטנה בתוך המילה?",
+                    "חשבתי על מילים דומות?",
+                    "ניסיתי לתרגם למילה פשוטה?",
+                    "האם לחפש במילון?"
+                  ]
+                }
+              },
+              {
+                id: "complex-sentences",
+                name: "הבנת משפטים מורכבים",
+                icon: "🔗",
+                goal: "פירוק משפטים ארוכים להבנה מלאה",
+                whenToUse: "כשנתקלים במשפט ארוך ומסובך",
+                teachingSteps: [
+                  "הסבירו מהו משפט מורכב (משפט עם כמה חלקים)",
+                  "למדו לזהות את משפט המסגרת (הרעיון המרכזי)",
+                  "למדו לזהות פסוקיות משועבדות (מידע נוסף)",
+                  "תרגלו חלוקה לחלקים",
+                  "הדגימו איך מרכיבים את ההבנה המלאה"
+                ],
+                example: {
+                  text: "משפט: 'החתול, שישב על הגדר כל הבוקר, תפס את הציפור שניסתה לאכול מהצלחת שלו.'\nמשפט מסגרת: החתול תפס את הציפור\nמידע נוסף: ישב על הגדר כל הבוקר / הציפור ניסתה לאכול מהצלחת",
+                  activity: "התלמידים מקבלים 3 משפטים מורכבים, מחלקים לחלקים ומציירים את הסצנה"
+                },
+                navigationCard: {
+                  title: "כרטיס ניווט למשפטים מורכבים",
+                  questions: [
+                    "מהו משפט המסגרת (העיקרי)?",
+                    "אילו פסוקיות מוסיפות מידע?",
+                    "מה כל פסוקית מוסיפה לסיפור?",
+                    "כתבתי את המשפט העיקרי?"
+                  ]
+                }
+              },
+              {
+                id: "interim-summary",
+                name: "סיכומי ביניים",
+                icon: "📝",
+                goal: "שמירה על הבנה לאורך הקריאה",
+                whenToUse: "לאחר כל פסקה או קטע",
+                teachingSteps: [
+                  "הסבירו את החשיבות של עצירה לסיכום",
+                  "למדו לסכם במשפט אחד: 'מה קרה פה?'",
+                  "תרגלו ניסוח במילים של התלמיד (לא העתקה)",
+                  "למדו לקשר בין סיכומי הביניים",
+                  "הדגימו כיצד סיכומי ביניים עוזרים לזכור"
+                ],
+                example: {
+                  text: "פסקה על נדידת ציפורים\nסיכום ביניים: 'בפסקה הזו למדנו שציפורים נודדות בגלל מזג האוויר ומחפשות מזון'",
+                  activity: "קריאה משותפת של טקסט עם עצירה אחרי כל פסקה לכתיבת סיכום של משפט אחד"
+                },
+                navigationCard: {
+                  title: "מערכת כריזה לסיכום",
+                  questions: [
+                    "מה הדבר הכי חשוב שקראתי עכשיו?",
+                    "איך אני יכול/ה לומר את זה במילים שלי?",
+                    "איך זה קשור למה שקראתי קודם?"
+                  ]
+                }
+              },
+              {
+                id: "mental-imagery",
+                name: "יצירת דימוי מנטלי",
+                icon: "🎨",
+                goal: "העמקת ההבנה דרך המחשה פנימית",
+                whenToUse: "במהלך קריאת טקסטים תיאוריים וסיפוריים",
+                teachingSteps: [
+                  "הסבירו מהו דימוי מנטלי ('לצייר בראש')",
+                  "קראו קטע תיאורי ובקשו לעצום עיניים ולדמיין",
+                  "שאלו: 'מה ראיתם? שמעתם? הרגשתם?'",
+                  "תרגלו ציור של הדימוי על הנייר",
+                  "השוו בין דימויים של תלמידים שונים"
+                ],
+                example: {
+                  text: "קטע: 'השמש שקעה מאחורי ההרים, והשמיים נצבעו בכתום ואדום. ציפור בודדת חצתה את האופק.'",
+                  activity: "התלמידים מציירים את התמונה שדמיינו ומשתפים"
+                },
+                navigationCard: {
+                  title: "בועת הדמיון",
+                  questions: [
+                    "מה אני רואה בדמיון שלי?",
+                    "אילו צבעות, קולות או ריחות יש?",
+                    "איפה אני בסצנה הזו?",
+                    "מה אני מרגיש/ה?"
+                  ]
+                }
+              },
+              {
+                id: "monitoring",
+                name: "ניטור הבנה ובקרה עצמית",
+                icon: "🎯",
+                goal: "פיתוח מודעות לתהליך ההבנה",
+                whenToUse: "לאורך כל הקריאה",
+                teachingSteps: [
+                  "הסבירו מהו ניטור הבנה ('לבדוק שאני מבין')",
+                  "למדו לזהות סימנים לאי-הבנה: בלבול, קושי לסכם",
+                  "הציגו את כרטיסי הניטור",
+                  "תרגלו שאילת שאלות עצמיות",
+                  "למדו מה לעשות כשלא מבינים"
+                ],
+                example: {
+                  text: "תלמיד קורא ועוצר: 'רגע, אני לא מבין מי עשה את זה' → חוזר לקרוא, מחפש את השם",
+                  activity: "קריאה עם 'נורות אדומות' - מקומות שבהם עוצרים ובודקים הבנה"
+                },
+                navigationCard: {
+                  title: "מד עומק ההבנה",
+                  questions: [
+                    "האם הבנתי כל מילה?",
+                    "האם אני יכול/ה לספר במילים שלי?",
+                    "האם אני יכול/ה לענות על שאלות?",
+                    "האם משהו לא ברור לי?"
+                  ]
+                },
+                clarificationCards: [
+                  {
+                    title: "כרטיס להבהרה - מה לא הבנתי",
+                    items: ["מה קרה?", "מי עשה או למי זה קרה?", "מתי זה קרה?", "איפה זה קרה?", "איך זה קרה?", "למה זה קרה?"]
+                  },
+                  {
+                    title: "כרטיס להבהרה - למה לא הבנתי",
+                    items: ["שקראתי מהר מדי?", "מילים שאני לא מכיר/ה?", "משפט ארוך ומסובך?", "שאני לא זוכר/ת?", "שאני לא מכיר/ה את הנושא?"]
+                  },
+                  {
+                    title: "כרטיס פעולה - מה לעשות",
+                    items: ["קרא/י שוב לאט יותר", "נסה/י להבין את המילה הקשה", "חלק/י את המשפט לחלקים", "חזור/י על פרטים", "שאל/י וברר/י רקע"]
+                  }
+                ]
+              }
+            ]
+          },
+          postReading: {
+            title: "אסטרטגיות לאחר הקריאה",
+            icon: "✅",
+            color: "#DC2626",
+            strategies: [
+              {
+                id: "main-idea",
+                name: "זיהוי רעיון מרכזי",
+                icon: "💎",
+                goal: "הבנת המסר העיקרי של הטקסט",
+                whenToUse: "בסיום קריאת כל טקסט",
+                teachingSteps: [
+                  "התחילו בפעילויות מטרימות: מיון, הקבצה, זיהוי דומה ושונה",
+                  "תרגלו זיהוי רעיון מרכזי בתמונה",
+                  "למדו לזהות משפט מפתח בפסקה",
+                  "התקדמו לזיהוי רעיון מרכזי בלתי מוצהר",
+                  "למדו להבדיל בין רעיון מרכזי לפרטים תומכים",
+                  "תרגלו ניסוח הרעיון המרכזי במילים של התלמיד"
+                ],
+                example: {
+                  text: "טקסט על חשיבות השינה\nפרטים: שעות שינה, מה קורה במוח, השלכות של חוסר שינה\nרעיון מרכזי: שינה מספקת חיונית לבריאות ולתפקוד",
+                  activity: "התלמידים מקבלים טקסט ובוחרים את הכותרת המתאימה ביותר מתוך 4 אפשרויות"
+                },
+                navigationCard: {
+                  title: "מצפן הרעיונות המרכזיים",
+                  questions: [
+                    "על מה בעיקר מדבר הטקסט?",
+                    "אם הייתי צריך/ה לספר במשפט אחד - מה הייתי אומר/ת?",
+                    "מה הכותב רצה שאבין?",
+                    "מה חוזר הרבה פעמים?"
+                  ]
+                },
+                gradedActivities: [
+                  "פעילויות מטרימות: מיון והקבצה, השוואה, מהכלל אל הפרט",
+                  "זיהוי נושא מרכזי בתמונה",
+                  "איתור רעיון מרכזי מפורש (משפט מפתח)",
+                  "זיהוי רעיון מרכזי בלתי מוצהר בפסקה קצרה",
+                  "זיהוי רעיון מרכזי בלתי מוצהר בסיפור"
+                ]
+              },
+              {
+                id: "text-structure",
+                name: "זיהוי יסוד מארגן",
+                icon: "🏗️",
+                goal: "הבנת הדרך שבה הטקסט בנוי",
+                whenToUse: "בטקסטים מידעיים וטיעוניים",
+                teachingSteps: [
+                  "הציגו את היסודות המארגנים השונים",
+                  "למדו את מילות הקישור האופייניות לכל יסוד",
+                  "תנו דוגמאות לכל סוג",
+                  "תרגלו זיהוי היסוד המארגן בטקסטים שונים",
+                  "הסבירו כיצד הזיהוי עוזר להבנה"
+                ],
+                example: {
+                  text: "יסוד מארגן 'סיבה ותוצאה':\nמילות קישור: בגלל, לכן, כתוצאה מכך, משום ש...\nמבנה: תופעה → גורמים → תוצאות/המלצות",
+                  activity: "התלמידים מקבלים 5 טקסטים קצרים ומזהים את היסוד המארגן של כל אחד"
+                },
+                structures: [
+                  { name: "סיבה ותוצאה", keywords: "בגלל, לכן, כתוצאה, משום ש, מביא ל, נובע מ" },
+                  { name: "מיון והכללה", keywords: "סוגים, מינים, קטגוריות, לדוגמה, כגון" },
+                  { name: "השוואה", keywords: "לעומת, בניגוד ל, דומה ל, שונה מ, משותף" },
+                  { name: "בעיה ופתרון", keywords: "הבעיה היא, אפשר לפתור, פתרון אחד" },
+                  { name: "עימות (בעד ונגד)", keywords: "מצד אחד, מצד שני, תומכים, מתנגדים" },
+                  { name: "מבנה כרונולוגי", keywords: "תחילה, אחר כך, לבסוף, בשנת" },
+                  { name: "טיעון", keywords: "לדעתי, ראשית, שנית, לסיכום, הוכחה" }
+                ]
+              },
+              {
+                id: "summary-writing",
+                name: "כתיבת סיכום",
+                icon: "📄",
+                goal: "הפקת תמצית מדויקת של הטקסט",
+                whenToUse: "בסיום קריאת טקסט",
+                teachingSteps: [
+                  "וודאו הבנה מלאה של הטקסט",
+                  "זהו את הרעיון המרכזי",
+                  "סמנו משפטי מפתח",
+                  "חלקו את הטקסט ליחידות",
+                  "כתבו סיכום ביניים לכל יחידה",
+                  "קשרו את הסיכומים עם מילות קישור",
+                  "מחקו מידע מיותר",
+                  "בדקו ותקנו"
+                ],
+                example: {
+                  text: "טקסט של 3 פסקאות על זיהום האוויר\nסיכום: 'זיהום האוויר נגרם בעיקר מתעשייה ותחבורה. הוא פוגע בבריאות ובסביבה. אפשר להפחית אותו על ידי שימוש באנרגיה נקייה ותחבורה ציבורית.'",
+                  activity: "קריאה משותפת וכתיבת סיכום בשלבים על הלוח"
+                },
+                summarySteps: [
+                  "הבנת החומר - קריאה והתמקדות בהבנה",
+                  "זיהוי רעיון מרכזי - ניסוח בעל פה ובכתב",
+                  "שימוש במשפטי הכללה - כותרות, מבוא וסיכום",
+                  "מבנה הטקסט - כתיבה על פי מבנה מוכר",
+                  "סימון משפטי מפתח - הדגשת מילים מרכזיות",
+                  "חלוקה לחלקים - פסקאות וסעיפים",
+                  "סיכומי ביניים - כותרת או משפט לכל חלק",
+                  "קישור סיכומי הביניים - מילות קישור",
+                  "כותרת - מתן כותרת לכל הקטע",
+                  "מילות הכללה - מונחים כלליים",
+                  "מחיקת מידע מיותר - הסרת פרטים טפלים",
+                  "בדיקה ותיקון - וידוא שהסיכום מלא"
+                ]
+              },
+              {
+                id: "inference",
+                name: "הסקת מסקנות",
+                icon: "🧠",
+                goal: "הבנת מידע שאינו כתוב במפורש",
+                whenToUse: "כשצריך להבין רגשות, כוונות או קשרים סמויים",
+                teachingSteps: [
+                  "הסבירו מהי הסקה ('לקרוא בין השורות')",
+                  "למדו לזהות רמזים בטקסט",
+                  "תרגלו הסקה על רגשות דמויות",
+                  "תרגלו הסקה על יחסי סיבה ותוצאה",
+                  "למדו לנמק את ההסקה"
+                ],
+                example: {
+                  text: "טקסט: 'דני הסתכל על הציון ופניו הסמיקו. הוא קימט את הדף והכניס אותו לכיס.'\nהסקה: דני כנראה מאוכזב מהציון ומתבייש",
+                  activity: "התלמידים קוראים תיאורי התנהגות ומסיקים על הרגש"
+                },
+                navigationCard: {
+                  title: "משקפת הקשרים הנסתרים",
+                  questions: [
+                    "מה לא כתוב אבל אפשר להבין?",
+                    "מה הדמות מרגישה? איך אני יודע/ת?",
+                    "למה הדמות עשתה את זה?",
+                    "מה יקרה אחר כך?"
+                  ]
+                }
+              }
+            ]
+          }
+        };
+
+        const difficulties = [
+          { problem: "קושי בהבנת מילים", cause: "חסר בידע שפתי ואוצר מילים", solution: "הרחבת אוצר מילים, חשיפה בהקשרים, שימוש במילון" },
+          { problem: "קושי בארגון מידע", cause: "קושי בשימוש באסטרטגיית ארגון מידע", solution: "הקניית אסטרטגיית ארגון - סימון, מילות קישור, מיפוי" },
+          { problem: "קושי בהבנת הרעיון המרכזי", cause: "קשיי קשב וריכוז", solution: "חלוקה לקטעים, הדגשת מילות מפתח, כרטיסיות תזכורת" },
+          { problem: "קריאה שטחית", cause: "מוטיבציה נמוכה", solution: "טקסטים מעניינים ורלוונטיים, חיזוקים, הוראה מגוונת" },
+          { problem: "קושי בהסקת מסקנות", cause: "קושי בזיכרון עבודה וגמישות מחשבתית", solution: "תרגול זיכרון עבודה, אסטרטגיות חשיבה גמישה, תמיכות חזותיות" },
+          { problem: "קושי בשימוש בידע קודם", cause: "חוסר מודעות לחשיבות או קושי בשליפה", solution: "עידוד העלאת ידע קודם, חיבור לחוויות, רמזים לשליפה" },
+          { problem: "חוסר ניטור הבנה", cause: "חולשה בבקרה וניטור עצמי", solution: "מודלינג של ניטור, שאלות בדיקה, עצירה למחשבה" },
+          { problem: "הימנעות מקריאה", cause: "חוויות שליליות שפגעו בתחושת המסוגלות", solution: "חוויות הצלחה, בניית מסוגלות בהדרגה, חומרים מותאמים" }
+        ];
+
+        function ReadingStrategiesApp() {
+          const [activeView, setActiveView] = useState('home');
+          const [selectedCategory, setSelectedCategory] = useState(null);
+          const [selectedStrategy, setSelectedStrategy] = useState(null);
+          const [activeTab, setActiveTab] = useState('guide');
+
+          const renderHome = () => (
+            <div className="home-container">
+              <div className="hero-section">
+                <div className="hero-icon">📚</div>
+                <h1>מדריך להוראת אסטרטגיות בהבנת הנקרא</h1>
+                <p className="hero-subtitle">כלי מקיף למורה להוראה מפורשת ושיטתית של אסטרטגיות קריאה</p>
+              </div>
+
+              <div className="categories-grid">
+                {Object.entries(strategiesData).map(([key, category]) => (
+                  <div 
+                    key={key}
+                    className="category-card"
+                    style={{ '--accent-color': category.color }}
+                    onClick={() => {
+                      setSelectedCategory(key);
+                      setActiveView('category');
+                    }}
+                  >
+                    <div className="category-icon">{category.icon}</div>
+                    <h2>{category.title}</h2>
+                    <p className="strategy-count">{category.strategies.length} אסטרטגיות</p>
+                    <div className="category-preview">
+                      {category.strategies.slice(0, 3).map(s => (
+                        <span key={s.id} className="preview-tag">{s.icon} {s.name}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="quick-access">
+                <h2>🎯 קשיים נפוצים ודרכי התערבות</h2>
+                <button 
+                  className="difficulties-btn"
+                  onClick={() => setActiveView('difficulties')}
+                >
+                  צפייה בטבלת הקשיים
+                </button>
+              </div>
+            </div>
+          );
+
+          const renderCategory = () => {
+            const category = strategiesData[selectedCategory];
+            return (
+              <div className="category-view">
+                <button className="back-btn" onClick={() => setActiveView('home')}>
+                  → חזרה לתפריט הראשי
+                </button>
+                
+                <div className="category-header" style={{ '--accent-color': category.color }}>
+                  <span className="category-header-icon">{category.icon}</span>
+                  <h1>{category.title}</h1>
+                </div>
+
+                <div className="strategies-list">
+                  {category.strategies.map(strategy => (
+                    <div 
+                      key={strategy.id}
+                      className="strategy-card"
+                      onClick={() => {
+                        setSelectedStrategy(strategy);
+                        setActiveView('strategy');
+                        setActiveTab('guide');
+                      }}
+                    >
+                      <div className="strategy-card-icon">{strategy.icon}</div>
+                      <div className="strategy-card-content">
+                        <h3>{strategy.name}</h3>
+                        <p>{strategy.goal}</p>
+                      </div>
+                      <div className="strategy-card-arrow">←</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          };
+
+          const renderStrategy = () => {
+            const category = strategiesData[selectedCategory];
+            return (
+              <div className="strategy-view">
+                <button className="back-btn" onClick={() => setActiveView('category')}>
+                  → חזרה ל{category.title}
+                </button>
+
+                <div className="strategy-header" style={{ '--accent-color': category.color }}>
+                  <span className="strategy-icon-large">{selectedStrategy.icon}</span>
+                  <div>
+                    <h1>{selectedStrategy.name}</h1>
+                    <p className="strategy-goal">{selectedStrategy.goal}</p>
+                    <p className="strategy-when"><strong>מתי להשתמש:</strong> {selectedStrategy.whenToUse}</p>
+                  </div>
+                </div>
+
+                <div className="tabs">
+                  <button 
+                    className={`tab ${activeTab === 'guide' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('guide')}
+                  >
+                    📋 מדריך הוראה
+                  </button>
+                  <button 
+                    className={`tab ${activeTab === 'example' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('example')}
+                  >
+                    💡 דוגמה ותרגול
+                  </button>
+                  <button 
+                    className={`tab ${activeTab === 'card' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('card')}
+                  >
+                    🎴 כרטיס ניווט
+                  </button>
+                  {selectedStrategy.clarificationCards && (
+                    <button 
+                      className={`tab ${activeTab === 'metacog' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('metacog')}
+                    >
+                      🧠 מטא-קוגניציה
+                    </button>
+                  )}
+                  {selectedStrategy.structures && (
+                    <button 
+                      className={`tab ${activeTab === 'structures' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('structures')}
+                    >
+                      🏗️ יסודות מארגנים
+                    </button>
+                  )}
+                  {selectedStrategy.gradedActivities && (
+                    <button 
+                      className={`tab ${activeTab === 'graded' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('graded')}
+                    >
+                      📈 פעילויות מדורגות
+                    </button>
+                  )}
+                  {selectedStrategy.summarySteps && (
+                    <button 
+                      className={`tab ${activeTab === 'steps' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('steps')}
+                    >
+                      📝 שלבי הסיכום
+                    </button>
+                  )}
+                </div>
+
+                <div className="tab-content">
+                  {activeTab === 'guide' && (
+                    <div className="guide-content">
+                      <h2>שלבי ההוראה</h2>
+                      <ol className="teaching-steps">
+                        {selectedStrategy.teachingSteps.map((step, index) => (
+                          <li key={index}>
+                            <span className="step-number">{index + 1}</span>
+                            <span className="step-text">{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                      <div className="tip-box">
+                        <strong>💡 טיפ:</strong> הדגימו "חשיבה בקול" - ספרו מה אתם חושבים תוך כדי ביצוע האסטרטגיה
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'example' && (
+                    <div className="example-content">
+                      <h2>דוגמה</h2>
+                      <div className="example-box">
+                        <pre>{selectedStrategy.example.text}</pre>
+                      </div>
+                      <h2>פעילות מוצעת</h2>
+                      <div className="activity-box">
+                        {selectedStrategy.example.activity}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'card' && selectedStrategy.navigationCard && (
+                    <div className="card-content">
+                      <div className="navigation-card" style={{ '--accent-color': category.color }}>
+                        <div className="nav-card-header">
+                          <span>{selectedStrategy.icon}</span>
+                          <h3>{selectedStrategy.navigationCard.title}</h3>
+                        </div>
+                        <ul className="nav-card-questions">
+                          {selectedStrategy.navigationCard.questions.map((q, i) => (
+                            <li key={i}>
+                              <span className="question-bullet">?</span>
+                              {q}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <p className="card-instruction">ניתן להדפיס את הכרטיס ולחלק לתלמידים</p>
+                    </div>
+                  )}
+
+                  {activeTab === 'metacog' && selectedStrategy.clarificationCards && (
+                    <div className="metacog-content">
+                      <h2>כרטיסי מטא-קוגניציה לתלמידים</h2>
+                      <div className="metacog-cards">
+                        {selectedStrategy.clarificationCards.map((card, index) => (
+                          <div key={index} className="metacog-card">
+                            <h3>{card.title}</h3>
+                            <ul>
+                              {card.items.map((item, i) => (
+                                <li key={i}>
+                                  <span className="checkbox">☐</span>
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'structures' && selectedStrategy.structures && (
+                    <div className="structures-content">
+                      <h2>יסודות מארגנים ומילות מפתח</h2>
+                      <div className="structures-grid">
+                        {selectedStrategy.structures.map((struct, index) => (
+                          <div key={index} className="structure-card">
+                            <h3>{struct.name}</h3>
+                            <p><strong>מילות קישור:</strong> {struct.keywords}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'graded' && selectedStrategy.gradedActivities && (
+                    <div className="graded-content">
+                      <h2>רצף פעילויות מדורג</h2>
+                      <ol className="graded-list">
+                        {selectedStrategy.gradedActivities.map((activity, index) => (
+                          <li key={index}>
+                            <span className="level-badge">שלב {index + 1}</span>
+                            {activity}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
+                  {activeTab === 'steps' && selectedStrategy.summarySteps && (
+                    <div className="steps-content">
+                      <h2>12 השלבים לכתיבת סיכום</h2>
+                      <ol className="summary-steps-list">
+                        {selectedStrategy.summarySteps.map((step, index) => (
+                          <li key={index}>
+                            <span className="step-badge">{index + 1}</span>
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          };
+
+          const renderDifficulties = () => (
+            <div className="difficulties-view">
+              <button className="back-btn" onClick={() => setActiveView('home')}>
+                → חזרה לתפריט הראשי
+              </button>
+
+              <h1>🎯 קשיים נפוצים בהבנת הנקרא ודרכי התערבות</h1>
+
+              <div className="difficulties-table">
+                <div className="table-header">
+                  <div className="col-problem">הקושי</div>
+                  <div className="col-cause">סיבה אפשרית</div>
+                  <div className="col-solution">המלצה לקידום</div>
+                </div>
+                {difficulties.map((diff, index) => (
+                  <div key={index} className="table-row">
+                    <div className="col-problem">{diff.problem}</div>
+                    <div className="col-cause">{diff.cause}</div>
+                    <div className="col-solution">{diff.solution}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+
+          return (
+            <div className="app-container">
+              <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+
+                * {
+                  box-sizing: border-box;
+                  margin: 0;
+                  padding: 0;
+                }
+
+                .app-container {
+                  font-family: 'Heebo', sans-serif;
+                  direction: rtl;
+                  min-height: 100vh;
+                  background: linear-gradient(135deg, #fef3e2 0%, #fce7f3 50%, #ede9fe 100%);
+                  padding: 24px;
+                }
+
+                .home-container {
+                  max-width: 1200px;
+                  margin: 0 auto;
+                }
+
+                .hero-section {
+                  text-align: center;
+                  padding: 40px 24px;
+                  background: white;
+                  border-radius: 24px;
+                  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                  margin-bottom: 28px;
+                }
+
+                .hero-icon {
+                  font-size: 56px;
+                  margin-bottom: 12px;
+                }
+
+                .hero-section h1 {
+                  font-size: 2rem;
+                  font-weight: 800;
+                  background: linear-gradient(135deg, #7C3AED, #DC2626);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  background-clip: text;
+                  margin-bottom: 10px;
+                }
+
+                .hero-subtitle {
+                  font-size: 1.1rem;
+                  color: #64748b;
+                }
+
+                .categories-grid {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                  gap: 20px;
+                  margin-bottom: 28px;
+                }
+
+                .category-card {
+                  background: white;
+                  border-radius: 20px;
+                  padding: 28px;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+                  border: 3px solid transparent;
+                }
+
+                .category-card:hover {
+                  transform: translateY(-4px);
+                  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+                  border-color: var(--accent-color);
+                }
+
+                .category-icon {
+                  font-size: 44px;
+                  margin-bottom: 14px;
+                }
+
+                .category-card h2 {
+                  font-size: 1.4rem;
+                  font-weight: 700;
+                  color: #1e293b;
+                  margin-bottom: 6px;
+                }
+
+                .strategy-count {
+                  color: var(--accent-color);
+                  font-weight: 600;
+                  margin-bottom: 14px;
+                }
+
+                .category-preview {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 6px;
+                }
+
+                .preview-tag {
+                  background: #f1f5f9;
+                  padding: 5px 10px;
+                  border-radius: 16px;
+                  font-size: 0.8rem;
+                  color: #475569;
+                }
+
+                .quick-access {
+                  background: white;
+                  border-radius: 20px;
+                  padding: 28px;
+                  text-align: center;
+                }
+
+                .quick-access h2 {
+                  margin-bottom: 14px;
+                  color: #1e293b;
+                }
+
+                .difficulties-btn {
+                  background: linear-gradient(135deg, #7C3AED, #DC2626);
+                  color: white;
+                  border: none;
+                  padding: 12px 28px;
+                  border-radius: 12px;
+                  font-size: 1rem;
+                  font-weight: 600;
+                  cursor: pointer;
+                  font-family: inherit;
+                  transition: transform 0.2s, box-shadow 0.2s;
+                }
+
+                .difficulties-btn:hover {
+                  transform: scale(1.05);
+                  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+                }
+
+                .back-btn {
+                  background: white;
+                  border: 2px solid #e2e8f0;
+                  padding: 10px 18px;
+                  border-radius: 10px;
+                  font-size: 0.95rem;
+                  font-weight: 500;
+                  cursor: pointer;
+                  font-family: inherit;
+                  margin-bottom: 20px;
+                  transition: all 0.2s;
+                }
+
+                .back-btn:hover {
+                  background: #f8fafc;
+                  border-color: #7C3AED;
+                  color: #7C3AED;
+                }
+
+                .category-view, .strategy-view, .difficulties-view {
+                  max-width: 900px;
+                  margin: 0 auto;
+                }
+
+                .category-header {
+                  background: white;
+                  border-radius: 20px;
+                  padding: 28px;
+                  display: flex;
+                  align-items: center;
+                  gap: 18px;
+                  margin-bottom: 20px;
+                  border-right: 6px solid var(--accent-color);
+                }
+
+                .category-header-icon {
+                  font-size: 44px;
+                }
+
+                .category-header h1 {
+                  font-size: 1.8rem;
+                  color: #1e293b;
+                }
+
+                .strategies-list {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 14px;
+                }
+
+                .strategy-card {
+                  background: white;
+                  border-radius: 16px;
+                  padding: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 18px;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                }
+
+                .strategy-card:hover {
+                  transform: translateX(-8px);
+                  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                }
+
+                .strategy-card-icon {
+                  font-size: 32px;
+                  background: #f1f5f9;
+                  width: 56px;
+                  height: 56px;
+                  border-radius: 14px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+
+                .strategy-card-content {
+                  flex: 1;
+                }
+
+                .strategy-card-content h3 {
+                  font-size: 1.15rem;
+                  color: #1e293b;
+                  margin-bottom: 4px;
+                }
+
+                .strategy-card-content p {
+                  color: #64748b;
+                  font-size: 0.9rem;
+                }
+
+                .strategy-card-arrow {
+                  font-size: 1.4rem;
+                  color: #cbd5e1;
+                }
+
+                .strategy-header {
+                  background: white;
+                  border-radius: 20px;
+                  padding: 28px;
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 20px;
+                  margin-bottom: 20px;
+                  border-right: 6px solid var(--accent-color);
+                }
+
+                .strategy-icon-large {
+                  font-size: 48px;
+                  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 18px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                }
+
+                .strategy-header h1 {
+                  font-size: 1.5rem;
+                  color: #1e293b;
+                  margin-bottom: 6px;
+                }
+
+                .strategy-goal {
+                  color: #64748b;
+                  font-size: 1rem;
+                  margin-bottom: 6px;
+                }
+
+                .strategy-when {
+                  color: #475569;
+                  font-size: 0.9rem;
+                }
+
+                .tabs {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-bottom: 20px;
+                }
+
+                .tab {
+                  background: white;
+                  border: 2px solid #e2e8f0;
+                  padding: 10px 16px;
+                  border-radius: 10px;
+                  font-size: 0.9rem;
+                  font-weight: 500;
+                  cursor: pointer;
+                  font-family: inherit;
+                  transition: all 0.2s;
+                }
+
+                .tab:hover {
+                  border-color: #7C3AED;
+                }
+
+                .tab.active {
+                  background: #7C3AED;
+                  color: white;
+                  border-color: #7C3AED;
+                }
+
+                .tab-content {
+                  background: white;
+                  border-radius: 20px;
+                  padding: 28px;
+                }
+
+                .tab-content h2 {
+                  font-size: 1.3rem;
+                  color: #1e293b;
+                  margin-bottom: 18px;
+                }
+
+                .teaching-steps {
+                  list-style: none;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 14px;
+                }
+
+                .teaching-steps li {
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 14px;
+                  padding: 14px;
+                  background: #f8fafc;
+                  border-radius: 12px;
+                }
+
+                .step-number {
+                  background: linear-gradient(135deg, #7C3AED, #a855f7);
+                  color: white;
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  flex-shrink: 0;
+                  font-size: 0.9rem;
+                }
+
+                .step-text {
+                  font-size: 1rem;
+                  color: #334155;
+                  line-height: 1.5;
+                }
+
+                .tip-box {
+                  margin-top: 20px;
+                  padding: 14px 18px;
+                  background: #fef3c7;
+                  border-radius: 12px;
+                  border-right: 4px solid #f59e0b;
+                  color: #92400e;
+                  font-size: 0.95rem;
+                }
+
+                .example-box {
+                  background: #f1f5f9;
+                  padding: 18px;
+                  border-radius: 12px;
+                  margin-bottom: 20px;
+                  border-right: 4px solid #059669;
+                }
+
+                .example-box pre {
+                  white-space: pre-wrap;
+                  font-family: inherit;
+                  color: #334155;
+                  line-height: 1.6;
+                  font-size: 0.95rem;
+                }
+
+                .activity-box {
+                  background: #ede9fe;
+                  padding: 18px;
+                  border-radius: 12px;
+                  color: #5b21b6;
+                  border-right: 4px solid #7C3AED;
+                  font-size: 0.95rem;
+                }
+
+                .navigation-card {
+                  background: linear-gradient(135deg, #faf5ff, #f5f3ff);
+                  border: 3px solid var(--accent-color);
+                  border-radius: 20px;
+                  padding: 24px;
+                  max-width: 380px;
+                  margin: 0 auto;
+                }
+
+                .nav-card-header {
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  margin-bottom: 18px;
+                  padding-bottom: 14px;
+                  border-bottom: 2px dashed var(--accent-color);
+                }
+
+                .nav-card-header span {
+                  font-size: 28px;
+                }
+
+                .nav-card-header h3 {
+                  font-size: 1.1rem;
+                  color: #1e293b;
+                }
+
+                .nav-card-questions {
+                  list-style: none;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                }
+
+                .nav-card-questions li {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  font-size: 0.95rem;
+                  color: #334155;
+                }
+
+                .question-bullet {
+                  background: var(--accent-color);
+                  color: white;
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 0.8rem;
+                  flex-shrink: 0;
+                }
+
+                .card-instruction {
+                  text-align: center;
+                  margin-top: 18px;
+                  color: #64748b;
+                  font-size: 0.85rem;
+                }
+
+                .metacog-cards {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                  gap: 16px;
+                }
+
+                .metacog-card {
+                  background: #f8fafc;
+                  border-radius: 14px;
+                  padding: 20px;
+                  border: 2px solid #e2e8f0;
+                }
+
+                .metacog-card h3 {
+                  font-size: 1rem;
+                  color: #1e293b;
+                  margin-bottom: 14px;
+                  padding-bottom: 10px;
+                  border-bottom: 2px solid #7C3AED;
+                }
+
+                .metacog-card ul {
+                  list-style: none;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                }
+
+                .metacog-card li {
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  color: #334155;
+                  font-size: 0.9rem;
+                }
+
+                .checkbox {
+                  font-size: 1.1rem;
+                  color: #7C3AED;
+                }
+
+                .structures-grid {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                  gap: 14px;
+                }
+
+                .structure-card {
+                  background: #f8fafc;
+                  border-radius: 12px;
+                  padding: 18px;
+                  border-right: 4px solid #059669;
+                }
+
+                .structure-card h3 {
+                  color: #059669;
+                  margin-bottom: 6px;
+                  font-size: 1rem;
+                }
+
+                .structure-card p {
+                  color: #475569;
+                  font-size: 0.9rem;
+                }
+
+                .graded-list {
+                  list-style: none;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                }
+
+                .graded-list li {
+                  display: flex;
+                  align-items: center;
+                  gap: 14px;
+                  padding: 14px;
+                  background: #f8fafc;
+                  border-radius: 12px;
+                  font-size: 0.95rem;
+                }
+
+                .level-badge {
+                  background: linear-gradient(135deg, #059669, #10b981);
+                  color: white;
+                  padding: 5px 12px;
+                  border-radius: 16px;
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  white-space: nowrap;
+                }
+
+                .summary-steps-list {
+                  list-style: none;
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                  gap: 10px;
+                }
+
+                .summary-steps-list li {
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  padding: 12px;
+                  background: #f8fafc;
+                  border-radius: 10px;
+                  font-size: 0.9rem;
+                }
+
+                .step-badge {
+                  background: #DC2626;
+                  color: white;
+                  width: 26px;
+                  height: 26px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 0.8rem;
+                  flex-shrink: 0;
+                }
+
+                .difficulties-view h1 {
+                  text-align: center;
+                  font-size: 1.5rem;
+                  color: #1e293b;
+                  margin-bottom: 20px;
+                }
+
+                .difficulties-table {
+                  background: white;
+                  border-radius: 20px;
+                  overflow: hidden;
+                  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                }
+
+                .table-header {
+                  display: grid;
+                  grid-template-columns: 1fr 1.2fr 1.5fr;
+                  background: linear-gradient(135deg, #7C3AED, #a855f7);
+                  color: white;
+                  font-weight: 600;
+                  padding: 14px 18px;
+                  font-size: 0.95rem;
+                }
+
+                .table-row {
+                  display: grid;
+                  grid-template-columns: 1fr 1.2fr 1.5fr;
+                  padding: 14px 18px;
+                  border-bottom: 1px solid #e2e8f0;
+                  font-size: 0.9rem;
+                }
+
+                .table-row:nth-child(even) {
+                  background: #f8fafc;
+                }
+
+                .table-row:last-child {
+                  border-bottom: none;
+                }
+
+                .col-problem {
+                  font-weight: 600;
+                  color: #DC2626;
+                }
+
+                .col-cause {
+                  color: #64748b;
+                }
+
+                .col-solution {
+                  color: #059669;
+                }
+
+                @media (max-width: 768px) {
+                  .app-container {
+                    padding: 16px;
+                  }
+
+                  .hero-section h1 {
+                    font-size: 1.5rem;
+                  }
+
+                  .strategy-header {
+                    flex-direction: column;
+                  }
+
+                  .tabs {
+                    overflow-x: auto;
+                    flex-wrap: nowrap;
+                    padding-bottom: 8px;
+                  }
+
+                  .tab {
+                    white-space: nowrap;
+                    font-size: 0.85rem;
+                    padding: 8px 14px;
+                  }
+
+                  .table-header, .table-row {
+                    grid-template-columns: 1fr;
+                    gap: 6px;
+                  }
+                }
+              `}</style>
+
+              {activeView === 'home' && renderHome()}
+              {activeView === 'category' && renderCategory()}
+              {activeView === 'strategy' && renderStrategy()}
+              {activeView === 'difficulties' && renderDifficulties()}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ReadingStrategiesApp />);
+    </script>
+</body>
+</html>
