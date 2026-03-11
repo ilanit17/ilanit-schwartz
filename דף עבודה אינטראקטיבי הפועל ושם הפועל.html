@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>דף עבודה אינטראקטיבי - הפועל ושם הפועל</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            assistant: ['Assistant', 'sans-serif'],
+            heebo: ['Heebo', 'sans-serif']
+          },
+          keyframes: {
+            popHappy: {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.04)' },
+              '100%': { transform: 'scale(1)' }
+            },
+            shakeWrong: {
+              '0%,100%': { transform: 'translateX(0)' },
+              '25%': { transform: 'translateX(5px)' },
+              '75%': { transform: 'translateX(-5px)' }
+            },
+            glowPulse: {
+              '0%': { boxShadow: '0 0 0 rgba(56,189,248,0)' },
+              '50%': { boxShadow: '0 0 18px rgba(56,189,248,0.25)' },
+              '100%': { boxShadow: '0 0 0 rgba(56,189,248,0)' }
+            }
+          },
+          animation: {
+            popHappy: 'popHappy 0.45s ease',
+            shakeWrong: 'shakeWrong 0.35s ease',
+            glowPulse: 'glowPulse 1.3s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background:
+        radial-gradient(circle at top right, #e0f2fe 0%, transparent 30%),
+        radial-gradient(circle at top left, #fce7f3 0%, transparent 30%),
+        linear-gradient(180deg, #f8fafc 0%, #fffdf4 100%);
+    }
+
+    .reading-text p {
+      margin-bottom: 1rem;
+      line-height: 2;
+    }
+
+    .option-btn.correct {
+      background-color: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #166534 !important;
+    }
+
+    .option-btn.wrong {
+      background-color: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #991b1b !important;
+    }
+
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .45rem .95rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .progress-bar {
+      transition: width 0.35s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        background: white !important;
+      }
+
+      .print-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-assistant text-slate-800">
+  <div class="max-w-6xl mx-auto px-4 py-6 md:py-10">
+    <header class="text-center mb-8 md:mb-10">
+      <div class="inline-block bg-white/90 backdrop-blur border border-sky-100 shadow-sm rounded-full px-5 py-3 mb-4">
+        <p class="text-sky-700 font-bold text-sm md:text-base">דף עבודה אינטראקטיבי לכיתה ה</p>
+      </div>
+
+      <h1 class="font-heebo font-extrabold text-3xl md:text-5xl text-slate-800 mb-3">
+        הפועל ושם הפועל
+      </h1>
+
+      <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+        קוראים, חושבים, עונים ומתרגלים. השאלות הסגורות נבדקות אוטומטית, והשאלות הפתוחות נשמרות לבדיקה של המורה.
+      </p>
+    </header>
+
+    <section class="bg-white/90 backdrop-blur rounded-[2rem] shadow-lg border border-slate-100 p-5 md:p-8 mb-8 print-card">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+        <div>
+          <h2 class="font-heebo font-extrabold text-2xl md:text-3xl text-slate-800">מטרת הדף</h2>
+          <p class="text-slate-600 text-lg mt-2">
+            להבין את הטקסט, לזהות רעיונות מרכזיים, ולהבחין בין פועל לשם הפועל.
+          </p>
+        </div>
+        <span class="section-chip bg-sky-100 text-sky-800">לקרוא · לחשוב · לכתוב</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-lg">
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <div class="font-bold text-slate-800 mb-1">לפני קריאה</div>
+          <div class="text-slate-600">חשיבה מקדימה וניבוי</div>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <div class="font-bold text-slate-800 mb-1">תוך כדי קריאה</div>
+          <div class="text-slate-600">הבנת מידע, הסקת מסקנות והבנת תהליך</div>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <div class="font-bold text-slate-800 mb-1">אחרי קריאה ולשון</div>
+          <div class="text-slate-600">מסר מרכזי, כותרת מתאימה ופועל ושם הפועל</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white/90 backdrop-blur rounded-[2rem] shadow-lg border border-slate-100 p-5 md:p-8 mb-8 print-card">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+        <div>
+          <h2 class="font-heebo font-extrabold text-2xl md:text-3xl text-slate-800">קטע לקריאה</h2>
+          <h3 class="font-heebo text-2xl md:text-3xl font-bold text-sky-700 mt-3">כך נוצר עציץ חכם</h3>
+        </div>
+        <span class="section-chip bg-amber-100 text-amber-800">קראו בנחת ושימו לב גם למילים וגם לרעיונות</span>
+      </div>
+
+      <div class="reading-text text-lg md:text-[1.32rem] text-slate-700">
+        <p>
+          ביום שלישי הודיעה המורה יעל לכיתה ה שביום שישי תיערך בבית הספר תערוכת המצאות צעירות.
+          כל קבוצה התבקשה לבחור רעיון, לתכנן דגם ולהכין הסבר קצר למבקרים.
+          בהתחלה הילדים התרגשו מאוד, אבל גם קצת חששו שלא יספיקו לסיים בזמן.
+        </p>
+        <p>
+          נועה הציעה לבנות מתקן שעוזר לשמור על צמחי הכיתה בזמן חופשות.
+          עידו רצה לבדוק איך אפשר לחסוך במים, ומאיה התנדבה לכתוב את רשימת המשימות.
+          אחרי שיחה קצרה החליטו חברי הקבוצה לשלב בין הרעיונות וליצור עציץ חכם שמודד את מידת הלחות באדמה.
+        </p>
+        <p>
+          למחרת הם התחילו לעבוד.
+          נועה הביאה בקבוקים ריקים, עידו ניסה לחבר חוטים וחיישן פשוט, ומאיה המשיכה לארגן את התפקידים.
+          בזמן העבודה הם גילו שלא מספיק רק לחשוב על ההמצאה.
+          צריך גם לבדוק, לשנות, לנסות שוב וללמוד מטעויות.
+        </p>
+        <p>
+          ביום התערוכה הגיעו הורים, תלמידים ומורים לראות את המיזמים.
+          הקבוצה עמדה ליד השולחן, הסבירה כיצד פועל העציץ החכם והדגימה איך הוא שולח סימן כשצריך להשקות.
+          המבקרים שאלו שאלות רבות, והילדים ענו בביטחון.
+          בסוף היום אמרה המורה יעל שההצלחה האמיתית לא הייתה רק בהצגת המוצר, אלא גם ביכולת לעבוד יחד, להקשיב זה לזה ולהמשיך לנסות.
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-white/90 backdrop-blur rounded-[2rem] shadow-lg border border-slate-100 p-5 md:p-6 mb-8 no-print print-card">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="w-full">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="font-heebo font-extrabold text-2xl md:text-3xl text-slate-800">ההתקדמות שלי</h2>
+            <span id="progressText" class="text-slate-600 font-bold text-lg">0 מתוך 15</span>
+          </div>
+          <div class="w-full h-4 bg-slate-200 rounded-full overflow-hidden">
+            <div id="progressBar" class="progress-bar h-full rounded-full bg-gradient-to-l from-sky-500 to-cyan-400" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <div class="flex flex-wrap gap-2 mb-6">
+        <span class="section-chip bg-cyan-100 text-cyan-800">שאלות 1–2: לפני קריאה</span>
+        <span class="section-chip bg-sky-100 text-sky-800">שאלות 3–8: תוך כדי קריאה</span>
+        <span class="section-chip bg-emerald-100 text-emerald-800">שאלות 9–10: אחרי קריאה</span>
+        <span class="section-chip bg-violet-100 text-violet-800">שאלות 11–15: לשון</span>
+      </div>
+
+      <div id="questionsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></div>
+    </section>
+
+    <section class="bg-white/90 backdrop-blur rounded-[2rem] shadow-lg border border-slate-100 p-5 md:p-8 print-card">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 no-print">
+        <div>
+          <h3 class="font-heebo font-extrabold text-2xl text-slate-800 mb-1">סיום ובדיקה</h3>
+          <p class="text-slate-600 text-lg">הציון יחושב רק לפי השאלות הסגורות. את התשובות הפתוחות שומרים ושולחים למורה.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+          <button
+            id="finishBtn"
+            class="w-full md:w-auto bg-gradient-to-l from-sky-500 to-cyan-400 text-white font-bold text-xl px-8 py-4 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition animate-glowPulse"
+          >
+            סיימתי! בדקו אותי
+          </button>
+
+          <button
+            id="saveBtn"
+            class="w-full md:w-auto bg-gradient-to-l from-emerald-500 to-teal-400 text-white font-bold text-xl px-8 py-4 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition"
+          >
+            שמירת הקובץ לשליחה למורה
+          </button>
+        </div>
+      </div>
+
+      <div id="resultBox" class="hidden mt-6 rounded-3xl p-6 text-center border-2"></div>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        id: 1,
+        type: "mcq",
+        stage: "לפני קריאה",
+        category: "ניבוי",
+        question: "לפי הכותרת 'כך נוצר עציץ חכם', על מה כנראה נקרא בטקסט?",
+        options: [
+          "על טיול לים",
+          "על תהליך יצירה של עציץ חכם",
+          "על סיפור על חיה ביער",
+          "על תחרות ריצה"
+        ],
+        answer: 1
+      },
+      {
+        id: 2,
+        type: "open",
+        stage: "לפני קריאה",
+        category: "חשיבה מקדימה",
+        question: "מה אפשר לשער שתלמידים יצטרכו לעשות כדי ליצור עציץ חכם?"
+      },
+      {
+        id: 3,
+        type: "mcq",
+        stage: "תוך כדי קריאה",
+        category: "איתור מידע",
+        question: "מה התבקשה כל קבוצה לעשות לקראת התערוכה?",
+        options: [
+          "לבחור רעיון, לתכנן דגם ולהכין הסבר קצר",
+          "לצייר רק שלט לתערוכה",
+          "להביא אוכל למבקרים",
+          "לכתוב סיפור חדש"
+        ],
+        answer: 0
+      },
+      {
+        id: 4,
+        type: "mcq",
+        stage: "תוך כדי קריאה",
+        category: "הבנת סיבה",
+        question: "מדוע הילדים גם התרגשו וגם חששו?",
+        options: [
+          "כי לא רצו להשתתף בכלל",
+          "כי המשימה הייתה מעניינת אבל הם פחדו שלא יספיקו בזמן",
+          "כי המורה ביטלה את העבודה",
+          "כי אף אחד לא הביא חומרים"
+        ],
+        answer: 1
+      },
+      {
+        id: 5,
+        type: "open",
+        stage: "תוך כדי קריאה",
+        category: "הסקת מסקנה",
+        question: "מה אפשר להבין על הקבוצה מן המשפט: 'החליטו חברי הקבוצה לשלב בין הרעיונות'?"
+      },
+      {
+        id: 6,
+        type: "mcq",
+        stage: "תוך כדי קריאה",
+        category: "הבנת תהליך",
+        question: "מה הילדים גילו בזמן העבודה?",
+        options: [
+          "שמספיק רק לדבר על הרעיון",
+          "שלא צריך לתכנן בכלל",
+          "שצריך גם לבדוק, לשנות, לנסות שוב וללמוד מטעויות",
+          "שעדיף להתחיל מחדש מקבוצה אחרת"
+        ],
+        answer: 2
+      },
+      {
+        id: 7,
+        type: "open",
+        stage: "תוך כדי קריאה",
+        category: "דמות ותפקיד",
+        question: "איזו תכונה בולטת אצל מאיה? הסבירו בקצרה."
+      },
+      {
+        id: 8,
+        type: "mcq",
+        stage: "תוך כדי קריאה",
+        category: "הבנת משמעות",
+        question: "מה אפשר להבין מן המשפט: 'הילדים ענו בביטחון'?",
+        options: [
+          "שהם לא הכירו את ההמצאה",
+          "שהם ידעו להסביר את העבודה שלהם היטב",
+          "שהם פחדו מאוד מהמבקרים",
+          "שהם ביקשו מהמורה לענות במקומם"
+        ],
+        answer: 1
+      },
+      {
+        id: 9,
+        type: "open",
+        stage: "אחרי קריאה",
+        category: "מסר מרכזי",
+        question: "מהו המסר המרכזי של הטקסט?"
+      },
+      {
+        id: 10,
+        type: "mcq",
+        stage: "אחרי קריאה",
+        category: "כותרת מתאימה",
+        question: "למה הכותרת 'כך נוצר עציץ חכם' מתאימה לטקסט?",
+        options: [
+          "כי הטקסט מתאר שלב אחר שלב איך נוצר העציץ החכם",
+          "כי הטקסט עוסק רק בציור עציצים",
+          "כי בטקסט אין בכלל המצאה",
+          "כי הכותרת עוסקת בטיול של הכיתה"
+        ],
+        answer: 0
+      },
+      {
+        id: 11,
+        type: "mcq",
+        stage: "לשון",
+        category: "פועל ושם הפועל",
+        question: "איזו מן המילים הבאות היא פועל?",
+        options: [
+          "לנסות",
+          "עבודה",
+          "התרגשו",
+          "תערוכה"
+        ],
+        answer: 2
+      },
+      {
+        id: 12,
+        type: "mcq",
+        stage: "לשון",
+        category: "פועל ושם הפועל",
+        question: "איזו מן המילים הבאות היא שם הפועל?",
+        options: [
+          "הקשיבו",
+          "להקשיב",
+          "מקשיב",
+          "הקשבה"
+        ],
+        answer: 1
+      },
+      {
+        id: 13,
+        type: "open",
+        stage: "לשון",
+        category: "איתור בטקסט",
+        question: "כתבו מן הטקסט פועל אחד ושם פועל אחד."
+      },
+      {
+        id: 14,
+        type: "open",
+        stage: "לשון",
+        category: "המרה",
+        question: "הפכו את הפועל 'הסבירה' לשם הפועל."
+      },
+      {
+        id: 15,
+        type: "open",
+        stage: "לשון",
+        category: "יצירה עצמית",
+        question: "כתבו משפט קצר משלכם שיש בו גם פועל וגם שם הפועל."
+      }
+    ];
+
+    const userAnswers = {};
+    const closedQuestionStatus = {};
+
+    const container = document.getElementById("questionsContainer");
+    const resultBox = document.getElementById("resultBox");
+    const finishBtn = document.getElementById("finishBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+
+    function countAnswered() {
+      return Object.keys(userAnswers).length;
+    }
+
+    function updateProgress() {
+      const answered = countAnswered();
+      const percent = Math.round((answered / questions.length) * 100);
+      progressText.textContent = `${answered} מתוך ${questions.length}`;
+      progressBar.style.width = `${percent}%`;
+    }
+
+    function stageStyle(stage) {
+      if (stage === "לפני קריאה") return "bg-cyan-100 text-cyan-800";
+      if (stage === "תוך כדי קריאה") return "bg-sky-100 text-sky-800";
+      if (stage === "אחרי קריאה") return "bg-emerald-100 text-emerald-800";
+      return "bg-violet-100 text-violet-800";
+    }
+
+    function createQuestionCard(q) {
+      const card = document.createElement("div");
+      card.className = "question-card bg-white/95 rounded-[1.8rem] shadow-md border border-slate-100 p-5 md:p-6 print-card";
+
+      let content = `
+        <div class="flex flex-col gap-2 mb-4">
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-block ${stageStyle(q.stage)} text-sm font-bold px-3 py-1 rounded-full">
+              ${q.stage}
+            </span>
+            <span class="inline-block bg-slate-100 text-slate-700 text-sm font-bold px-3 py-1 rounded-full">
+              שאלה ${q.id} · ${q.category}
+            </span>
+            ${q.type === "open" ? `<span class="inline-block bg-amber-100 text-amber-800 text-sm font-bold px-3 py-1 rounded-full">נבדק על ידי המורה</span>` : ""}
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed">${q.question}</h3>
+        </div>
+      `;
+
+      if (q.type === "mcq") {
+        content += `
+          <div class="space-y-3">
+            ${q.options.map((opt, index) => `
+              <button
+                class="option-btn w-full text-right border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 rounded-2xl px-4 py-3 text-lg md:text-xl font-semibold transition"
+                data-qid="${q.id}"
+                data-index="${index}"
+              >
+                ${opt}
+              </button>
+            `).join("")}
+          </div>
+          <div id="feedback-${q.id}" class="mt-4 text-base md:text-lg font-bold min-h-[1.75rem]"></div>
+        `;
+      } else {
+        content += `
+          <div class="space-y-3">
+            <textarea
+              id="input-${q.id}"
+              class="open-input w-full border-2 border-slate-200 rounded-2xl px-4 py-3 text-lg md:text-xl bg-slate-50 focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-400 transition"
+              placeholder="כתבו כאן את התשובה..."
+            ></textarea>
+
+            <button
+              class="save-open-btn bg-gradient-to-l from-amber-500 to-orange-400 text-white font-bold text-lg px-5 py-3 rounded-2xl shadow hover:scale-105 active:scale-95 transition"
+              data-qid="${q.id}"
+            >
+              שמירת התשובה
+            </button>
+          </div>
+          <div id="feedback-${q.id}" class="mt-4 text-base md:text-lg font-bold min-h-[1.75rem] text-amber-700"></div>
+        `;
+      }
+
+      card.innerHTML = content;
+      return card;
+    }
+
+    function renderQuestions() {
+      questions.forEach(q => container.appendChild(createQuestionCard(q)));
+
+      document.querySelectorAll(".option-btn").forEach(btn => {
+        btn.addEventListener("click", handleMcqClick);
+      });
+
+      document.querySelectorAll(".save-open-btn").forEach(btn => {
+        btn.addEventListener("click", handleOpenSave);
+      });
+
+      document.querySelectorAll("textarea").forEach(area => {
+        area.addEventListener("input", handleOpenTyping);
+      });
+    }
+
+    function handleMcqClick(e) {
+      const btn = e.currentTarget;
+      const qid = Number(btn.dataset.qid);
+      const selectedIndex = Number(btn.dataset.index);
+      const question = questions.find(q => q.id === qid);
+      const feedback = document.getElementById(`feedback-${qid}`);
+      const allBtns = document.querySelectorAll(`.option-btn[data-qid="${qid}"]`);
+
+      userAnswers[qid] = selectedIndex;
+      closedQuestionStatus[qid] = selectedIndex === question.answer;
+
+      allBtns.forEach((b, i) => {
+        b.disabled = true;
+        b.classList.remove("correct", "wrong", "animate-popHappy", "animate-shakeWrong");
+
+        if (i === question.answer) b.classList.add("correct");
+        if (i === selectedIndex && selectedIndex !== question.answer) {
+          b.classList.add("wrong", "animate-shakeWrong");
+        }
+        if (i === selectedIndex && selectedIndex === question.answer) {
+          b.classList.add("animate-popHappy");
+        }
+      });
+
+      if (closedQuestionStatus[qid]) {
+        feedback.textContent = "נכון מאוד";
+        feedback.className = "mt-4 text-base md:text-lg font-bold min-h-[1.75rem] text-green-700";
+      } else {
+        feedback.textContent = "לא נכון. נסו ללמוד מן התשובה הנכונה המסומנת בירוק.";
+        feedback.className = "mt-4 text-base md:text-lg font-bold min-h-[1.75rem] text-red-700";
+      }
+
+      updateProgress();
+    }
+
+    function handleOpenTyping(e) {
+      const area = e.currentTarget;
+      const qid = Number(area.id.replace("input-", ""));
+      if (area.value.trim()) {
+        userAnswers[qid] = area.value;
+      } else {
+        delete userAnswers[qid];
+      }
+      updateProgress();
+    }
+
+    function handleOpenSave(e) {
+      const btn = e.currentTarget;
+      const qid = Number(btn.dataset.qid);
+      const area = document.getElementById(`input-${qid}`);
+      const feedback = document.getElementById(`feedback-${qid}`);
+
+      if (!area.value.trim()) {
+        feedback.textContent = "יש לכתוב תשובה לפני השמירה.";
+        feedback.className = "mt-4 text-base md:text-lg font-bold min-h-[1.75rem] text-red-700";
+        return;
+      }
+
+      userAnswers[qid] = area.value;
+      feedback.textContent = "התשובה נשמרה. המורה תבדוק אותה.";
+      feedback.className = "mt-4 text-base md:text-lg font-bold min-h-[1.75rem] text-amber-700";
+
+      updateProgress();
+    }
+
+    function getClosedQuestionsCount() {
+      return questions.filter(q => q.type === "mcq").length;
+    }
+
+    function getClosedCorrectCount() {
+      return questions
+        .filter(q => q.type === "mcq")
+        .reduce((sum, q) => sum + (closedQuestionStatus[q.id] === true ? 1 : 0), 0);
+    }
+
+    function getEncouragingMessage(score) {
+      if (score === 100) return "מדהים. עניתם נכון על כל השאלות הסגורות.";
+      if (score >= 85) return "כל הכבוד. עבודה מעולה בשאלות הסגורות.";
+      if (score >= 70) return "יפה מאוד. יש הבנה טובה מאוד של החומר.";
+      if (score >= 50) return "עבודה טובה. כדאי לחזור על כמה נקודות.";
+      return "יש התחלה יפה. קראו שוב את הטקסט וחזקו את ההבנה.";
+    }
+
+    finishBtn.addEventListener("click", () => {
+      const answeredCount = Object.keys(userAnswers).length;
+
+      if (answeredCount < questions.length) {
+        resultBox.classList.remove("hidden");
+        resultBox.className = "mt-6 rounded-3xl p-6 text-center border-2 border-amber-300 bg-amber-50";
+        resultBox.innerHTML = `
+          <div class="text-2xl font-extrabold text-amber-800 mb-2">עדיין לא סיימתם</div>
+          <p class="text-lg text-amber-700">עניתם עד עכשיו על ${answeredCount} מתוך ${questions.length} שאלות.</p>
+        `;
+        resultBox.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      const closedTotal = getClosedQuestionsCount();
+      const closedCorrect = getClosedCorrectCount();
+      const percentage = Math.round((closedCorrect / closedTotal) * 100);
+      const message = getEncouragingMessage(percentage);
+
+      let resultStyle = "border-red-300 bg-red-50";
+      let titleColor = "text-red-700";
+      let textColor = "text-red-600";
+
+      if (percentage >= 85) {
+        resultStyle = "border-green-300 bg-green-50";
+        titleColor = "text-green-700";
+        textColor = "text-green-600";
+      } else if (percentage >= 60) {
+        resultStyle = "border-sky-300 bg-sky-50";
+        titleColor = "text-sky-700";
+        textColor = "text-sky-600";
+      } else if (percentage >= 50) {
+        resultStyle = "border-amber-300 bg-amber-50";
+        titleColor = "text-amber-800";
+        textColor = "text-amber-700";
+      }
+
+      resultBox.classList.remove("hidden");
+      resultBox.className = `mt-6 rounded-3xl p-6 text-center border-2 ${resultStyle} animate-popHappy`;
+      resultBox.innerHTML = `
+        <div class="text-3xl md:text-4xl font-extrabold ${titleColor} mb-3">הציון שלכם: ${percentage}%</div>
+        <p class="text-xl md:text-2xl font-bold ${textColor} mb-2">${closedCorrect} תשובות נכונות מתוך ${closedTotal} שאלות סגורות</p>
+        <p class="text-lg md:text-xl text-slate-700 mb-2">${message}</p>
+        <p class="text-base md:text-lg text-slate-600">השאלות הפתוחות נשמרו לבדיקה של המורה ואינן נכללות בציון האוטומטי.</p>
+      `;
+
+      resultBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const allTextareas = document.querySelectorAll("textarea");
+      allTextareas.forEach(area => {
+        area.textContent = area.value;
+        area.setAttribute("data-saved-value", area.value);
+      });
+
+      const clone = document.documentElement.cloneNode(true);
+      const cloneTextareas = clone.querySelectorAll("textarea");
+      cloneTextareas.forEach((area, index) => {
+        const originalValue = allTextareas[index].value;
+        area.textContent = originalValue;
+      });
+
+      const htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
+      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "dafe-avoda-poal-veshem-hapoal.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    renderQuestions();
+    updateProgress();
+  </script>
+</body>
+</html>
