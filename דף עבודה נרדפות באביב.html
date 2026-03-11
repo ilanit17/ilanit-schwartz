@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דַּף עֲבוֹדָה אַבִיבִי: מִלִּים נִרְדָּפוֹת</title>
+    
+    <!-- Google Fonts: Heebo for Headings, Assistant for Body -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ecfdf5; /* emerald-50 */
+            scroll-behavior: smooth;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -2px rgba(16, 185, 129, 0.1);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            background-color: #d1fae5; /* emerald-100 */
+            border-color: #34d399; /* emerald-400 */
+        }
+
+        /* Animation for correct answer */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="text-emerald-900 font-sans text-lg md:text-xl pb-24">
+
+    <!-- Progress Bar (Fixed Top) -->
+    <div class="fixed top-0 left-0 w-full bg-white shadow-md z-50 transition-all duration-300">
+        <div class="h-2 w-full bg-gray-200">
+            <div id="progress-bar" class="h-2 bg-emerald-500 w-0 transition-all duration-500"></div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center text-sm md:text-base font-bold text-emerald-800">
+            <span>🌸 דַּף עֲבוֹדָה: מִלִּים נִרְדָּפוֹת</span>
+            <span id="progress-text">הִתְקַדְּמוּת: 0 / 15</span>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="pt-24 pb-10 px-4 text-center">
+        <h1 class="font-heading text-4xl md:text-6xl font-black text-emerald-700 mb-4 tracking-tight">
+            חֲגִיגַת מִלִּים בָּאָבִיב 🌿
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-emerald-600 max-w-2xl mx-auto">
+            תַּלְמִידִים יְקָרִים! קִרְאוּ אֶת הַסִּפּוּר בִּתְשׂוּמֶת לֵב, וְאַחַר כָּךְ עִנְוּ עַל הַשְּׁאֵלוֹת שֶׁלְּמַטָּה. הַיּוֹם נְתַרְגֵּל <strong class="text-emerald-800 bg-emerald-100 px-2 rounded">מִלִּים נִרְדָּפוֹת</strong>!
+        </p>
+    </header>
+
+    <!-- Reading Text Section -->
+    <main class="max-w-4xl mx-auto px-4">
+        
+        <section class="bg-white rounded-3xl shadow-lg p-6 md:p-10 mb-12 border-t-8 border-emerald-400 relative">
+            <div class="absolute -top-6 -right-4 text-5xl">📖</div>
+            <h2 class="font-heading text-3xl font-bold text-emerald-800 mb-6 border-b-2 border-emerald-100 pb-2">סִפּוּר לִקְרִיאָה: יָמִים שֶׁל אָבִיב</h2>
+            
+            <div class="text-2xl leading-loose text-gray-800 text-justify">
+                <p class="mb-4">
+                    הָאָבִיב הִגִּיעַ! הַ<strong>שֶּׁמֶשׁ</strong> זָרְחָה בַּשָּׁמַיִם הַ<strong>תְּכוּלִים</strong>, וְהַ<strong>חַמָּה</strong> חִמְּמָה אֶת הָאֲדָמָה. 
+                </p>
+                <p class="mb-4">
+                    בַּגִּנָּה פָּרְחוּ <strong>פְּרָחִים סָסְגוֹנִיִּים</strong> שֶׁהֵפִיצוּ <strong>נִיחוֹחַ</strong> נִפְלָא לְכָל עֵבֶר. כָּל <strong>צִיץ</strong> הִרְהִיב בְּיָפְיוֹ הַמְּיֻחָד. הַיְּלָדִים בַּגַּן הָיוּ <strong>שְׂמֵחִים</strong> וְ<strong>עַלִּיזִים</strong>. הֵם <strong>דִּלְּגוּ</strong> וְ<strong>קָפְצוּ</strong> עַל הַדֶּשֶׁא הַיָּרוֹק, וְרָצוּ <strong>חִישׁ מַהֵר</strong> מִמָּקוֹם לְמָקוֹם.
+                </p>
+                <p class="mb-4">
+                    הָרוּחַ נָשְׁבָה בַּ<strong>עֲדִינוּת</strong>, וְלִטְּפָה בְּ<strong>רַכּוּת</strong> אֶת עֲלֵי הַ<strong>עֵץ</strong> הַגָּבוֹהַּ. עַל הַ<strong>אִילָן</strong> יָשְׁבָה צִפּוֹר קְטַנָּה, וּסְבִיבָהּ הִתְעוֹפְפוּ חֲרָקִים <strong>זְעִירִים</strong>. 
+                </p>
+                <p>
+                    אֵיזֶה כֵּיף לָצֵאת לְ<strong>טִיּוּל</strong> בְּעוֹנָה כָּל כָּךְ <strong>יָפָה</strong> וְ<strong>נָאָה</strong>!
+                </p>
+            </div>
+        </section>
+
+        <!-- Worksheet Questions Container -->
+        <section id="worksheet-container" class="space-y-8">
+            <!-- Questions will be injected here via JavaScript -->
+        </section>
+
+        <!-- Final Summary Section (Hidden initially) -->
+        <section id="summary-section" class="hidden mt-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl shadow-2xl p-10 text-center text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 text-6xl opacity-20">🎉</div>
+            <div class="absolute bottom-0 left-0 p-4 text-6xl opacity-20">🏆</div>
+            
+            <h2 class="font-heading text-5xl font-black mb-4 animate-pop">כָּל הַכָּבוֹד!!!</h2>
+            <p class="text-3xl font-bold mb-6">סִיַּמְתֶּם אֶת דַּף הָעֲבוֹדָה בְּהַצְלָחָה!</p>
+            
+            <div class="bg-white/20 backdrop-blur rounded-2xl p-6 inline-block mb-6 border-2 border-white/30">
+                <p class="text-2xl mb-2">הַצִּיּוּן שֶׁלָּכֶם:</p>
+                <p id="final-score" class="font-heading text-7xl font-bold text-yellow-300">100</p>
+            </div>
+            
+            <p id="summary-feedback" class="text-xl md:text-2xl font-semibold"></p>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const questionsData = [
+            {
+                q: "מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-\"שֶּׁמֶשׁ\" כְּפִי שֶׁמּוֹפִיעָה בַּסִּפּוּר?",
+                options: ["יָרֵחַ", "כּוֹכָב", "חַמָּה", "עָנָן"],
+                answer: 2
+            },
+            {
+                q: "מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-\"פֶּרַח\" שֶׁמָּצָאנוּ בַּטֶּקְסְט?",
+                options: ["עֵץ", "עָלֶה", "שֹׁרֶשׁ", "צִיץ"],
+                answer: 3
+            },
+            {
+                q: "אֵיזוֹ מִלָּה נִרְדֶּפֶת לְ-\"שְׂמֵחִים\" מִסְתַּתֶּרֶת בַּשּׁוּרוֹת?",
+                options: ["עַלִּיזִים", "עֲצוּבִים", "עֲיֵפִים", "רְגוּעִים"],
+                answer: 0
+            },
+            {
+                q: "הַיְּלָדִים קָפְצוּ עַל הַדֶּשֶׁא. מָצְאוּ מִלָּה נִרְדֶּפֶת לְ-\"קָפְצוּ\":",
+                options: ["עָמְדוּ", "דִּלְּגוּ", "יָשְׁבוּ", "הָלְכוּ"],
+                answer: 1
+            },
+            {
+                q: "\"הָרוּחַ נָשְׁבָה בַּעֲדִינוּת\". מַהִי מִלָּה נִרְדֶּפֶת לְ-\"בַּעֲדִינוּת\"?",
+                options: ["בְּחָזְקָה", "בִּמְהִירוּת", "בְּרַכּוּת", "בְּכַעַס"],
+                answer: 2
+            },
+            {
+                q: "מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-\"עֵץ\" שֶׁמּוֹפִיעָה בַּסִּפּוּר?",
+                options: ["אִילָן", "שִׂיחַ", "גִּבְעוֹל", "פֶּרַח"],
+                answer: 0
+            },
+            {
+                q: "בַּסִּפּוּר כָּתוּב שֶׁהָעוֹנָה הִיא \"יָפָה\". אֵיזוֹ מִלָּה מְתָאֶרֶת גַּם כֵּן יֹפִי?",
+                options: ["גְּבוֹהָה", "נָאָה", "מְכֹעֶרֶת", "רְגִילָה"],
+                answer: 1
+            },
+            {
+                q: "הַשָּׁמַיִם בַּסִּפּוּר הֵם \"תְּכוּלִים\". מַהִי הַמַּשְׁמָעוּת (מִלָּה נִרְדֶּפֶת) שֶׁל \"תְּכוּלִים\"?",
+                options: ["אֲדֻמִּים מְעַט", "שְׁחוֹרִים", "יְרֻקִּים כֵּהִים", "כְּחֻלִּים בְּהִירִים"],
+                answer: 3
+            },
+            {
+                q: "אִם נִרְצֶה לְהַגִּיד \"שָׁמַיִם\" בְּמִלָּה נִרְדֶּפֶת יָפָה, מָה נֹאמַר?",
+                options: ["אֲדָמָה", "יָם", "רָקִיעַ", "יַבָּשָׁה"],
+                answer: 2
+            },
+            {
+                q: "לִפְנֵי הָאָבִיב יָרַד הַרְבֵּה מָטָר בַּחֹרֶף. מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-\"מָטָר\"?",
+                options: ["רוּחַ", "גֶּשֶׁם", "שֶּׁמֶשׁ", "קֶרַח"],
+                answer: 1
+            },
+            {
+                q: "בָּאָבִיב רָאִינוּ פְּרָחִים \"סָסְגוֹנִיִּים\". מַה פֵּרוּשׁ (מִלָּה נִרְדֶּפֶת) לְ-\"סָסְגוֹנִי\"?",
+                options: ["מְשַׁעֲמֵם", "שָׁחֹר לָבָן", "צִבְעוֹנִי", "אָרוֹךְ"],
+                answer: 2
+            },
+            {
+                q: "הַיְּלָדִים רָצוּ עַל הַדֶּשֶׁא \"חִישׁ מַהֵר\". מַהִי מִלָּה נִרְדֶּפֶת לְ-\"חִישׁ\"?",
+                options: ["לְאַט", "בִּמְהִירוּת", "אָחוֹרָה", "בְּשֶׁקֶט"],
+                answer: 1
+            },
+            {
+                q: "כֵּיף לָצֵאת בָּאָבִיב לְ-\"טִיּוּל\". מַהִי מִלָּה נִרְדֶּפֶת לְ-\"טִיּוּל\"?",
+                options: ["סִיּוּר", "שֵׁנָה", "מִשְׂחָק", "אֲרוּחָה"],
+                answer: 0
+            },
+            {
+                q: "סְבִיב הָעֵץ הִתְעוֹפְפוּ חֲרָקִים \"זְעִירִים\". מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-\"זָעִיר\"?",
+                options: ["עֲנָקִי", "כָּבֵד", "רָחָב", "קָטָן מְאוֹד"],
+                answer: 3
+            },
+            {
+                q: "הַפְּרָחִים הֵפִיצוּ \"נִיחוֹחַ\". אֵיזוֹ תְּשׁוּבָה הִיא מִלָּה נִרְדֶּפֶת לְכָךְ?",
+                options: ["רַעַשׁ חָזָק", "רֵיחַ נָעִים", "צֶבַע כֵּהֶה", "טַעַם טוֹב"],
+                answer: 1
+            }
+        ];
+
+        let answeredCount = 0;
+        let score = 0;
+        const totalQuestions = questionsData.length;
+        const answeredState = new Array(totalQuestions).fill(false);
+
+        const container = document.getElementById('worksheet-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const summarySection = document.getElementById('summary-section');
+        const finalScoreEl = document.getElementById('final-score');
+        const summaryFeedback = document.getElementById('summary-feedback');
+
+        // Render questions
+        function renderQuestions() {
+            questionsData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "question-card bg-white rounded-2xl shadow-sm border border-emerald-100 p-6 md:p-8";
+                card.id = `q-card-${index}`;
+                
+                // Question Title
+                const qTitle = document.createElement('h3');
+                qTitle.className = "text-2xl font-bold text-emerald-900 mb-6";
+                qTitle.innerHTML = `<span class="bg-emerald-100 text-emerald-800 rounded-full h-10 w-10 inline-flex items-center justify-center ml-3 text-xl">${index + 1}</span>${item.q}`;
+                
+                // Options Grid
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+
+                item.options.forEach((optText, optIndex) => {
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn bg-gray-50 border-2 border-gray-200 text-gray-800 font-bold text-xl py-4 px-6 rounded-xl text-right flex items-center w-full focus:outline-none";
+                    
+                    // Radio circle pseudo-element
+                    const radioCircle = document.createElement('div');
+                    radioCircle.className = "w-6 h-6 rounded-full border-2 border-gray-400 ml-4 flex-shrink-0 flex items-center justify-center bg-white radio-circle";
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.innerText = optText;
+
+                    btn.appendChild(radioCircle);
+                    btn.appendChild(textSpan);
+
+                    btn.onclick = () => handleAnswerClick(index, optIndex, btn, card, radioCircle);
+                    
+                    // Save index for easy retrieval
+                    btn.dataset.optIndex = optIndex;
+                    
+                    optionsGrid.appendChild(btn);
+                });
+
+                // Feedback Message Area
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = "feedback-msg mt-6 text-xl font-bold hidden rounded-lg p-4";
+
+                card.appendChild(qTitle);
+                card.appendChild(optionsGrid);
+                card.appendChild(feedbackDiv);
+
+                container.appendChild(card);
+            });
+        }
+
+        function handleAnswerClick(qIndex, selectedOptIndex, btnEl, cardEl, radioCircle) {
+            if (answeredState[qIndex]) return; // Prevent multiple clicks
+            
+            answeredState[qIndex] = true;
+            answeredCount++;
+            
+            const isCorrect = selectedOptIndex === questionsData[qIndex].answer;
+            const buttons = cardEl.querySelectorAll('.option-btn');
+            const feedbackDiv = cardEl.querySelector('.feedback-msg');
+
+            // Disable all buttons in this card
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('cursor-not-allowed', 'opacity-70');
+                b.classList.remove('hover:bg-gray-200');
+            });
+
+            // Mark the selected button
+            btnEl.classList.remove('opacity-70', 'bg-gray-50', 'border-gray-200');
+            
+            const innerCircle = document.createElement('div');
+            innerCircle.className = "w-3 h-3 rounded-full bg-white";
+
+            if (isCorrect) {
+                score++;
+                btnEl.classList.add('bg-emerald-500', 'border-emerald-600', 'text-white', 'animate-pop', 'shadow-md');
+                radioCircle.classList.add('border-emerald-600', 'bg-emerald-600');
+                radioCircle.classList.remove('bg-white');
+                radioCircle.appendChild(innerCircle);
+                
+                feedbackDiv.innerHTML = "🌟 תְּשׁוּבָה נְכוֹנָה! מְצֻיָּן!";
+                feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-800', 'border-l-4', 'border-emerald-500', 'block');
+                feedbackDiv.classList.remove('hidden');
+            } else {
+                btnEl.classList.add('bg-red-500', 'border-red-600', 'text-white', 'shadow-md');
+                radioCircle.classList.add('border-red-600', 'bg-red-600');
+                radioCircle.classList.remove('bg-white');
+                radioCircle.appendChild(innerCircle);
+
+                // Highlight correct answer
+                const correctBtn = Array.from(buttons).find(b => parseInt(b.dataset.optIndex) === questionsData[qIndex].answer);
+                correctBtn.classList.remove('opacity-70', 'bg-gray-50', 'border-gray-200');
+                correctBtn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'opacity-100');
+                
+                const correctRadio = correctBtn.querySelector('.radio-circle');
+                correctRadio.classList.add('border-emerald-500', 'bg-emerald-200');
+
+                feedbackDiv.innerHTML = "🤔 לֹא נוֹרָא! הַתְּשׁוּבָה הַנְּכוֹנָה מֻדְגֶּשֶׁת בְּיָרוֹק.";
+                feedbackDiv.classList.add('bg-red-50', 'text-red-700', 'border-l-4', 'border-red-500', 'block');
+                feedbackDiv.classList.remove('hidden');
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            // Update Text
+            progressText.innerText = `הִתְקַדְּמוּת: ${answeredCount} / ${totalQuestions}`;
+            
+            // Update Bar Width
+            const percentage = (answeredCount / totalQuestions) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            if (answeredCount === totalQuestions) {
+                setTimeout(showSummary, 800);
+            }
+        }
+
+        function showSummary() {
+            summarySection.classList.remove('hidden');
+            
+            // Calculate final grade out of 100
+            const finalGrade = Math.round((score / totalQuestions) * 100);
+            
+            // Animate numbers
+            let currentDisplay = 0;
+            const interval = setInterval(() => {
+                currentDisplay += 2;
+                if(currentDisplay >= finalGrade) {
+                    currentDisplay = finalGrade;
+                    clearInterval(interval);
+                }
+                finalScoreEl.innerText = currentDisplay;
+            }, 20);
+
+            // Determine feedback text
+            if (finalGrade === 100) {
+                summaryFeedback.innerText = "מֻשְׁלָם! אַתֶּם אַלּוּפִים אֲמִתִּיִּים בְּמִלִּים נִרְדָּפוֹת!";
+                finalScoreEl.className = "font-heading text-7xl font-bold text-yellow-300 animate-pop inline-block";
+            } else if (finalGrade >= 80) {
+                summaryFeedback.innerText = "עֲבוֹדָה מְעֻלָּה! כָּל הַכָּבוֹד עַל הַמַּאֲמָץ וְהַיֶּדַע שֶׁלָּכֶם.";
+            } else if (finalGrade >= 60) {
+                summaryFeedback.innerText = "טּוֹב מְאוֹד. תָּמִיד אֶפְשָׁר לַחְזוֹר לַסִּפּוּר וּלְתַרְגֵּל שׁוּב.";
+            } else {
+                summaryFeedback.innerText = "הָעִקָּר זֶה הַתִּרְגּוּל! כְּדַאי לִקְרוֹא שׁוּב אֶת הַסִּפּוּר וּלְנַסּוֹת שׁוּב בְּהַצְלָחָה.";
+            }
+
+            // Scroll down to summary
+            summarySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Initialize application
+        window.onload = renderQuestions;
+
+    </script>
+</body>
+</html>
