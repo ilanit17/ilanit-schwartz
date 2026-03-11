@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חֲגִיגַת הָאָבִיב: מִלִּים נִרְדָּפוֹת</title>
+    
+    <!-- Google Fonts: Heebo (Headings), Assistant (Body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    },
+                    colors: {
+                        spring: {
+                            light: '#f2fcf5',
+                            green: '#86efac',
+                            darkGreen: '#166534',
+                            yellow: '#fef08a',
+                            pink: '#fbcfe8',
+                            blue: '#bfdbfe'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Animations */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 3s infinite ease-in-out;
+        }
+
+        /* Highlight Classes for Magic Wand */
+        .highlight-group-1 { background-color: #fef08a; color: #854d0e; padding: 0.1rem 0.3rem; border-radius: 0.375rem; font-weight: 800; transition: all 0.5s;}
+        .highlight-group-2 { background-color: #fbcfe8; color: #831843; padding: 0.1rem 0.3rem; border-radius: 0.375rem; font-weight: 800; transition: all 0.5s;}
+        .highlight-group-3 { background-color: #bfdbfe; color: #1e3a8a; padding: 0.1rem 0.3rem; border-radius: 0.375rem; font-weight: 800; transition: all 0.5s;}
+        .highlight-group-4 { background-color: #bbf7d0; color: #14532d; padding: 0.1rem 0.3rem; border-radius: 0.375rem; font-weight: 800; transition: all 0.5s;}
+        
+        .hidden-highlight {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        /* Flip Cards */
+        .flip-card {
+            background-color: transparent;
+            width: 200px;
+            height: 150px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .flip-card-front {
+            background-color: white;
+            color: #166534;
+            border: 2px solid #86efac;
+        }
+        .flip-card-back {
+            background-color: #86efac;
+            color: #166534;
+            transform: rotateY(180deg);
+        }
+
+        /* Next Slide Arrow */
+        .next-arrow {
+            position: absolute;
+            bottom: 2rem;
+            animation: bounce-slow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-spring-light text-gray-800 font-sans text-xl md:text-2xl leading-relaxed">
+
+    <!-- Navbar / Progress indicator -->
+    <nav class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur shadow-sm z-50 p-4">
+        <div class="max-w-4xl mx-auto flex justify-between items-center text-sm md:text-base font-bold text-spring-darkGreen">
+            <span>🌸 שִׁיעוּר אָבִיב</span>
+            <span>מִלִּים נִרְדָּפוֹת</span>
+        </div>
+    </nav>
+
+    <!-- Slide 1: Header -->
+    <section id="slide-1" class="slide bg-gradient-to-b from-spring-green/30 to-spring-light">
+        <div class="text-center max-w-3xl animate-bounce-slow">
+            <span class="text-6xl md:text-8xl block mb-4">🌼🐝🦋</span>
+            <h1 class="font-heading text-5xl md:text-7xl font-black text-spring-darkGreen mb-6 leading-tight">
+                חֲגִיגַת הָאָבִיב:<br>מִלִּים נִרְדָּפוֹת!
+            </h1>
+            <p class="text-2xl md:text-3xl font-semibold text-green-700">
+                בְּרוּכִים הַבָּאִים לַשִּׁיעוּר הֲכִי פּוֹרֵחַ בַּשָּׁנָה!
+            </p>
+        </div>
+        <a href="#slide-2" class="next-arrow text-spring-darkGreen hover:text-green-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 2: Lesson Goal -->
+    <section id="slide-2" class="slide bg-spring-light">
+        <div class="max-w-3xl bg-white p-8 md:p-12 rounded-3xl shadow-xl text-center border-t-8 border-spring-yellow">
+            <h2 class="font-heading text-4xl md:text-5xl font-bold text-yellow-600 mb-6">מָה נִלְמַד הַיּוֹם? 🎯</h2>
+            <p class="text-2xl mb-4">
+                הַיּוֹם נַכִּיר מֻשָּׂג חָדָשׁ וּמְעַנְיֵן בַּשָּׂפָה הָעִבְרִית:<br>
+                <strong class="text-3xl text-yellow-600 bg-yellow-100 px-2 rounded">מִלִּים נִרְדָּפוֹת</strong>.
+            </p>
+            <p class="text-xl text-gray-600">
+                נִקְרָא סִפּוּר אֲבִיבִי שָׂמֵחַ, נְשַׂחֵק עִם מַטֵּה קֶסֶם, נִרְאֶה אֵיךְ נִרְאֶה גְּרָף שֶׁל מִלִּים, וְנִפְתֹּר חִידוֹן כֵּיפִי!
+            </p>
+        </div>
+        <a href="#slide-3" class="next-arrow text-spring-darkGreen hover:text-green-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 3: Introduction to Synonyms -->
+    <section id="slide-3" class="slide bg-blue-50">
+        <div class="max-w-4xl w-full text-center">
+            <h2 class="font-heading text-4xl md:text-5xl font-bold text-blue-700 mb-8">מָהֵן בִּכְלָל מִלִּים נִרְדָּפוֹת? 🤔</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-blue-200">
+                    <h3 class="font-bold text-2xl text-blue-600 mb-4">הַהַגְדָּרָה שֶׁלָּנוּ:</h3>
+                    <p>
+                        מִלִּים נִרְדָּפוֹת הֵן <strong class="text-blue-600">מִלִּים שׁוֹנוֹת</strong> שֶׁנִּכְתָּבוֹת וְנִשְׁמָעוֹת אַחֶרֶת, אֲבָל יֵשׁ לָהֶן <strong class="text-blue-600">אוֹתָהּ מַשְׁמָעוּת</strong> אוֹ מַשְׁמָעוּת דּוֹמָה מְאוֹד.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-blue-200 flex flex-col justify-center items-center">
+                    <h3 class="font-bold text-2xl text-blue-600 mb-4">לְדֻגְמָה:</h3>
+                    <div class="flex items-center gap-4 text-3xl font-bold">
+                        <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-xl">יָרֵחַ</span>
+                        <span>=</span>
+                        <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-xl">לְבָנָה</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#slide-4" class="next-arrow text-blue-700 hover:text-blue-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 4: Reading & Magic Wand -->
+    <section id="slide-4" class="slide bg-spring-light">
+        <div class="max-w-4xl w-full bg-white p-8 rounded-3xl shadow-2xl relative">
+            
+            <div class="absolute -top-6 -right-6 text-6xl">📖</div>
+
+            <h2 class="font-heading text-4xl font-bold text-spring-darkGreen mb-6 text-center">הָאָבִיב שֶׁלָּנוּ - קְרִיאָה בְּמִלִּים נִרְדָּפוֹת</h2>
+            
+            <p class="text-xl text-center mb-8 bg-spring-green/20 p-4 rounded-xl">
+                קִרְאוּ אֶת הַסִּפּוּר. הַאִם תַּצְלִיחוּ לִמְצוֹא מִלִּים שֶׁיֵּשׁ לָהֶן הַרְבֵּה מְשֻׁתָּף?<br>
+                <span class="text-sm font-normal text-gray-500">(לְאַחַר הַקְּרִיאָה, נַסּוּ לִלְחוֹץ עַל מַטֵּה הַקֶּסֶם!)</span>
+            </p>
+
+            <div class="text-2xl leading-loose bg-gray-50 p-6 md:p-10 rounded-2xl border-2 border-dashed border-gray-300 relative text-justify">
+                <p class="mb-4">
+                    הָאָבִיב הִגִּיעַ! הַ<span class="synonym-target hidden-highlight" data-group="1">שֶּׁמֶשׁ</span> חִיְּכָה בַּשָּׁמַיִם, וְהַ<span class="synonym-target hidden-highlight" data-group="1">חַמָּה</span> חִמְּמָה אֶת הָאֲדָמָה מִלְמַעְלָה.
+                </p>
+                <p class="mb-4">
+                    הַיְּלָדִים בַּכִּתָּה הָיוּ <span class="synonym-target hidden-highlight" data-group="2">שְׂמֵחִים</span> מְאוֹד. הֵם הִרְגִּישׁוּ <span class="synonym-target hidden-highlight" data-group="2">עַלִּיזִים</span> כִּי הַטֶּבַע הִתְעוֹרֵר לְחַיִּים.
+                </p>
+                <p class="mb-4">
+                    דָּנִי <span class="synonym-target hidden-highlight" data-group="3">קָפַץ</span> בִּזְרִיזוּת מֵעַל שְׁלוּלִית קְטַנָּה שֶׁנִּשְׁאֲרָה מֵהַחֹרֶף, וְרוֹנִי <span class="synonym-target hidden-highlight" data-group="3">דִּלֵּג</span> בְּשִׂמְחָה עַל הַדֶּשֶׁא הַיָּרוֹק.
+                </p>
+                <p class="mb-4">
+                    "תִּרְאוּ אֶת הַ<span class="synonym-target hidden-highlight" data-group="4">פֶּרַח</span> הַזֶּה!" קָרְאָה שִׁירָה, "אֵיזֶה <span class="synonym-target hidden-highlight" data-group="4">צִיץ</span> יָפֶה וְצִבְעוֹנִי גָּדַל לָנוּ בַּגִּנָּה!"
+                </p>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <button id="magic-wand-btn" onclick="toggleMagicWand()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center gap-3 text-2xl">
+                    <span>🪄</span> מַטֵּה הַקֶּסֶם: אִתּוּר מִלִּים נִרְדָּפוֹת!
+                </button>
+            </div>
+            <p id="magic-feedback" class="text-center text-purple-600 font-bold mt-4 opacity-0 transition-opacity">
+                הֵידָד! מַטֵּה הַקֶּסֶם צָבַע כָּל זוּג שֶׁל מִלִּים נִרְדָּפוֹת בְּצֶבַע אַחֵר!
+            </p>
+
+        </div>
+        <a href="#slide-5" class="next-arrow text-spring-darkGreen hover:text-green-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 5: Why use Synonyms? -->
+    <section id="slide-5" class="slide bg-pink-50">
+        <div class="max-w-4xl text-center">
+            <h2 class="font-heading text-4xl md:text-5xl font-bold text-pink-600 mb-8">לָמָּה צָרִיךְ מִלִּים נִרְדָּפוֹת? 🎨</h2>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-8 border-pink-400">
+                <p class="text-2xl mb-6">
+                    תּאֲרוּ לָעַצְמְכֶם צַיָּר שֶׁיֵּשׁ לוֹ רַק צֶבַע אֶחָד, צָהֹב. הַצִּיּוּר יִהְיֶה מְשַׁעֲמֵם, נָכוֹן?
+                </p>
+                <div class="flex justify-center mb-6 text-6xl">
+                    🖌️ 🎨 🖼️
+                </div>
+                <p class="text-2xl">
+                    <strong class="text-pink-600">הַמִּלִּים הֵן הַצְּבָעִים שֶׁל הַסּוֹפְרִים!</strong><br>
+                    כַּאֲשֶׁר אֲנַחְנוּ מִשְׁתַּמְּשִׁים בְּמִלִּים נִרְדָּפוֹת, אֲנַחְנוּ מְגַוְּנִים אֶת הַכְּתִיבָה שֶׁלָּנוּ.<br>
+                    בִּמְקוֹם לִכְתּוֹב "הַיֶּלֶד הָיָה שָׂמֵחַ וְגַם הַיַּלְדָּה הָיְתָה שְׂמֵחָה",<br>
+                    אֶפְשָׁר לִכְתּוֹב: "הַיֶּלֶד הָיָה <span class="bg-pink-200 px-2 rounded font-bold">שָׂמֵחַ</span>, וְהַיַּלְדָּה הָיְתָה <span class="bg-pink-200 px-2 rounded font-bold">עַלִּיזָה</span>".<br>
+                    כָּךְ הַסִּפּוּר הוֹפֵךְ לְעָשִׁיר וּמְעַנְיֵן הַרְבֵּה יוֹתֵר!
+                </p>
+            </div>
+        </div>
+        <a href="#slide-6" class="next-arrow text-pink-500 hover:text-pink-400 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 6: Visual Flip Cards -->
+    <section id="slide-6" class="slide bg-spring-light">
+        <h2 class="font-heading text-4xl font-bold text-spring-darkGreen mb-4 text-center">הַזּוּגוֹת שֶׁלָּנוּ (כַּרְטִיסִיּוֹת)</h2>
+        <p class="text-xl mb-12 text-center">עַבְרוּ עִם הָעַכְבָּר עַל הַכַּרְטִיסִיּוֹת כְּדֵי לְגַלּוֹת אֶת הַמִּלָּה הַנִּרְדֶּפֶת!</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl w-full justify-items-center">
+            
+            <!-- Card 1 -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front text-yellow-600 border-yellow-300">
+                        ☀️ שֶׁמֶשׁ
+                    </div>
+                    <div class="flip-card-back bg-yellow-300 text-yellow-800">
+                        חַמָּה
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front text-pink-600 border-pink-300">
+                        😊 שְׂמֵחִים
+                    </div>
+                    <div class="flip-card-back bg-pink-300 text-pink-800">
+                        עַלִּיזִים
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front text-blue-600 border-blue-300">
+                        🦘 קָפַץ
+                    </div>
+                    <div class="flip-card-back bg-blue-300 text-blue-800">
+                        דִּלֵּג
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front text-green-600 border-green-300">
+                        🌷 פֶּרַח
+                    </div>
+                    <div class="flip-card-back bg-green-300 text-green-800">
+                        צִיץ
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a href="#slide-7" class="next-arrow text-spring-darkGreen hover:text-green-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 7: Chart.js Data Visualization -->
+    <section id="slide-7" class="slide bg-yellow-50">
+        <div class="max-w-4xl w-full text-center flex flex-col items-center">
+            <h2 class="font-heading text-4xl font-bold text-yellow-700 mb-6">מָה מָצָאנוּ בַּטֶּקְסְט? 📊</h2>
+            <p class="text-xl mb-8">
+                הִנֵּה תַּרְשִׁים מְיֻחָד שֶׁמַּרְאֶה לָנוּ אֶת חֲלוּקַת הַמִּלִּים הַנִּרְדָּפוֹת שֶׁמָּצָאנוּ בַּסִּפּוּר הָאֲבִיבִי.
+            </p>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-lg w-full max-w-md">
+                <canvas id="synonymsChart" width="400" height="400"></canvas>
+            </div>
+            <p class="mt-4 text-gray-600 font-bold">סַךְ הַכֹּל: 4 זוּגוֹת מְיֻחָדִים!</p>
+        </div>
+        <a href="#slide-8" class="next-arrow text-yellow-600 hover:text-yellow-500 transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 8: Preparation for Quiz -->
+    <section id="slide-8" class="slide bg-blue-50">
+        <div class="max-w-3xl text-center bg-white p-12 rounded-full shadow-xl border-4 border-blue-200">
+            <h2 class="font-heading text-5xl font-bold text-blue-700 mb-4">מוּכָנִים לַמְּשִׂימָה? 🚀</h2>
+            <p class="text-2xl text-gray-700 mb-6">
+                עַכְשָׁו תּוֹרְכֶם! בְּשָׁלָב זֶה נִבְדֹּק מָה לָמַדְנוּ הַיּוֹם.
+            </p>
+            <a href="#slide-9" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-10 rounded-full text-2xl transition-transform transform hover:scale-110 shadow-lg">
+                הַתְחֵל אֶת הַחִידוֹן!
+            </a>
+        </div>
+    </section>
+
+    <!-- Slide 9: Interactive Quiz -->
+    <section id="slide-9" class="slide bg-spring-light">
+        <div class="max-w-3xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-green-200">
+            
+            <div class="bg-spring-green p-6 text-center text-spring-darkGreen">
+                <h2 class="font-heading text-4xl font-bold">חִידוֹן הָאָבִיב הַגָּדוֹל 🏆</h2>
+                <div class="text-lg mt-2 font-bold" id="quiz-progress">שְׁאֵלָה 1 מִתּוֹךְ 4</div>
+            </div>
+
+            <div class="p-8 md:p-12 text-center" id="quiz-container">
+                <h3 class="text-3xl font-bold mb-8 text-gray-800" id="question-text">טוען שאלה...</h3>
+                
+                <div class="grid grid-cols-1 gap-4" id="answers-container">
+                    <!-- Buttons will be generated by JS -->
+                </div>
+                
+                <div id="quiz-feedback" class="mt-6 text-2xl font-bold opacity-0 transition-opacity h-8"></div>
+            </div>
+
+        </div>
+        <a href="#slide-10" id="to-summary-btn" class="hidden mt-8 text-spring-darkGreen hover:text-green-500 transition-colors font-bold text-2xl flex items-center gap-2">
+            הַמְשֵׁךְ לְסִיכּוּם הַשִּׁיעוּר <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+    </section>
+
+    <!-- Slide 10: Summary & Certificate -->
+    <section id="slide-10" class="slide bg-gradient-to-t from-spring-green/30 to-spring-light text-center">
+        <div class="max-w-3xl bg-white p-12 rounded-3xl shadow-2xl border-4 border-dashed border-spring-green relative overflow-hidden">
+            
+            <div class="absolute -top-10 -left-10 text-8xl opacity-20 transform rotate-45">🌸</div>
+            <div class="absolute -bottom-10 -right-10 text-8xl opacity-20 transform -rotate-45">🦋</div>
+
+            <h2 class="font-heading text-5xl font-black text-spring-darkGreen mb-6">כָּל הַכָּבוֹד! 🎉</h2>
+            <p class="text-3xl font-bold text-gray-800 mb-4">
+                סִיַּמְתֶּם בְּהַצְלָחָה אֶת שִׁיעוּר מִלִּים נִרְדָּפוֹת.
+            </p>
+            <p class="text-xl text-gray-600 mb-8">
+                לָמַדְתֶּם שֶׁמִּלִּים שׁוֹנוֹת יְכוֹלוֹת לְהַבִּיעַ אֶת אוֹתָהּ מַשְׁמָעוּת, וְשֶׁבְּעֶזְרָתָן הַשָּׂפָה שֶׁלָּנוּ עֲשִׁירָה וּמְעַנְיֶנֶת כְּמוֹ שְׂדֵה פְּרָחִים בָּאָבִיב.
+            </p>
+
+            <div class="bg-yellow-100 p-6 rounded-2xl border-2 border-yellow-300 inline-block">
+                <span class="block text-4xl mb-2">🏅</span>
+                <span class="font-bold text-2xl text-yellow-800">תְּעוּדַת מֻמְחֶה/לְמִלִּים נִרְדָּפוֹת!</span>
+            </div>
+
+            <button onclick="window.scrollTo(0,0)" class="mt-8 block mx-auto text-sm font-bold text-gray-400 hover:text-gray-600">
+                חֲזוֹר לַהַתְחָלָה ⬆️
+            </button>
+        </div>
+    </section>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Magic Wand Logic ---
+        let magicActive = false;
+        function toggleMagicWand() {
+            magicActive = !magicActive;
+            const targets = document.querySelectorAll('.synonym-target');
+            const feedback = document.getElementById('magic-feedback');
+            
+            targets.forEach(el => {
+                const group = el.getAttribute('data-group');
+                if (magicActive) {
+                    el.classList.remove('hidden-highlight');
+                    el.classList.add(`highlight-group-${group}`);
+                } else {
+                    el.classList.remove(`highlight-group-${group}`);
+                    el.classList.add('hidden-highlight');
+                }
+            });
+
+            if (magicActive) {
+                feedback.classList.remove('opacity-0');
+            } else {
+                feedback.classList.add('opacity-0');
+            }
+        }
+
+        // --- Chart.js Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('synonymsChart').getContext('2d');
+            const synonymsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['שֶׁמֶשׁ-חַמָּה', 'שְׂמֵחִים-עַלִּיזִים', 'קָפַץ-דִּלֵּג', 'פֶּרַח-צִיץ'],
+                    datasets: [{
+                        data: [1, 1, 1, 1], // Equal distribution for 4 pairs
+                        backgroundColor: [
+                            '#fef08a', // Yellow
+                            '#fbcfe8', // Pink
+                            '#bfdbfe', // Blue
+                            '#bbf7d0'  // Green
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Assistant', sans-serif",
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- Quiz Logic ---
+        const questions = [
+            {
+                question: "מַהִי מִלָּה נִרְדֶּפֶת לַמִּלָּה 'שָׂמֵחַ'?",
+                answers: ["עָצוּב", "עַלִּיז", "כּוֹעֵס", "מָהִיר"],
+                correctIndex: 1
+            },
+            {
+                question: "בַּסִּפּוּר הוֹפִיעָה הַמִּלָּה 'חַמָּה'. מַהִי הַמִּלָּה הַנִּרְדֶּפֶת שֶׁלָּהּ?",
+                answers: ["יָרֵחַ", "כּוֹכָב", "שֶׁמֶשׁ", "עָנָן"],
+                correctIndex: 2
+            },
+            {
+                question: "לָמָּה מְשַׁמְּשׁוֹת אוֹתָנוּ הַמִּלִּים הַנִּרְדָּפוֹת?",
+                answers: ["לַעֲשׂוֹת שְׁגִיאוֹת כְּתִיב", "לְהַאֲרִיךְ אֶת הַשּׁוּרוֹת", "כְּדֵי לְהַעֲשִׁיר אֶת הַשָּׂפָה", "הֵן לֹא שִׁמּוּשִׁיּוֹת בִּכְלָל"],
+                correctIndex: 2
+            },
+            {
+                question: "הַמִּלִּים 'קָפַץ' וְ-'דִּלֵּג' הֵן...",
+                answers: ["מִלִּים נִרְדָּפוֹת", "מִלִּים הֲפוּכוֹת", "מִלִּים חֲרוּזוֹת", "מִלִּים בְּלִי מַשְׁמָעוּת"],
+                correctIndex: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionText = document.getElementById('question-text');
+        const answersContainer = document.getElementById('answers-container');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const quizProgress = document.getElementById('quiz-progress');
+        const toSummaryBtn = document.getElementById('to-summary-btn');
+
+        function loadQuestion() {
+            quizFeedback.classList.add('opacity-0'); // Hide feedback
+            answersContainer.innerHTML = ''; // Clear old buttons
+            
+            if (currentQuestionIndex >= questions.length) {
+                showQuizResults();
+                return;
+            }
+
+            const currentQ = questions[currentQuestionIndex];
+            quizProgress.innerText = `שְׁאֵלָה ${currentQuestionIndex + 1} מִתּוֹךְ ${questions.length}`;
+            questionText.innerText = currentQ.question;
+
+            currentQ.answers.forEach((answer, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = answer;
+                btn.className = "w-full text-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-4 px-6 rounded-xl transition-colors border-2 border-transparent focus:outline-none";
+                btn.onclick = () => checkAnswer(index, btn);
+                answersContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            // Disable all buttons to prevent double clicking
+            const allBtns = answersContainer.querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
+
+            const currentQ = questions[currentQuestionIndex];
+            
+            if (selectedIndex === currentQ.correctIndex) {
+                score++;
+                btnElement.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                btnElement.classList.add('bg-green-500', 'text-white', 'border-green-600');
+                quizFeedback.innerText = "תְּשׁוּבָה נְכוֹנָה! כָּל הַכָּבוֹד! 🌟";
+                quizFeedback.className = "mt-6 text-2xl font-bold transition-opacity text-green-600 opacity-100 h-8";
+            } else {
+                btnElement.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                btnElement.classList.add('bg-red-500', 'text-white', 'border-red-600');
+                
+                // Highlight correct answer
+                allBtns[currentQ.correctIndex].classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                allBtns[currentQ.correctIndex].classList.add('bg-green-300', 'border-green-500');
+
+                quizFeedback.innerText = "לֹא נוֹרָא, נַסּוּ בַּשְּׁאֵלָה הַבָּאָה! 🤔";
+                quizFeedback.className = "mt-6 text-2xl font-bold transition-opacity text-red-500 opacity-100 h-8";
+            }
+
+            // Wait 2 seconds and move to next question
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2000);
+        }
+
+        function showQuizResults() {
+            quizProgress.innerText = "הַחִידוֹן הִסְתַּיֵּם!";
+            
+            let message = "";
+            let emoji = "";
+            if (score === questions.length) {
+                message = "מֻשְׁלָם! אַתֶּם אַלּוּפֵי הַמִּלִּים הַנִּרְדָּפוֹת!";
+                emoji = "🏆";
+            } else if (score >= questions.length - 1) {
+                message = "כִּמְעַט מֻשְׁלָם! כָּל הַכָּבוֹד עַל הַמַּאֲמָץ!";
+                emoji = "⭐";
+            } else {
+                message = "עֲבוֹדָה טוֹבָה! תָּמִיד אֶפְשָׁר לִקְרוֹא שׁוּב וּלְהִשְׁתַּפֵּר.";
+                emoji = "👍";
+            }
+
+            questionText.innerHTML = `סִיַּמְתֶּם אֶת הַחִידוֹן!<br><span class="text-4xl text-spring-darkGreen block mt-4">עָנִיתֶם נָכוֹן עַל ${score} מִתּוֹךְ ${questions.length}</span>`;
+            answersContainer.innerHTML = `<div class="text-3xl font-bold mt-4 mb-8">${message} ${emoji}</div>`;
+            quizFeedback.classList.add('hidden');
+            
+            // Show button to proceed to summary
+            toSummaryBtn.classList.remove('hidden');
+        }
+
+        // Initialize Quiz
+        loadQuestion();
+
+    </script>
+</body>
+</html>
