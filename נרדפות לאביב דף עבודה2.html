@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דַּף עֲבוֹדָה אַבִיבִי: מִלִּים נִרְדָּפוֹת</title>
+    
+    <!-- Google Fonts: Heebo for Headings, Assistant for Body -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ecfdf5; /* emerald-50 */
+            scroll-behavior: smooth;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -2px rgba(16, 185, 129, 0.1);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover {
+            background-color: #d1fae5; /* emerald-100 */
+            border-color: #34d399; /* emerald-400 */
+        }
+
+        .option-btn.selected {
+            background-color: #10b981; /* emerald-500 */
+            border-color: #059669; /* emerald-600 */
+            color: white;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .question-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            textarea, input[type="text"] {
+                border: 1px solid #aaa !important;
+                background-color: transparent !important;
+                color: black !important;
+            }
+            .option-btn {
+                border: 1px solid #ccc !important;
+            }
+            .option-btn.selected {
+                background-color: #e5e5e5 !important;
+                color: black !important;
+                border-width: 2px !important;
+                border-color: black !important;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body class="text-emerald-900 font-sans text-lg md:text-xl pb-24">
+
+    <!-- Progress Bar (Fixed Top) - Hidden during print -->
+    <div class="fixed top-0 left-0 w-full bg-white shadow-md z-50 transition-all duration-300 no-print">
+        <div class="h-2 w-full bg-gray-200">
+            <div id="progress-bar" class="h-2 bg-emerald-500 w-0 transition-all duration-500"></div>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center text-sm md:text-base font-bold text-emerald-800">
+            <span>🌸 דַּף עֲבוֹדָה: מִלִּים נִרְדָּפוֹת</span>
+            <span id="progress-text">שְּׁאֵלוֹת שֶׁנַּעֲנוּ: 0 / 15</span>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="pt-24 pb-10 px-4 text-center">
+        <h1 class="font-heading text-4xl md:text-6xl font-black text-emerald-700 mb-4 tracking-tight">
+            חֲגִיגַת מִלִּים בָּאָבִיב 🌿
+        </h1>
+        <p class="text-xl md:text-2xl font-semibold text-emerald-600 max-w-2xl mx-auto mb-8">
+            תַּלְמִידִים יְקָרִים! קִרְאוּ אֶת הַסִּפּוּר בִּתְשׂוּמֶת לֵב, וְאַחַר כָּךְ עִנְוּ עַל הַשְּׁאֵלוֹת שֶׁלְּמַטָּה לְלֹא עֶזְרָה. בְּסִיּוּם הָעֲבוֹדָה תּוּכְלוּ לִשְׁלוֹחַ אֶת הַתְּשׁוּבוֹת לַמּוֹרֶה!
+        </p>
+
+        <!-- Student Details -->
+        <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-sm border-2 border-emerald-200 flex flex-col items-start gap-2">
+            <label for="student-name" class="font-bold text-emerald-800 text-xl block">שֵׁם הַתַּלְמִיד/ה:</label>
+            <input type="text" id="student-name" placeholder="הַקְלִידוּ אֶת שִׁמְכֶם כָּאן..." class="w-full bg-emerald-50 border-2 border-emerald-100 rounded-xl p-3 focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 transition-all">
+        </div>
+    </header>
+
+    <!-- Reading Text Section -->
+    <main class="max-w-4xl mx-auto px-4">
+        
+        <section class="bg-white rounded-3xl shadow-lg p-6 md:p-10 mb-12 border-t-8 border-emerald-400 relative">
+            <div class="absolute -top-6 -right-4 text-5xl no-print">📖</div>
+            <h2 class="font-heading text-3xl font-bold text-emerald-800 mb-6 border-b-2 border-emerald-100 pb-2">סִפּוּר לִקְרִיאָה: יָמִים שֶׁל אָבִיב</h2>
+            
+            <div class="text-2xl leading-loose text-gray-800 text-justify">
+                <p class="mb-4">
+                    הָאָבִיב הִגִּיעַ! הַ<strong>שֶּׁמֶשׁ</strong> זָרְחָה בַּשָּׁמַיִם הַ<strong>תְּכוּלִים</strong>, וְהַ<strong>חַמָּה</strong> חִמְּמָה אֶת הָאֲדָמָה. 
+                </p>
+                <p class="mb-4">
+                    בַּגִּנָּה פָּרְחוּ <strong>פְּרָחִים סָסְגוֹנִיִּים</strong> שֶׁהֵפִיצוּ <strong>נִיחוֹחַ</strong> נִפְלָא לְכָל עֵבֶר. כָּל <strong>צִיץ</strong> הִרְהִיב בְּיָפְיוֹ הַמְּיֻחָד. הַיְּלָדִים בַּגַּן הָיוּ <strong>שְׂמֵחִים</strong> וְ<strong>עַלִּיזִים</strong>. הֵם <strong>דִּלְּגוּ</strong> וְ<strong>קָפְצוּ</strong> עַל הַדֶּשֶׁא הַיָּרוֹק, וְרָצוּ <strong>חִישׁ מַהֵר</strong> מִמָּקוֹם לְמָקוֹם.
+                </p>
+                <p class="mb-4">
+                    הָרוּחַ נָשְׁבָה בַּ<strong>עֲדִינוּת</strong>, וְלִטְּפָה בְּ<strong>רַכּוּת</strong> אֶת עֲלֵי הַ<strong>עֵץ</strong> הַגָּבוֹהַּ. עַל הַ<strong>אִילָן</strong> יָשְׁבָה צִפּוֹר קְטַנָּה, וּסְבִיבָהּ הִתְעוֹפְפוּ חֲרָקִים <strong>זְעִירִים</strong>. 
+                </p>
+                <p>
+                    אֵיזֶה כֵּיף לָצֵאת לְ<strong>טִיּוּל</strong> בְּעוֹנָה כָּל כָּךְ <strong>יָפָה</strong> וְ<strong>נָאָה</strong>!
+                </p>
+            </div>
+        </section>
+
+        <!-- Worksheet Questions Container -->
+        <div id="worksheet-form">
+            
+            <!-- Part 1: Multiple Choice -->
+            <div class="mb-12">
+                <h2 class="font-heading text-3xl font-bold text-emerald-800 mb-6 bg-emerald-100 inline-block px-4 py-2 rounded-xl">חֵלֶק א': שְׁאֵלוֹת בְּחִירָה (5 שְׁאֵלוֹת)</h2>
+                <div id="mcq-container" class="space-y-6"></div>
+            </div>
+
+            <!-- Part 2: Fill in the blanks -->
+            <div class="mb-12">
+                <h2 class="font-heading text-3xl font-bold text-emerald-800 mb-6 bg-emerald-100 inline-block px-4 py-2 rounded-xl">חֵלֶק ב': הַשְׁלָמַת מִשְׁפָּטִים מִמַּחְסַן הַמִּלִּים (5 שְׁאֵלוֹת)</h2>
+                
+                <!-- Word Bank -->
+                <div class="bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl mb-6 text-center shadow-sm">
+                    <h3 class="font-bold text-yellow-800 text-xl mb-4">מַחְסַן מִלִּים:</h3>
+                    <div class="flex flex-wrap justify-center gap-4 text-2xl font-bold text-emerald-700">
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm border border-yellow-100">צִיץ</span>
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm border border-yellow-100">חִישׁ</span>
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm border border-yellow-100">זְעִירִים</span>
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm border border-yellow-100">נָאָה</span>
+                        <span class="bg-white px-4 py-2 rounded-lg shadow-sm border border-yellow-100">רָקִיעַ</span>
+                    </div>
+                </div>
+
+                <div id="fill-container" class="space-y-6"></div>
+            </div>
+
+            <!-- Part 3: Open Ended Questions -->
+            <div class="mb-12">
+                <h2 class="font-heading text-3xl font-bold text-emerald-800 mb-6 bg-emerald-100 inline-block px-4 py-2 rounded-xl">חֵלֶק ג': חָשְׁבוּ וְכִתְבוּ! (5 שְׁאֵלוֹת פְּתוּחוֹת)</h2>
+                <div id="open-container" class="space-y-6"></div>
+            </div>
+
+        </div>
+
+        <!-- Submission Section -->
+        <section class="mt-16 bg-emerald-800 rounded-3xl shadow-2xl p-8 md:p-12 text-center text-white no-print">
+            <h2 class="font-heading text-4xl font-black mb-4">סִיַּמְתֶּם לַעֲנוֹת? מְצֻיָּן! 🎉</h2>
+            <p class="text-xl mb-8 text-emerald-100">אֲנָא בִּדְקוּ שֶׁעֲנִיתֶם עַל כָּל הַשְּׁאֵלוֹת וְשֶׁרְשַׁמְתֶּם אֶת שִׁמְכֶם בְּמַעֲלֵה הַדַּף. בַּחֲרוּ כֵּיצַד תִּרְצוּ לְהַגִּישׁ אֶת הָעֲבוֹדָה לַמּוֹרֶה:</p>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <!-- Copy to Clipboard Button -->
+                <button onclick="copyAnswers()" class="bg-white text-emerald-800 hover:bg-emerald-50 font-bold py-4 px-8 rounded-xl text-xl transition-all shadow-lg flex items-center justify-center gap-3 w-full md:w-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    הַעְתָּקַת תְּשׁוּבוֹת
+                </button>
+                
+                <!-- Print/Save to PDF Button -->
+                <button onclick="window.print()" class="bg-emerald-600 border-2 border-emerald-400 hover:bg-emerald-500 text-white font-bold py-4 px-8 rounded-xl text-xl transition-all shadow-lg flex items-center justify-center gap-3 w-full md:w-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    הַדְפָּסָה / שְׁמִירָה כְּ-PDF
+                </button>
+            </div>
+            
+            <p id="copy-feedback" class="mt-6 text-yellow-300 font-bold text-xl opacity-0 transition-opacity">
+                הַתְּשׁוּבוֹת הוּעְתְּקוּ בְּהַצְלָחָה! אֶפְשָׁר לְהַדְבִּיק אוֹתָן בַּמַּיְיל אוֹ בַּוּוָאטְסְאַפּ שֶׁל הַמּוֹרֶה.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data structure for the questions
+        const questionsData = [
+            // MCQ (1-5)
+            { id: 1, type: 'mcq', text: 'מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-"שֶּׁמֶשׁ" כְּפִי שֶׁמּוֹפִיעָה בַּסִּפּוּר?', options: ['יָרֵחַ', 'כּוֹכָב', 'חַמָּה', 'עָנָן'] },
+            { id: 2, type: 'mcq', text: 'מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-"פֶּרַח" שֶׁמָּצָאנוּ בַּטֶּקְסְט?', options: ['עֵץ', 'עָלֶה', 'שֹׁרֶשׁ', 'צִיץ'] },
+            { id: 3, type: 'mcq', text: 'אֵיזוֹ מִלָּה נִרְדֶּפֶת לְ-"שְׂמֵחִים" מִסְתַּתֶּרֶת בַּשּׁוּרוֹת?', options: ['עַלִּיזִים', 'עֲצוּבִים', 'עֲיֵפִים', 'רְגוּעִים'] },
+            { id: 4, type: 'mcq', text: 'הַיְּלָדִים "קָפְצוּ" עַל הַדֶּשֶׁא. מָצְאוּ מִלָּה נִרְדֶּפֶת לְ-"קָפְצוּ":', options: ['עָמְדוּ', 'דִּלְּגוּ', 'יָשְׁבוּ', 'הָלְכוּ'] },
+            { id: 5, type: 'mcq', text: 'מַהִי הַמִּלָּה הַנִּרְדֶּפֶת לְ-"עֵץ" שֶׁמּוֹפִיעָה בַּסִּפּוּר?', options: ['אִילָן', 'שִׂיחַ', 'גִּבְעוֹל', 'פֶּרַח'] },
+            
+            // Fill in the blanks (6-10)
+            { id: 6, type: 'fill', text: 'הַשָּׁמַיִם בַּמָּרוֹם הֵם הַ__________.' },
+            { id: 7, type: 'fill', text: 'הַיְּלָדִים רָצוּ __________ מַהֵר לֶחָצֵר.' },
+            { id: 8, type: 'fill', text: 'הַחֲרָקִים הָיוּ מַמָּשׁ קְטַנִּים, הֵם הָיוּ __________.' },
+            { id: 9, type: 'fill', text: 'רָאִיתִי בַּגִּנָּה __________ יְפֵהפֶה וְצִבְעוֹנִי.' },
+            { id: 10, type: 'fill', text: 'הָעוֹנָה הַזּוֹ נְעִימָה וּמַמָּשׁ __________.' },
+
+            // Open Ended (11-15)
+            { id: 11, type: 'open', text: 'כִּתְבוּ בְּמִלִּים שֶׁלָּכֶם: לָמָּה לְדַעְתְּכֶם כְּדַאי לְהִשְׁתַּמֵּשׁ בְּמִלִּים נִרְדָּפוֹת כְּשֶׁכּוֹתְבִים סִפּוּר?' },
+            { id: 12, type: 'open', text: 'מִצְאוּ בַּטֶּקְסְט מִלָּה נִרְדֶּפֶת לַמִּלָּה "מָטָר" / "גֶּשֶׁם" (אוֹ הִזָּכְרוּ בְּאַחַת מֵהַשִּׁיעוּר). כִּתְבוּ מִשְׁפָּט יָפֶה שֶׁלָּכֶם עִם הַמִּלָּה הַזּוֹ.' },
+            { id: 13, type: 'open', text: 'אֵיזוֹ עוֹנָה אַתֶּם הֲכִי אוֹהֲבִים? כִּתְבוּ 2 מִשְׁפָּטִים עַל הָעוֹנָה שֶׁבְּחַרְתֶּם, וְנַסּוּ לְהִשְׁתַּמֵּשׁ בְּמִלָּה נִרְדֶּפֶת אַחַת לְפָחוֹת (לְמָשָׁל: חַם/לוֹהֵט, יָפֶה/מַקְסִים).' },
+            { id: 14, type: 'open', text: 'חַפְּשׂוּ סְבִיבְכֶם חֵפֶץ כָּלְשֶׁהוּ (בַּכִּתָּה אוֹ בַּחֶדֶר). מָה הַשֵּׁם שֶׁלּוֹ? הַאִם אַתֶּם מַכִּירִים מִלָּה נִרְדֶּפֶת לַחֵפֶץ הַזֶּה?' },
+            { id: 15, type: 'open', text: 'כִּתְבוּ סִיּוּם חָדָשׁ בֶּן שׁוּרָה אַחַת לַסִּפּוּר. הִשְׁתַּמְשׁוּ בְּמִלָּה נִרְדֶּפֶת לַמִּלָּה "טִיּוּל" (כְּמוֹ: מַסָּע אוֹ סִיּוּר).' }
+        ];
+
+        // Store user answers: { questionId: "User Answer String" }
+        const userAnswers = {};
+
+        // DOM Elements
+        const mcqContainer = document.getElementById('mcq-container');
+        const fillContainer = document.getElementById('fill-container');
+        const openContainer = document.getElementById('open-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        // Render functions
+        function renderQuestions() {
+            questionsData.forEach(q => {
+                const card = document.createElement('div');
+                card.className = "question-card bg-white rounded-2xl border border-emerald-100 p-6";
+                
+                // Question text
+                const qLabel = document.createElement('h3');
+                qLabel.className = "text-2xl font-bold text-emerald-900 mb-4";
+                qLabel.innerHTML = `<span class="bg-emerald-100 text-emerald-800 rounded-full h-8 w-8 inline-flex items-center justify-center ml-2 text-lg font-black">${q.id}</span> ${q.text}`;
+                card.appendChild(qLabel);
+
+                if (q.type === 'mcq') {
+                    const grid = document.createElement('div');
+                    grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4";
+                    q.options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = "option-btn bg-gray-50 border-2 border-gray-200 text-gray-800 font-bold text-xl py-3 px-4 rounded-xl text-right transition-colors w-full";
+                        btn.innerText = opt;
+                        btn.onclick = () => {
+                            // Clear other selections in this group
+                            Array.from(grid.children).forEach(c => c.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            saveAnswer(q.id, opt);
+                        };
+                        grid.appendChild(btn);
+                    });
+                    card.appendChild(grid);
+                    mcqContainer.appendChild(card);
+                } 
+                else if (q.type === 'fill') {
+                    const inputWrapper = document.createElement('div');
+                    inputWrapper.className = "mt-4 flex items-center gap-3";
+                    
+                    const label = document.createElement('span');
+                    label.className = "font-bold text-emerald-700";
+                    label.innerText = "הַתְּשׁוּבָה שֶׁלִּי:";
+                    
+                    const input = document.createElement('input');
+                    input.type = "text";
+                    input.className = "flex-1 bg-emerald-50 border-2 border-emerald-200 rounded-xl p-3 font-bold text-emerald-900 focus:outline-none focus:border-emerald-500 transition-colors";
+                    input.placeholder = "הַקְלִידוּ אֶת הַמִּלָּה כָּאן...";
+                    input.oninput = (e) => saveAnswer(q.id, e.target.value);
+                    
+                    inputWrapper.appendChild(label);
+                    inputWrapper.appendChild(input);
+                    card.appendChild(inputWrapper);
+                    fillContainer.appendChild(card);
+                }
+                else if (q.type === 'open') {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = "w-full bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4 mt-2 font-medium text-emerald-900 focus:outline-none focus:border-emerald-500 transition-colors resize-y";
+                    textarea.rows = 3;
+                    textarea.placeholder = "כִּתְבוּ אֶת הַתְּשׁוּבָה הַמְּלֵאָה שֶׁלָּכֶם כָּאן...";
+                    textarea.oninput = (e) => saveAnswer(q.id, e.target.value);
+                    
+                    card.appendChild(textarea);
+                    openContainer.appendChild(card);
+                }
+            });
+        }
+
+        // Logic to save answer and update progress
+        function saveAnswer(id, value) {
+            // Trim to check if it's genuinely answered
+            if (value && value.trim() !== '') {
+                userAnswers[id] = value.trim();
+            } else {
+                delete userAnswers[id];
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const totalQuestions = questionsData.length;
+            
+            progressText.innerText = `שְּׁאֵלוֹת שֶׁנַּעֲנוּ: ${answeredCount} / ${totalQuestions}`;
+            
+            const percentage = (answeredCount / totalQuestions) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Generate text for clipboard
+        function generateSummaryText() {
+            const studentNameInput = document.getElementById('student-name').value.trim();
+            const studentName = studentNameInput !== '' ? studentNameInput : 'תלמיד/ה ללא שם';
+            
+            let text = `דף עבודה - מילים נרדפות באביב\nשם התלמיד/ה: ${studentName}\n`;
+            text += `-----------------------------------\n\n`;
+
+            questionsData.forEach(q => {
+                const answer = userAnswers[q.id] || "לא נענה";
+                // Strip nikkud from question text for cleaner reading in text format if desired, 
+                // but keeping it is fine too. We'll keep it as is.
+                text += `שאלה ${q.id}: ${q.text.replace(/<[^>]*>?/gm, '')}\n`; // remove html tags from text
+                text += `תשובה: ${answer}\n\n`;
+            });
+
+            return text;
+        }
+
+        // Copy logic
+        function copyAnswers() {
+            const textToCopy = generateSummaryText();
+            const feedbackEl = document.getElementById('copy-feedback');
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                feedbackEl.classList.remove('opacity-0');
+                setTimeout(() => {
+                    feedbackEl.classList.add('opacity-0');
+                }, 4000);
+            }).catch(err => {
+                // Fallback for older browsers or iframe blocks
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    feedbackEl.classList.remove('opacity-0');
+                    setTimeout(() => {
+                        feedbackEl.classList.add('opacity-0');
+                    }, 4000);
+                } catch (err) {
+                    alert('שגיאה בהעתקה, אנא השתמשו בכפתור ההדפסה לשמירת קובץ.');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Initialize App
+        window.onload = renderQuestions;
+
+    </script>
+</body>
+</html>
