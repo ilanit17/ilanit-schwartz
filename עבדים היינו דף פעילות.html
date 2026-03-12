@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף עבודה: עֲבָדִים הָיִינוּ</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#10b981', /* emerald-500 */
+                        primaryDark: '#047857', /* emerald-700 */
+                        primaryLight: '#d1fae5', /* emerald-100 */
+                        bgLight: '#f0fdf4', /* emerald-50 */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#a7f3d0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.1), 0 8px 10px -6px rgba(16, 185, 129, 0.1);
+        }
+
+        .question-card {
+            transition: border-color 0.3s ease;
+        }
+        
+        .question-card:focus-within {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Custom Radio Buttons */
+        input[type="radio"] {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.5em;
+            height: 1.5em;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input[type="radio"]::before {
+            content: "";
+            width: 0.75em;
+            height: 0.75em;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em #10b981;
+        }
+
+        input[type="radio"]:checked::before {
+            transform: scale(1);
+        }
+        
+        input[type="radio"]:checked {
+            border-color: #10b981;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .glass-panel { box-shadow: none; border: 1px solid #ccc; }
+            input, textarea { border: 1px solid #000; background: transparent; }
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased pt-8 pb-16 px-4">
+
+    <main class="max-w-4xl mx-auto space-y-8">
+
+        <!-- Header -->
+        <header class="glass-panel rounded-2xl p-8 text-center border-t-8 border-primary relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primaryLight rounded-full opacity-50 -mr-10 -mt-10"></div>
+            
+            <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-gray-900 mb-2 relative z-10 mt-4">עֲבָדִים הָיִינוּ</h1>
+            <p class="text-xl text-primaryDark font-medium mb-8 relative z-10">מאת: אילנית שוורץ</p>
+
+            <!-- Student Name Input -->
+            <div class="max-w-md mx-auto bg-white p-4 rounded-xl border-2 border-primaryLight shadow-inner relative z-10">
+                <label for="studentName" class="block text-right font-bold text-gray-700 mb-2 font-heading text-lg">שם התלמיד/ה:</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-primary">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <input type="text" id="studentName" placeholder="הקלידו את שמכם כאן..." class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-primary focus:border-primary block w-full pr-10 p-2.5 outline-none transition-all" required>
+                </div>
+            </div>
+            <p id="nameError" class="text-red-500 font-bold mt-2 hidden">אנא מלאו את שמכם כדי להתחיל!</p>
+        </header>
+
+        <!-- Source Text Section -->
+        <section class="glass-panel rounded-2xl p-6 md:p-10 border border-gray-100 relative">
+            <div class="absolute -top-4 right-8 bg-primary text-white px-4 py-1 rounded-full font-bold font-heading shadow-md">
+                <i class="fa-solid fa-glasses mr-2"></i> קראו את הסיפור
+            </div>
+            
+            <div class="text-lg md:text-xl leading-loose md:leading-loose text-gray-800 font-medium mt-4">
+                <p class="mb-4">
+                    מִידֵי שָׁנָה בְּשָׁנָה כְּשֶׁמִּתְקָרֵב חַג הַפֶּסַח הַמִּשְׁפָּחָה שֶׁלִּי נִכְנֶסֶת לִתְקוּפָה שֶׁל פְּעִילוּת נִמְרֶצֶת. 
+                    תְּחִלָּה אָבִי וַאֲחוֹתִי מְסַיְּדִים אֶת הַקִּירוֹת בְּחֵלֶק מִן הַחֲדָרִים, וְאַחַר כָּךְ כֻּלָּנוּ מְנַקִּים בִּיסוֹדִיּוּת אֶת הַחֲדָרִים.
+                </p>
+                <p class="mb-4">
+                    הַשָּׁלָב הַבָּא הוּא סִדּוּר הָאֲרוֹנוֹת. לְפִי הוֹרָאָתָהּ שֶׁל אִמִּי אָנוּ מְרוֹקְנִים אֶת כָּל תְּכוּלַת הָאֲרוֹנוֹת. 
+                    כְּשֶׁהִיא נוֹתֶנֶת אֶת הָאוֹת, אָנוּ מוֹצִיאִים מִן הָאֲרוֹנוֹת אֶת הַבְּגָדִים, הַסְּפָרִים וְהַמַּחְבָּרוֹת, וְאֵלֶּה נֶעֱרָמִים עַל רִצְפַּת הַחֶדֶר לַעֲרֵמָה אַחַת גְּדוֹלָה. אַחַר כָּךְ אָנוּ מְמַיְּנִים אֶת כָּל הַחֲפָצִים וּמַחֲזִירִים לָאָרוֹן מַה שֶּׁעֲדַיִן בְּשִׁמּוּשׁ. מַה שֶּׁאֲנַחְנוּ כְּבָר לֹא צְרִיכִים אָנוּ זוֹרְקִים אוֹ מַעֲבִירִים לְמִישֶׁהוּ אַחֵר. לְמָשָׁל אֲנִי מַעֲבִיר לְאָחִי הַקָּטָן בְּגָדִים שֶׁקְּטַנִּים עָלַי, וְאָחִי הַגָּדוֹל מַעֲבִיר אֵלַי בְּגָדִים שֶׁקְּטַנִּים עָלָיו.
+                </p>
+                <p class="mb-4">
+                    לִפְנֵי סִדּוּר הָאֲרוֹנוֹת אָנוּ מְנַקִּים אֶת הַמַּדָּפִים וּמַקְפִּידִים לְהוֹצִיא מֵהֶם כָּל שָׂרִיד שֶׁל חָמֵץ. 
+                    לְבַסּוֹף אָנוּ שׁוּב מְנַקִּים וּמְצַחְצְחִים אֶת כָּל הַחֲדָרִים עַד שֶׁהַבַּיִת מַבְהִיק מִנִּקָּיוֹן.
+                </p>
+                <p class="mb-4">
+                    אִמִּי הִיא זוֹ הַמְפַקַּחַת עַל מְלֶאכֶת הַסֵּדֶר וְהַנִּקָּיוֹן. מִכֵּיוָן שֶׁאִמִּי עֲסוּקָה בְּאֵין-סְפוֹר מַטָּלוֹת, אֵין לָהּ זְמַן לְמִלּוֹת בַּקָּשָׁה וְתוֹדָה, הִיא מַמְטִירָה עָלֵינוּ פְּקֻדּוֹת וּמְצַוָּה: "תָּזִיזִי אֶת הֶעָצִיץ", "הוֹרֵד אֶת כְּלֵי הַפֶּסַח מֵהָאָרוֹן לְמַעְלָה", "הַעֲלִי אֶת הַסִּירִים", "הַבְרֵק אֶת הַפָּמוֹטִים", וְכָךְ הָלְאָה.
+                </p>
+                <p>
+                    בְּלֵיל הַסֵּדֶר מִתְיַשֶּׁבֶת לַשֻּׁלְחָן מִשְׁפָּחָה יְגֵעָה וּרְצוּצָה, אַךְ יַחַד עִם זֹאת אָנוּ מְרוּצִים שֶׁהִצְלַחְנוּ לְהָכִין לֶחָג בַּיִת נָקִי וּמְסֻדָּר. כְּשֶׁאָבִי קוֹרֵא בְּקוֹל מִן הַהַגָּדָה: "עֲבָדִים הָיִינוּ לְפַרְעֹה בְּמִצְרַיִם", הוּא קוֹרֵץ לְאִמִּי קְרִיצָה רַבַּת מַשְׁמָעוּת וְכֻלָּנוּ צוֹחֲקִים. וְאָז אִמִּי אוֹמֶרֶת: "נוּ, נוּ, אַתֶּם קְצָת מַגְזִימִים, אֲנִי לֹא מַמָּשׁ פַּרְעֹה".
+                </p>
+            </div>
+        </section>
+
+        <!-- Worksheet Questions -->
+        <section class="space-y-6">
+            <h2 class="text-3xl font-heading font-bold text-gray-800 mb-6 flex items-center">
+                <span class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center ml-3 shadow">
+                    <i class="fa-solid fa-pen"></i>
+                </span>
+                עונים על שאלות
+            </h2>
+
+            <!-- Questions Form -->
+            <form id="worksheetForm" class="space-y-6">
+                
+                <!-- Q1: Multiple Choice -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">1.</span> מָתַי מִתְרַחֵשׁ הָאֵירוּעַ שֶׁעָלָיו מְסֻפָּר בַּסִּפּוּר?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q1" value="א. קורה כל שנה אחרי פסח">
+                            <span class="text-lg">א. קוֹרֶה כָּל שָׁנָה אַחֲרֵי פֶּסַח</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q1" value="ב. קורה כל שנה לפני פסח">
+                            <span class="text-lg">ב. קוֹרֶה כָּל שָׁנָה לִפְנֵי פֶּסַח</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q1" value="ג. קרה בפסח האחרון">
+                            <span class="text-lg">ג. קָרָה בְּפֶסַח הָאַחֲרוֹן</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q1" value="ד. קרה לקראת הפסח האחרון">
+                            <span class="text-lg">ד. קָרָה לִקְרַאת הַפֶּסַח הָאַחֲרוֹן</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q2: Open text -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">2.</span> הַעְתִּיקוּ מֵהַסִּפּוּר אֶת הַמִּשְׁפָּט שֶׁמּוֹכִיחַ אֶת תְּשׁוּבַתְכֶם לַשְּׁאֵלָה הַקּוֹדֶמֶת:</h3>
+                    <textarea name="q2" rows="2" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="כתבו את תשובתכם כאן..."></textarea>
+                </div>
+
+                <!-- Q3: Multiple Choice -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">3.</span> בַּשּׁוּרָה הַרְבִיעִית כָּתוּב: "לְפִי הוֹרָאָתָהּ שֶׁל אִמִּי אָנוּ מְרוֹקְנִים אֶת כָּל תְּכוּלַת הָאֲרוֹנוֹת". מַה פֵּרוּשׁ הַמִּלִּים "תְּכוּלַת הָאֲרוֹנוֹת"?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q3" value="א. בגדים חדשים ומשומשים">
+                            <span class="text-lg">א. בְּגָדִים חֲדָשִׁים וּמְשֻׁמָּשִׁים</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q3" value="ב. חפצים שעדיין בשימוש">
+                            <span class="text-lg">ב. חֲפָצִים שֶׁעֲדַיִן בְּשִׁמּוּשׁ</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q3" value="ג. כל החפצים שהתכלו">
+                            <span class="text-lg">ג. כָּל הַחֲפָצִים שֶׁהִתְכַּלּוּ</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q3" value="ד. כל מה שהארונות מכילים">
+                            <span class="text-lg">ד. כָּל מַה שֶּׁהָאֲרוֹנוֹת מְכִילִים</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q4: Multiple Choice -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">4.</span> מִי הוּא הַדּוֹבֵר בַּסִּפּוּר?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q4" value="א. אבי המשפחה">
+                            <span class="text-lg">א. אֲבִי הַמִּשְׁפָּחָה</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q4" value="ב. האח הבכור במשפחה">
+                            <span class="text-lg">ב. הָאָח הַבְּכוֹר בַּמִּשְׁפָּחָה</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q4" value="ג. האחות הצעירה במשפחה">
+                            <span class="text-lg">ג. הָאָחוֹת הַצְּעִירָה בַּמִּשְׁפָּחָה</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q4" value="ד. אחד האחים במשפחה">
+                            <span class="text-lg">ד. אֶחָד הָאַחִים בַּמִּשְׁפָּחָה</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q5: Open text - Inference -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">5.</span> הַסָּקַת מַסְקָנוֹת: כֵּיצַד אָנוּ יוֹדְעִים אִם הַדּוֹבֵר הוּא בֵּן אוֹ בַּת? הָבִיאוּ הֲוכָחָה וְצִיטוּט מֵהַטֶּקְסְט שֶׁעָזַר לָכֶם לְהַחְלִיט.</h3>
+                    <textarea name="q5" rows="3" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="כתבו את תשובתכם כאן..."></textarea>
+                </div>
+
+                <!-- Q6: Open text -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">6.</span> מַדּוּעַ מַשְׁמִיעָה הָאִמָּא פְּקֻדּוֹת וְאֵינָהּ מְבַקֶּשֶׁת בְּנִימוּס "בְּבַקָּשָׁה"?</h3>
+                    <textarea name="q6" rows="2" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="כתבו את תשובתכם כאן..."></textarea>
+                </div>
+
+                <!-- Q7: Open text - Sequence -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">7.</span> רֶצֶף מְאֹרָעוֹת: מָה מְנַקִּים בְּנֵי הַמִּשְׁפָּחָה מַמָּשׁ לִפְנֵי שֶׁהֵם מְסַדְּרִים אֶת הָאֲרוֹנוֹת?</h3>
+                    <input type="text" name="q7" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="תשובה קצרה...">
+                </div>
+
+                <!-- Q8: Fill in the blank - Sequence -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent bg-emerald-50 border-emerald-100">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">8.</span> הַשְׁלִימוּ אֶת רֶצֶף הָאֵירוּעִים. מָה קָרָה קוֹדֵם?</h3>
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center text-lg font-bold">
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-emerald-200 w-full md:w-1/3">1. סִיּוּד הַקִּירוֹת</div>
+                        <i class="fa-solid fa-arrow-left text-primary hidden md:block"></i>
+                        <i class="fa-solid fa-arrow-down text-primary md:hidden"></i>
+                        <input type="text" name="q8" class="bg-white border-2 border-primary rounded-lg p-3 text-lg focus:ring-primary text-center w-full md:w-1/3 outline-none" placeholder="הקלידו את השלב השני...">
+                        <i class="fa-solid fa-arrow-left text-primary hidden md:block"></i>
+                        <i class="fa-solid fa-arrow-down text-primary md:hidden"></i>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-emerald-200 w-full md:w-1/3">3. מִיּוּן הַחֲפָצִים</div>
+                    </div>
+                </div>
+
+                <!-- Q9: Multiple Choice -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">9.</span> אֵיךְ מַרְגִּישִׁים בְּנֵי הַמִּשְׁפָּחָה כַּאֲשֶׁר הֵם מִתְיַשְּׁבִים לְשֻׁלְחַן לֵיל הַסֵּדֶר?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q9" value="א. כעס ומרירות">
+                            <span class="text-lg">א. כַּעַס וּמְרִירוּת</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q9" value="ב. סיפוק ועייפות">
+                            <span class="text-lg">ב. סִפּוּק וַעֲיֵפוּת</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q9" value="ג. מרץ וסיפוק">
+                            <span class="text-lg">ג. מֶרֶץ וְסִפּוּק</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q9" value="ד. אכזבה ועייפות">
+                            <span class="text-lg">ד. אַכְזָבָה וַעֲיֵפוּת</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q10: Open text -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">10.</span> הַעְתִּיקוּ מֵהַסִּפּוּר אֶת הַמִּשְׁפָּט הַמַּרְאֶה וּמוֹכִיחַ אֵיךְ הֵם מַרְגִּישִׁים בְּלֵיל הַסֵּדֶר:</h3>
+                    <textarea name="q10" rows="2" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="העתיקו את המשפט לכאן..."></textarea>
+                </div>
+
+                <!-- Q11: Multiple Choice -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">11.</span> לְמָה הִתְכַּוֵּן הָאָב בַּקְּרִיצָה שֶׁלּוֹ לָאֵם כְּשֶׁהוּא קָרָא: "עֲבָדִים הָיִינוּ לְפַרְעֹה בְּמִצְרַיִם"?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q11" value="א. שהוא אוהב את האם ומברך אותה לכבוד החג">
+                            <span class="text-lg">א. שֶׁהוּא אוֹהֵב אֶת הָאֵם וּמְבָרֵךְ אוֹתָהּ לִכְבוֹד הֶחָג</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q11" value="ב. שהוא מרוצה כי הכול נקי ומסודר לקראת החג">
+                            <span class="text-lg">ב. שֶׁהוּא מְרוּצֶה כִּי הַכֹּל נָקִי וּמְסֻדָּר לִקְרַאת הֶחָג</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q11" value="ג. שלאחרונה האם נהגה בבני המשפחה כבעבדים">
+                            <span class="text-lg">ג. שֶׁלָּאַחֲרוֹנָה הָאֵם נָהֲגָה בִּבְנֵי הַמִּשְׁפָּחָה כִּבְעֲבָדִים</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q11" value="ד. שהוא חושב שבני המשפחה הם העבדים שלו">
+                            <span class="text-lg">ד. שֶׁהוּא חוֹשֵׁב שֶׁבְּנֵי הַמִּשְׁפָּחָה הֵם הָעֲבָדִים שֶׁלּוֹ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Vocabulary section introduction -->
+                <div class="pt-6">
+                    <h3 class="text-2xl font-bold font-heading text-primaryDark mb-2 flex items-center">
+                        <i class="fa-solid fa-puzzle-piece mr-2 ml-2 text-primary"></i> מילים נרדפות ופירושים
+                    </h3>
+                    <p class="text-gray-600 mb-4 font-medium">מצאו בתוך הטקסט את המילים המתאימות:</p>
+                </div>
+
+                <!-- Q12-14: Vocabulary Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Q12 -->
+                    <div class="question-card glass-panel rounded-xl p-5 border-2 border-transparent">
+                        <h4 class="font-bold mb-3"><span class="text-primary">12.</span> מילה נרדפת למילה <span class="text-emerald-700 underline decoration-emerald-300 decoration-2">מַבְרִיק</span>:</h4>
+                        <input type="text" name="q12" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 focus:ring-primary focus:border-primary outline-none" placeholder="...">
+                    </div>
+                    <!-- Q13 -->
+                    <div class="question-card glass-panel rounded-xl p-5 border-2 border-transparent">
+                        <h4 class="font-bold mb-3"><span class="text-primary">13.</span> מילה נרדפת למילה <span class="text-emerald-700 underline decoration-emerald-300 decoration-2">עֲיֵפָה</span>:</h4>
+                        <input type="text" name="q13" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 focus:ring-primary focus:border-primary outline-none" placeholder="...">
+                    </div>
+                    <!-- Q14 -->
+                    <div class="question-card glass-panel rounded-xl p-5 border-2 border-transparent">
+                        <h4 class="font-bold mb-3"><span class="text-primary">14.</span> מילה שפירושה <span class="text-emerald-700 underline decoration-emerald-300 decoration-2">שְׁאֵרִית</span>:</h4>
+                        <input type="text" name="q14" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 focus:ring-primary focus:border-primary outline-none" placeholder="...">
+                    </div>
+                </div>
+
+                <!-- Q15: Open text - Personal connection -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent mt-6">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">15.</span> שְׁאֵלַת מַחֲשָׁבָה: הַאִם גַּם אֶצְלְכֶם בַּבַּיִת יֵשׁ הֲכָנוֹת מְיֻחָדוֹת אוֹ חֲלוּקַת תַּפְקִידִים לִקְרַאת פֶּסַח? תָּאֲרוּ בְּקִצּוּר.</h3>
+                    <textarea name="q15" rows="3" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg focus:ring-primary focus:border-primary outline-none transition" placeholder="שתפו אותנו..."></textarea>
+                </div>
+
+                <!-- Q16: Multiple Choice - Summary -->
+                <div class="question-card glass-panel rounded-xl p-6 border-2 border-transparent">
+                    <h3 class="text-xl font-bold font-heading mb-4"><span class="text-primary mr-1">16.</span> סִיכּוּם: אֵיזֶה מִשְׁפָּט יָכוֹל לְשַׁמֵּשׁ כְּכוֹתֶרֶת נוֹסֶפֶת הַמַּתְאִימָה לַסִּפּוּר?</h3>
+                    <div class="space-y-3 pl-4">
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q16" value="תפריט מיוחד לליל הסדר">
+                            <span class="text-lg">תַּפְרִיט מְיֻחָד לְלֵיל הַסֵּדֶר</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q16" value="עבדות מודרנית במצרים">
+                            <span class="text-lg">עַבְדוּת מוֹדֶרְנִית בְּמִצְרַיִם</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q16" value="מבצע ניקיון משפחתי לקראת פסח">
+                            <span class="text-lg">מִבְצַע נִקָּיוֹן מִשְׁפַּחְתִּי לִקְרַאת פֶּסַח</span>
+                        </label>
+                        <label class="flex items-center space-x-3 space-x-reverse cursor-pointer p-2 hover:bg-emerald-50 rounded-lg transition">
+                            <input type="radio" name="q16" value="איך לצבוע קירות בקלות">
+                            <span class="text-lg">אֵיךְ לִצְבֹּעַ קִירוֹת בְּקַלּוּת</span>
+                        </label>
+                    </div>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- Action Buttons (No Print/Save visible during print) -->
+        <section class="no-print bg-white p-6 rounded-2xl shadow-md border border-gray-200 text-center space-y-4">
+            <h3 class="text-2xl font-heading font-bold text-gray-800">סיימתם? כל הכבוד! 🎉</h3>
+            <p class="text-gray-600 font-medium">בחרו כיצד תרצו לשמור או לשלוח את התשובות למורה שלכם:</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                <button onclick="handleSavePDF()" class="bg-primary hover:bg-primaryDark text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition hover:-translate-y-1 flex items-center justify-center gap-2 text-lg">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    שמירה כ-PDF / הדפסה
+                </button>
+                
+                <button onclick="handleCopyText()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition hover:-translate-y-1 flex items-center justify-center gap-2 text-lg">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    העתקת תשובות (לשליחה)
+                </button>
+            </div>
+            
+            <!-- Success Message Container -->
+            <div id="successMsg" class="hidden text-green-600 font-bold text-lg pt-4 bg-green-50 p-2 rounded-lg inline-block mt-4 transition-all">
+                <i class="fa-solid fa-check-circle mr-2"></i> התשובות הועתקו בהצלחה! אפשר להדביק בוואטסאפ או במייל.
+            </div>
+        </section>
+
+        <!-- Footer / Signature -->
+        <footer class="text-center pt-8 border-t-2 border-primaryLight pb-4">
+            <div class="inline-block bg-white px-8 py-3 rounded-full shadow border border-emerald-100">
+                <p class="text-lg font-bold text-primaryDark font-heading flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-seedling text-primary"></i>
+                    אילנית שוורץ - קריאה להבנה
+                </p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Check if student name is entered
+        function validateName() {
+            const name = document.getElementById('studentName').value.trim();
+            const errorElement = document.getElementById('nameError');
+            const nameInput = document.getElementById('studentName');
+            
+            if (!name) {
+                errorElement.classList.remove('hidden');
+                nameInput.classList.add('border-red-500', 'bg-red-50');
+                nameInput.focus();
+                
+                // Scroll to top smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return false;
+            }
+            
+            errorElement.classList.add('hidden');
+            nameInput.classList.remove('border-red-500', 'bg-red-50');
+            return true;
+        }
+
+        // Handle Print / Save as PDF
+        function handleSavePDF() {
+            if (!validateName()) return;
+            
+            // Just open the browser print dialog. CSS @media print handles the formatting.
+            window.print();
+        }
+
+        // Format answers to plain text and copy to clipboard
+        function handleCopyText() {
+            if (!validateName()) return;
+            
+            const studentName = document.getElementById('studentName').value.trim();
+            let textToCopy = `📝 דף עבודה בעברית: עבדים היינו\n👤 תלמיד/ה: ${studentName}\n------------------------\n\n`;
+            
+            // Gather all answers
+            for (let i = 1; i <= 16; i++) {
+                const qName = 'q' + i;
+                const elements = document.getElementsByName(qName);
+                let answer = "לא נענה";
+                
+                if (elements.length > 0) {
+                    // Check if it's a radio button group
+                    if (elements[0].type === 'radio') {
+                        const checked = Array.from(elements).find(el => el.checked);
+                        if (checked) answer = checked.value;
+                    } 
+                    // Check if it's a textarea or text input
+                    else if (elements[0].tagName === 'TEXTAREA' || elements[0].type === 'text') {
+                        if (elements[0].value.trim() !== '') {
+                            answer = elements[0].value.trim();
+                        }
+                    }
+                }
+                
+                textToCopy += `שאלה ${i}: ${answer}\n\n`;
+            }
+            
+            textToCopy += `------------------------\n💡 נשלח מדף עבודה אינטראקטיבי`;
+
+            // Use Clipboard API
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showSuccessMessage();
+            }).catch(err => {
+                // Fallback for browsers that block clipboard access (like some iframes)
+                fallbackCopyText(textToCopy);
+            });
+        }
+        
+        // Fallback method for copying (useful in iframes)
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // Avoid scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showSuccessMessage();
+                } else {
+                    alert("לא ניתן היה להעתיק אוטומטית. אנא הדפיסו למסמך PDF.");
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function showSuccessMessage() {
+            const msg = document.getElementById('successMsg');
+            msg.classList.remove('hidden');
+            
+            // Add a little pop animation class (if we had one in CSS, but Tailwind handles transition)
+            msg.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                msg.style.transform = 'scale(1)';
+            }, 200);
+
+            // Hide after 6 seconds
+            setTimeout(() => {
+                msg.classList.add('hidden');
+            }, 6000);
+        }
+
+        // Add subtle animation when interacting with inputs
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.classList.add('transform', 'scale-[1.01]', 'transition-transform');
+            });
+            element.addEventListener('blur', function() {
+                this.parentElement.classList.remove('transform', 'scale-[1.01]');
+            });
+        });
+    </script>
+</body>
+</html>
+
+
