@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>עֲבָדִים הָיִינוּ - שיעור הבנת הנקרא</title>
+    <title>עֲבָדִים הָיִינוּ - מצגת שיעור אינטראקטיבית</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +33,566 @@
             }
         }
     </script>
+
+    <style>
+        body {
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .magic-highlight {
+            background-color: transparent;
+            transition: all 0.5s ease;
+            border-radius: 4px;
+            padding: 0 4px;
+        }
+
+        .magic-active .magic-highlight {
+            background-color: #FDE047; /* Yellow 300 */
+            box-shadow: 0 0 8px rgba(253, 224, 71, 0.8);
+            font-weight: bold;
+            color: #b45309; /* Dark yellow/brown text for contrast */
+        }
+
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+        
+        .quiz-option:hover:not(:disabled) {
+            background-color: #EEF2FF;
+            border-color: #4F46E5;
+        }
+
+        .quiz-option.correct {
+            background-color: #D1FAE5;
+            border-color: #10B981;
+            color: #065F46;
+        }
+
+        .quiz-option.incorrect {
+            background-color: #FEE2E2;
+            border-color: #EF4444;
+            color: #991B1B;
+        }
+
+        /* Float animation for instructional cards */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        .delay-1 { animation-delay: 0.5s; }
+        .delay-2 { animation-delay: 1s; }
+        .delay-3 { animation-delay: 1.5s; }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased selection:bg-primary selection:text-white pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm border-b-4 border-primary py-8 px-4 text-center mb-10 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-primary rounded-full opacity-10 -mr-16 -mt-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-accent rounded-full opacity-10 -ml-12 -mb-12"></div>
+        
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="inline-block bg-primary text-white text-sm font-bold px-3 py-1 rounded-full mb-3 shadow-sm">שיעור עברית - כיתה ד'</div>
+            <h1 class="text-4xl md:text-5xl font-heading font-extrabold text-gray-900 mb-2">עֲבָדִים הָיִינוּ</h1>
+            <h2 class="text-xl md:text-2xl text-gray-600 font-heading font-medium mb-6">מאת: אילנית שוורץ</h2>
+            
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 shadow-sm inline-block text-right max-w-2xl">
+                <h3 class="text-lg font-bold text-blue-800 mb-2 font-heading"><i class="fa-solid fa-bullseye ml-2 text-blue-600"></i>מָה נִלְמַד הַיּוֹם?</h3>
+                <ul class="list-disc list-inside text-blue-900 space-y-1">
+                    <li>נקרא סיפור מעניין על משפחה שמתכוננת לחג הפסח.</li>
+                    <li>נלמד כיצד למצוא את <strong>רצף האירועים</strong> בעזרת <strong>מילות זמן</strong>.</li>
+                    <li>נשחק בלשים ונסתכל בין השורות כדי <strong>להסיק מסקנות</strong>.</li>
+                    <li>נענה על שאלות ונבדוק את ההבנה שלנו בעזרת חידון!</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 space-y-20">
+
+        <!-- Section 1: Interactive Reading -->
+        <section id="reading" class="relative">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-3xl font-heading font-bold text-gray-800 flex items-center">
+                    <span class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center ml-3 text-xl shadow-md">1</span>
+                    קריאת הסיפור (מנוקד)
+                </h2>
+                
+                <button id="magicBtn" onclick="toggleMagicGlasses()" class="mt-4 md:mt-0 bg-gradient-to-r from-accent to-yellow-400 hover:from-yellow-400 hover:to-accent text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition hover:scale-105 flex items-center gap-2 text-lg">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    משקפי קסם: גלו מילות זמן!
+                </button>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-10 text-xl leading-loose md:text-2xl md:leading-loose border border-gray-100 relative" id="storyContainer">
+                <!-- Story Content with Niqqud -->
+                <p class="mb-4">
+                    מִידֵי שָׁנָה בְּשָׁנָה כְּשֶׁמִּתְקָרֵב חַג הַפֶּסַח הַמִּשְׁפָּחָה שֶׁלִּי נִכְנֶסֶת לִתְקוּפָה שֶׁל פְּעִילוּת נִמְרֶצֶת. 
+                    <span class="magic-highlight">תְּחִלָּה</span> אָבִי וַאֲחוֹתִי מְסַיְּדִים אֶת הַקִּירוֹת בְּחֵלֶק מִן הַחֲדָרִים, <span class="magic-highlight">וְאַחַר כָּךְ</span> כֻּלָּנוּ מְנַקִּים בִּיסוֹדִיּוּת אֶת הַחֲדָרִים.
+                </p>
+                <p class="mb-4">
+                    <span class="magic-highlight">הַשָּׁלָב הַבָּא</span> הוּא סִדּוּר הָאֲרוֹנוֹת. לְפִי הוֹרָאָתָהּ שֶׁל אִמִּי אָנוּ מְרוֹקְנִים אֶת כָּל תְּכוּלַת הָאֲרוֹנוֹת. 
+                    כְּשֶׁהִיא נוֹתֶנֶת אֶת הָאוֹת, אָנוּ מוֹצִיאִים מִן הָאֲרוֹנוֹת אֶת הַבְּגָדִים, הַסְּפָרִים וְהַמַּחְבָּרוֹת, וְאֵלֶּה נֶעֱרָמִים עַל רִצְפַּת הַחֶדֶר לַעֲרֵמָה אַחַת גְּדוֹלָה. <span class="magic-highlight">אַחַר כָּךְ</span> אָנוּ מְמַיְּנִים אֶת כָּל הַחֲפָצִים וּמַחֲזִירִים לָאָרוֹן מַה שֶּׁעֲדַיִן בְּשִׁמּוּשׁ. מַה שֶּׁאֲנַחְנוּ כְּבָר לֹא צְרִיכִים אָנוּ זוֹרְקִים אוֹ מַעֲבִירִים לְמִישֶׁהוּ אַחֵר. לְמָשָׁל אֲנִי מַעֲבִיר לְאָחִי הַקָּטָן בְּגָדִים שֶׁקְּטַנִּים עָלַי, וְאָחִי הַגָּדוֹל מַעֲבִיר אֵלַי בְּגָדִים שֶׁקְּטַנִּים עָלָיו.
+                </p>
+                <p class="mb-4">
+                    <span class="magic-highlight">לִפְנֵי</span> סִדּוּר הָאֲרוֹנוֹת אָנוּ מְנַקִּים אֶת הַמַּדָּפִים וּמַקְפִּידִים לְהוֹצִיא מֵהֶם כָּל שָׂרִיד שֶׁל חָמֵץ. 
+                    <span class="magic-highlight">לְבַסּוֹף</span> אָנוּ שׁוּב מְנַקִּים וּמְצַחְצְחִים אֶת כָּל הַחֲדָרִים עַד שֶׁהַבַּיִת מַבְהִיק מִנִּקָּיוֹן.
+                </p>
+                <p class="mb-4">
+                    אִמִּי הִיא זוֹ הַמְפַקַּחַת עַל מְלֶאכֶת הַסֵּדֶר וְהַנִּקָּיוֹן. מִכֵּיוָן שֶׁאִמִּי עֲסוּקָה בְּאֵין-סְפוֹר מַטָּלוֹת, אֵין לָהּ זְמַן לְמִלּוֹת בַּקָּשָׁה וְתוֹדָה, הִיא מַמְטִירָה עָלֵינוּ פְּקֻדּוֹת וּמְצַוָּה: "תָּזִיזִי אֶת הֶעָצִיץ", "הוֹרֵד אֶת כְּלֵי הַפֶּסַח מֵהָאָרוֹן לְמַעְלָה", "הַעֲלִי אֶת הַסִּירִים", "הַבְרֵק אֶת הַפָּמוֹטִים", וְכָךְ הָלְאָה.
+                </p>
+                <p>
+                    <span class="magic-highlight">בְּלֵיל הַסֵּדֶר</span> מִתְיַשֶּׁבֶת לַשֻּׁלְחָן מִשְׁפָּחָה יְגֵעָה וּרְצוּצָה, אַךְ יַחַד עִם זֹאת אָנוּ מְרוּצִים שֶׁהִצְלַחְנוּ לְהָכִין לֶחָג בַּיִת נָקִי וּמְסֻדָּר. כְּשֶׁאָבִי קוֹרֵא בְּקוֹל מִן הַהַגָּדָה: "עֲבָדִים הָיִינוּ לְפַרְעֹה בְּמִצְרַיִם", הוּא קוֹרֵץ לְאִמִּי קְרִיצָה רַבַּת מַשְׁמָעוּת וְכֻלָּנוּ צוֹחֲקִים. וְאָז אִמִּי אוֹמֶרֶת: "נוּ, נוּ, אַתֶּם קְצָת מַגְזִימִים, אֲנִי לֹא מַמָּשׁ פַּרְעֹה".
+                </p>
+                
+                <!-- Tooltip for magic glasses -->
+                <div id="magicTooltip" class="hidden absolute top-[-15px] left-1/2 transform -translate-x-1/2 bg-yellow-100 text-yellow-800 px-6 py-3 rounded-lg shadow-xl text-lg font-bold border-2 border-yellow-400 z-50 text-center w-3/4 max-w-md">
+                    <i class="fa-regular fa-lightbulb text-yellow-600 text-2xl mb-2"></i><br>
+                    הסתכלו על המילים שהודגשו בצהוב!<br>אלו הן "מילות הזמן" שיעזרו לנו בפרק הבא.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Explicit Instruction on Time Words & Sequence -->
+        <section id="teaching">
+            <h2 class="text-3xl font-heading font-bold text-gray-800 flex items-center mb-4">
+                <span class="bg-secondary text-white w-10 h-10 rounded-full flex items-center justify-center ml-3 text-xl shadow-md">2</span>
+                סודות הקריאה: איך מוצאים רצף אירועים?
+            </h2>
+            <p class="text-xl text-gray-700 mb-8 max-w-3xl leading-relaxed">
+                בסיפור שלנו קורות המון פעולות: מסיידים, מנקים, מרוקנים, מסדרים... 
+                איך נדע מה קרה קודם ומה אחר כך? בדיוק בשביל זה הסופרת פיזרה לנו <strong>מילות זמן</strong> שמסדרות את הסיפור כמו קרונות של רכבת!
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Teaching Card 1: Start -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-t-8 border-blue-500 float-animation relative">
+                    <div class="absolute -top-6 -right-3 text-blue-500 text-4xl opacity-50"><i class="fa-solid fa-play"></i></div>
+                    <h3 class="text-xl font-bold font-heading mb-3 text-blue-700">1. ההתחלה</h3>
+                    <p class="text-gray-600 mb-3 font-medium">המילים שמספרות לנו מה קרה בצעד הראשון.</p>
+                    <div class="bg-blue-50 text-blue-800 font-bold p-3 rounded-lg text-center text-lg shadow-inner">
+                        "תְּחִלָּה"
+                    </div>
+                </div>
+
+                <!-- Teaching Card 2: Continuation -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-t-8 border-green-500 float-animation delay-1 relative">
+                    <div class="absolute -top-6 -right-3 text-green-500 text-4xl opacity-50"><i class="fa-solid fa-forward-step"></i></div>
+                    <h3 class="text-xl font-bold font-heading mb-3 text-green-700">2. ההמשך</h3>
+                    <p class="text-gray-600 mb-3 font-medium">מילים שמקדמות אותנו לשלבים הבאים בסיפור.</p>
+                    <div class="flex flex-col gap-2">
+                        <div class="bg-green-50 text-green-800 font-bold p-2 rounded-lg text-center text-lg shadow-inner">"וְאַחַר כָּךְ"</div>
+                        <div class="bg-green-50 text-green-800 font-bold p-2 rounded-lg text-center text-lg shadow-inner">"הַשָּׁלָב הַבָּא"</div>
+                    </div>
+                </div>
+
+                <!-- Teaching Card 3: Going Backwards! -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-t-8 border-red-500 float-animation delay-2 relative">
+                    <div class="absolute -top-6 -right-3 text-red-500 text-4xl opacity-50"><i class="fa-solid fa-backward-fast"></i></div>
+                    <h3 class="text-xl font-bold font-heading mb-3 text-red-700">3. קפיצה לאחור!</h3>
+                    <p class="text-gray-600 mb-3 font-medium">לפעמים הסופר מחזיר אותנו אחורה בזמן. כאן צריך לשים לב במיוחד!</p>
+                    <div class="bg-red-50 text-red-800 font-bold p-3 rounded-lg text-center text-lg shadow-inner border-2 border-red-200">
+                        "לִפְנֵי" <br><span class="text-sm font-normal">(לפני סידור הארונות מנקים מדפים)</span>
+                    </div>
+                </div>
+
+                <!-- Teaching Card 4: The End -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border-t-8 border-purple-500 float-animation delay-3 relative">
+                    <div class="absolute -top-6 -right-3 text-purple-500 text-4xl opacity-50"><i class="fa-solid fa-flag-checkered"></i></div>
+                    <h3 class="text-xl font-bold font-heading mb-3 text-purple-700">4. הסיום</h3>
+                    <p class="text-gray-600 mb-3 font-medium">המילים שאומרות לנו שהגענו לפעולה האחרונה.</p>
+                    <div class="flex flex-col gap-2">
+                        <div class="bg-purple-50 text-purple-800 font-bold p-2 rounded-lg text-center text-lg shadow-inner">"לְבַסּוֹף"</div>
+                        <div class="bg-purple-50 text-purple-800 font-bold p-2 rounded-lg text-center text-lg shadow-inner">"בְּלֵיל הַסֵּדֶר"</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Visual Timeline -->
+        <section id="timeline">
+            <h2 class="text-3xl font-heading font-bold text-gray-800 flex items-center mb-8">
+                <span class="bg-accent text-white w-10 h-10 rounded-full flex items-center justify-center ml-3 text-xl shadow-md">3</span>
+                הסיפור מסודר על ציר הזמן
+            </h2>
+            
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 overflow-x-auto">
+                <p class="text-center text-gray-600 mb-8 text-lg font-medium">כעת נסדר את הפעולות מהסיפור לפי "מילות הזמן" שגילינו:</p>
+                
+                <div class="flex flex-col md:flex-row justify-between items-center relative gap-6 md:gap-2">
+                    <!-- Step 1 -->
+                    <div class="relative w-full md:w-1/5 flex flex-col items-center group z-10">
+                        <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl shadow-md border-4 border-white z-10 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-paint-roller"></i>
+                        </div>
+                        <div class="bg-blue-50 mt-4 p-3 rounded-lg text-center shadow-sm w-full border border-blue-200 group-hover:border-blue-400 transition-colors">
+                            <h4 class="font-bold text-blue-800 bg-white rounded px-2 py-1 mb-2 inline-block shadow-sm">תְּחִלָּה</h4>
+                            <p class="text-sm text-gray-700 font-medium">סיוד הקירות וניקיון חדרים יסודי</p>
+                        </div>
+                    </div>
+
+                    <!-- Arrow/Connector -->
+                    <div class="hidden md:flex flex-col items-center justify-center w-8">
+                        <i class="fa-solid fa-arrow-left text-gray-300"></i>
+                    </div>
+                    <div class="block md:hidden flex justify-center h-8">
+                        <i class="fa-solid fa-arrow-down text-gray-300"></i>
+                    </div>
+
+                    <!-- Step 2 (Note the pedagogical explanation about 'before') -->
+                    <div class="relative w-full md:w-1/5 flex flex-col items-center group z-10">
+                        <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl shadow-md border-4 border-white z-10 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-broom"></i>
+                        </div>
+                        <div class="bg-red-50 mt-4 p-3 rounded-lg text-center shadow-sm w-full border border-red-200 group-hover:border-red-400 transition-colors">
+                            <h4 class="font-bold text-red-800 bg-white rounded px-2 py-1 mb-2 inline-block shadow-sm">לִפְנֵי הָאֲרוֹנוֹת</h4>
+                            <p class="text-sm text-gray-700 font-medium">ניקוי מדפים והוצאת חמץ</p>
+                        </div>
+                    </div>
+
+                    <!-- Arrow/Connector -->
+                    <div class="hidden md:flex flex-col items-center justify-center w-8">
+                        <i class="fa-solid fa-arrow-left text-gray-300"></i>
+                    </div>
+                    <div class="block md:hidden flex justify-center h-8">
+                        <i class="fa-solid fa-arrow-down text-gray-300"></i>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative w-full md:w-1/5 flex flex-col items-center group z-10">
+                        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl shadow-md border-4 border-white z-10 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                        <div class="bg-emerald-50 mt-4 p-3 rounded-lg text-center shadow-sm w-full border border-emerald-200 group-hover:border-emerald-400 transition-colors">
+                            <h4 class="font-bold text-emerald-800 bg-white rounded px-2 py-1 mb-2 inline-block shadow-sm">הַשָּׁלָב הַבָּא</h4>
+                            <p class="text-sm text-gray-700 font-medium">ריקון תכולת הארונות לרצפה</p>
+                        </div>
+                    </div>
+
+                    <!-- Arrow/Connector -->
+                    <div class="hidden md:flex flex-col items-center justify-center w-8">
+                        <i class="fa-solid fa-arrow-left text-gray-300"></i>
+                    </div>
+                    <div class="block md:hidden flex justify-center h-8">
+                        <i class="fa-solid fa-arrow-down text-gray-300"></i>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative w-full md:w-1/5 flex flex-col items-center group z-10">
+                        <div class="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl shadow-md border-4 border-white z-10 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-shirt"></i>
+                        </div>
+                        <div class="bg-orange-50 mt-4 p-3 rounded-lg text-center shadow-sm w-full border border-orange-200 group-hover:border-orange-400 transition-colors">
+                            <h4 class="font-bold text-orange-800 bg-white rounded px-2 py-1 mb-2 inline-block shadow-sm">אַחַר כָּךְ וּלְבַסּוֹף</h4>
+                            <p class="text-sm text-gray-700 font-medium">מיון חפצים וצחצוח כל הבית</p>
+                        </div>
+                    </div>
+
+                    <!-- Arrow/Connector -->
+                    <div class="hidden md:flex flex-col items-center justify-center w-8">
+                        <i class="fa-solid fa-arrow-left text-gray-300"></i>
+                    </div>
+                    <div class="block md:hidden flex justify-center h-8">
+                        <i class="fa-solid fa-arrow-down text-gray-300"></i>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="relative w-full md:w-1/5 flex flex-col items-center group z-10">
+                        <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl shadow-md border-4 border-white z-10 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <i class="fa-solid fa-wine-glass"></i>
+                        </div>
+                        <div class="bg-purple-50 mt-4 p-3 rounded-lg text-center shadow-sm w-full border border-purple-200 group-hover:border-purple-400 transition-colors">
+                            <h4 class="font-bold text-purple-800 bg-white rounded px-2 py-1 mb-2 inline-block shadow-sm">בְּלֵיל הַסֵּדֶר</h4>
+                            <p class="text-sm text-gray-700 font-medium">משפחה עייפה אך מרוצה מסבה לשולחן</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Quiz Section -->
+        <section id="quiz">
+            <h2 class="text-3xl font-heading font-bold text-gray-800 flex items-center mb-6">
+                <span class="bg-indigo-500 text-white w-10 h-10 rounded-full flex items-center justify-center ml-3 text-xl shadow-md">4</span>
+                תרגול ובדיקה עצמית
+            </h2>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-8">
+                  <div id="quizProgress" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+
+                <!-- Question Container -->
+                <div id="questionContainer" class="min-h-[250px]">
+                    <h3 id="questionText" class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 font-heading">טוען שאלה...</h3>
+                    <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Options will be injected here via JS -->
+                    </div>
+                    
+                    <!-- Feedback Area -->
+                    <div id="feedbackArea" class="mt-6 p-4 rounded-lg hidden flex items-start gap-3">
+                        <div id="feedbackIcon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedbackTitle" class="font-bold text-lg mb-1 font-heading"></h4>
+                            <p id="feedbackText" class="text-gray-700 text-lg"></p>
+                            <button id="nextBtn" onclick="nextQuestion()" class="mt-4 bg-gray-800 text-white px-6 py-2 rounded shadow hover:bg-gray-700 transition hidden font-bold text-lg">לשאלה הבאה <i class="fa-solid fa-arrow-left mr-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Results (Hidden initially) -->
+                <div id="resultsContainer" class="hidden text-center py-8">
+                    <div class="text-6xl mb-4 text-yellow-400"><i class="fa-solid fa-trophy"></i></div>
+                    <h3 class="text-3xl font-bold font-heading text-gray-800 mb-2">כל הכבוד! סיימתם את התרגול!</h3>
+                    <p class="text-xl text-gray-600 mb-6">עניתם נכון על <span id="scoreText" class="font-bold text-indigo-600 text-2xl">0</span> מתוך <span id="totalText" class="font-bold text-indigo-600 text-2xl">0</span> שאלות.</p>
+                    <button onclick="resetQuiz()" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow hover:bg-indigo-700 transition">נסו שוב <i class="fa-solid fa-rotate-right mr-2"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion & Signature -->
+        <section class="text-center pb-8 border-t border-gray-200 pt-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 font-heading">לסיכום השיעור</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+                ראינו היום איך בעזרת תשומת לב ל<strong>מילות זמן</strong> נוכל להבין בדיוק את סדר הדברים בסיפור (מה קרה קודם ומה אחר כך), ואיך קריאה זהירה עוזרת לנו להסיק מסקנות גם על דברים שלא כתובים במפורש. חג שמח וניקיון קל!
+            </p>
+            
+            <div class="inline-block bg-white px-8 py-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-xl font-bold text-primary font-heading flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-feather-pointed text-accent"></i>
+                    אילנית שוורץ - קריאה להבנה
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. Magic Glasses Logic
+        function toggleMagicGlasses() {
+            const container = document.getElementById('storyContainer');
+            const tooltip = document.getElementById('magicTooltip');
+            const btn = document.getElementById('magicBtn');
+            const icon = btn.querySelector('i');
+            
+            container.classList.toggle('magic-active');
+            
+            if (container.classList.contains('magic-active')) {
+                tooltip.classList.remove('hidden');
+                btn.classList.replace('from-accent', 'from-red-500');
+                btn.classList.replace('to-yellow-400', 'to-orange-500');
+                btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> כבה משקפי קסם`;
+                
+                // Auto hide tooltip after 8 seconds (gave them more time to read the tooltip)
+                setTimeout(() => {
+                    tooltip.classList.add('hidden');
+                }, 8000);
+            } else {
+                tooltip.classList.add('hidden');
+                btn.classList.replace('from-red-500', 'from-accent');
+                btn.classList.replace('to-orange-500', 'to-yellow-400');
+                btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> משקפי קסם: גלו מילות זמן!`;
+            }
+        }
+
+        // 2. Quiz Logic Based on the PDF Questions and the new teaching points
+        const questions = [
+            {
+                question: "לפי מילות הזמן שלמדנו, איזו פעולה המשפחה עשתה קודם?",
+                options: [
+                    "מיינו את הבגדים",
+                    "סיידו את הקירות",
+                    "ניקו את המדפים והוציאו חמץ",
+                    "רוקנו את הארונות"
+                ],
+                correctAnswer: 1, // Index 1
+                explanation: "שימו לב למילת הזמן <strong>'תְּחִלָּה'</strong> בסיפור: 'תחילה אבי ואחותי מסיידים את הקירות...' - זו הפעולה הראשונה!"
+            },
+            {
+                question: "מתי מתרחש האירוע שעליו מסופר?",
+                options: [
+                    "קורה כל שנה אחרי פסח",
+                    "קורה כל שנה לפני פסח",
+                    "קרה בפסח האחרון",
+                    "קרה לקראת הפסח האחרון"
+                ],
+                correctAnswer: 1,
+                explanation: "במשפט הראשון בסיפור כתוב: <strong>'מידי שנה בשנה כשמתקרב חג הפסח...'</strong> מזה אנחנו מבינים שהאירוע חוזר על עצמו כל שנה לפני החג."
+            },
+            {
+                question: "מה פירוש המילים 'תכולת הארונות' (שורה 4)?",
+                options: [
+                    "בגדים חדשים ומשומשים",
+                    "חפצים שעדיין בשימוש",
+                    "כל החפצים שהתכלו",
+                    "כל מה שהארונות מכילים"
+                ],
+                correctAnswer: 3,
+                explanation: "לפי ההקשר במשפט הבא: <strong>'אנו מוציאים מן הארונות את הבגדים, הספרים והמחברות...'</strong>, כלומר מרוקנים את כל מה שיש (מוכל) בתוך הארון."
+            },
+            {
+                question: "מי הוא הדובר בסיפור (הסקת מסקנות)?",
+                options: [
+                    "אבי המשפחה",
+                    "האח הבכור במשפחה",
+                    "האחות הצעירה במשפחה",
+                    "אחד האחים במשפחה"
+                ],
+                correctAnswer: 3,
+                explanation: "כתוב: <strong>'אני מעביר לאחי הקטן... ואחי הגדול מעביר אלי'</strong>. הפועל 'מעביר' הוא בלשון זכר (בן), ויש לו אח גדול ואח קטן, לכן הוא אחד האחים (האמצעי)."
+            },
+            {
+                question: "למה התכוון האב כשהוא קרץ לאם כשקרא 'עבדים היינו לפרעה'?",
+                options: [
+                    "שהוא אוהב את האם ומברך אותה",
+                    "שהוא מרוצה כי הכול נקי לקראת החג",
+                    "שלאחרונה האם נהגה בבני המשפחה כבעבדים",
+                    "שהוא חושב שבני המשפחה הם העבדים שלו"
+                ],
+                correctAnswer: 2,
+                explanation: "האב צחק על כך שבזמן הניקיונות האם פקדה על כולם וחילקה הוראות בלי הפסקה כמו 'פרעה', והאם מבינה את הרמז ועונה: <strong>'אתם מגזימים, אני לא ממש פרעה'</strong>."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let hasAnswered = false;
+
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('questionText').innerText = `שאלה ${currentQuestionIndex + 1}: ${q.question}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'quiz-option w-full text-right p-4 border-2 border-gray-200 rounded-xl font-medium text-gray-700 bg-gray-50 focus:outline-none text-xl';
+                button.innerHTML = `<span class="inline-block w-8 h-8 rounded-full bg-white border border-gray-300 text-center leading-7 ml-3 shadow-sm font-bold text-gray-500">${String.fromCharCode(1488 + index)}</span> ${option}`;
+                button.onclick = () => checkAnswer(index, button);
+                optionsContainer.appendChild(button);
+            });
+
+            // Update Progress
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('quizProgress').style.width = `${progress}%`;
+            
+            // Reset Feedback
+            document.getElementById('feedbackArea').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+            hasAnswered = false;
+        }
+
+        function checkAnswer(selectedIndex, buttonElement) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const q = questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('.quiz-option');
+            
+            // Disable all buttons
+            buttons.forEach(btn => btn.disabled = true);
+
+            const feedbackArea = document.getElementById('feedbackArea');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            const nextBtn = document.getElementById('nextBtn');
+
+            feedbackArea.classList.remove('hidden', 'bg-green-50', 'bg-red-50', 'border', 'border-green-300', 'border-red-300');
+
+            if (selectedIndex === q.correctAnswer) {
+                // Correct
+                buttonElement.classList.add('correct');
+                score++;
+                feedbackArea.classList.add('bg-green-50', 'border', 'border-green-300');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green-600"></i>';
+                feedbackTitle.innerText = "תשובה נכונה מצוינת!";
+                feedbackTitle.className = "font-bold text-xl mb-2 text-green-800 font-heading";
+                feedbackText.innerHTML = q.explanation;
+            } else {
+                // Incorrect
+                buttonElement.classList.add('incorrect');
+                // Highlight correct answer
+                buttons[q.correctAnswer].classList.add('correct');
+                
+                feedbackArea.classList.add('bg-red-50', 'border', 'border-red-300');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-600"></i>';
+                feedbackTitle.innerText = "לא נורא, נסו להבין למה:";
+                feedbackTitle.className = "font-bold text-xl mb-2 text-red-800 font-heading";
+                feedbackText.innerHTML = `התשובה הנכונה היא: <strong>${q.options[q.correctAnswer]}</strong>. <br><br>${q.explanation}`;
+            }
+
+            nextBtn.classList.remove('hidden');
+            
+            // If it's the last question, change button text
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.innerHTML = 'לסיום וצפייה בתוצאות <i class="fa-solid fa-flag-checkered mr-1"></i>';
+                nextBtn.classList.replace('bg-gray-800', 'bg-indigo-600');
+                nextBtn.classList.replace('hover:bg-gray-700', 'hover:bg-indigo-700');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            
+            document.getElementById('quizProgress').style.width = '100%';
+            
+            document.getElementById('scoreText').innerText = score;
+            document.getElementById('totalText').innerText = questions.length;
+            
+            const resultTitle = document.querySelector('#resultsContainer h3');
+            if(score === questions.length) {
+                resultTitle.innerText = "מושלם! אלופים בהבנת הנקרא! 🌟";
+            } else if (score >= questions.length - 2) {
+                resultTitle.innerText = "כל הכבוד! עבודה טובה מאוד! 👍";
+            } else {
+                resultTitle.innerText = "סיימתם את התרגול! המשיכו להתאמן! 💪";
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('questionContainer').classList.remove('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            renderQuestion();
+        }
+
+        // Initialize quiz on load
+        window.onload = renderQuestion;
+
+    </script>
+</body>
+</html>
 
     <style>
         body {
