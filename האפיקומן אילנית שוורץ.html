@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף עבודה: האפיקומן</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Heebo', 'sans-serif'],
+                    },
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Print Optimization */
+        body {
+            background-color: #ecfdf5;
+        }
+
+        .text-reading {
+            line-height: 2.2;
+            font-size: 1.25rem;
+        }
+
+        /* Inline select for cloze test */
+        .cloze-select {
+            display: inline-block;
+            appearance: none;
+            background-color: #f1f5f9;
+            border: 2px dashed #059669;
+            border-radius: 0.5rem;
+            padding: 0.25rem 2rem 0.25rem 0.5rem;
+            margin: 0 0.25rem;
+            font-weight: bold;
+            color: #047857;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 0.5rem center;
+            background-size: 1em;
+        }
+
+        .cloze-select:focus {
+            outline: none;
+            border-style: solid;
+            ring: 2px;
+            ring-color: #10b981;
+        }
+
+        /* Custom Radio Buttons */
+        .radio-custom {
+            accent-color: #059669;
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-break-inside-avoid {
+                break-inside: avoid;
+            }
+            .shadow-sm, .shadow-md, .shadow-lg {
+                box-shadow: none !important;
+            }
+            .bg-white {
+                border: 1px solid #e2e8f0;
+            }
+            textarea {
+                border: 1px solid #cbd5e1 !important;
+                resize: none;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-emerald-600 text-white py-8 shadow-md rounded-b-3xl no-print">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h1 class="font-heading text-4xl md:text-5xl font-black mb-3"><i class="fa-solid fa-file-pen ml-2"></i>דף עבודה: הָאֲפִיקוֹמָן</h1>
+            <p class="text-emerald-100 text-lg md:text-xl font-semibold">קראו את הסיפור בעיון, חשבו היטב וענו על השאלות.</p>
+            <p class="text-emerald-100 mt-2 text-sm bg-emerald-700/50 inline-block px-4 py-1 rounded-full">
+                <i class="fa-solid fa-circle-info ml-1"></i> בסיום תוכלו לשמור את הדף עם תשובותיכם ולשלוח למורה.
+            </p>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 py-8 w-full">
+        
+        <form id="worksheetForm" onsubmit="event.preventDefault();">
+            
+            <!-- Student Details -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-emerald-500 mb-8 print-break-inside-avoid flex flex-col md:flex-row gap-4 items-center">
+                <label for="studentName" class="font-bold text-lg text-emerald-800 whitespace-nowrap">שם התלמיד/ה:</label>
+                <input type="text" id="studentName" name="studentName" placeholder="הקלידו את שמכם כאן..." class="flex-grow text-lg bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow">
+            </div>
+
+            <!-- Reading Text -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mb-10 print-break-inside-avoid relative">
+                <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 font-bold px-4 py-1 rounded-bl-2xl rounded-tr-2xl text-sm">
+                    קריאת הטקסט
+                </div>
+                <h2 class="font-heading text-3xl font-black text-center text-emerald-800 mb-6 mt-2">הָאֲפִיקוֹמָן</h2>
+                
+                <div class="text-reading text-slate-700 space-y-4">
+                    <p>כְּמוֹ בְּכָל שָׁנָה, גַּם הַשָּׁנָה צְפִיתִי לְלֵיל הַסֵּדֶר. אוּלַי הַשָּׁנָה אֶמְצָא סוֹף-סוֹף אֶת הָאֲפִיקוֹמָן!</p>
+                    <p>בְּפֶסַח בַּשָּׁנָה שֶׁעָבְרָה גִיל בֶּן דּוֹד שֶׁלִי מָצָא אֶת הָאֲפִיקוֹמָן וְקִבֵּל אוֹפַנַיִם. בְּפֶסַח שֶׁלְפָנָיו סַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים, כְּדֵי שֶׁכַּלָּם יִמְצְאוּ, אָז זֶה לֹא נֶחְשָׁב.</p>
+                    <p>לִפְנֵי שָׁלוֹשׁ שָׁנִים וִתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבְּכָה הָמוֹן וְעָזַרְתִּי לוֹ לִמְצֹא, וְלִפְנֵי אַרְבַּע שָׁנִים הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</p>
+                    <p>הַשָּׁנָה תִּכְנַנְתִּי לַעֲקֹב אַחֲרֵי סַבָּא כְּדֵי לִרְאוֹת הֵיכָן הוּא מַחְבִּיא אֶת הָאֲפִיקוֹמָן.</p>
+                    <p>הָאוֹרְחִים הִגִּיעוּ וְלֵיל הַסֵּדֶר הִתְחִיל. לְאַחַר שֶׁקָּרָאנוּ אֶת סִפּוּר יְצִיאַת מִצְרַיִם וְכֻלָּם שָׁתוּ אֶת כּוֹס הַיַּיִן הַשְּׁנִיָּה, הִגִּיעַ סַבָּא לְ"מוֹצִיא מַצָּה", אַחַר כָּךְ בָּצַע אֶת הַמַּצָּה לִשְׁנַיִם, וּפִתְאוֹם אָמַר שֶׁהוּא הוֹלֵךְ לַשֵּׁרוּתִים. "לְבַד!" הוּא הִדְגִּישׁ. הֵבַנְתִּי שֶׁזֶּה הָרֶגַע שֶׁלּוֹ חִכִּיתִי.</p>
+                    <p>עָמַדְתִּי בִּקְצֵה הַמִּסְדְרוֹן וְעָקַבְתִּי אַחֲרָיו בְּמַבָּטִי. רָאִיתִי שֶׁסַבָּא מַכְנִיס מַשֶּׁהוּ לַאֲרוֹן הַנַּעֲלַיִם. זֶה הָיָה הָאֲפִיקוֹמָן!</p>
+                    <p class="font-bold text-emerald-800">הָאֲפִיקוֹמָן בְּתוֹךְ נַעֲלֵי הַבַּיִת שֶׁל סָבְתָא!</p>
+                    <p>חִכִּיתִי בְּמֶתַח לְסִיּוּם הָאֲרוּחָה כְּדֵי שֶׁאוּכַל כְּבָר לִמְצֹא אֶת הָאֲפִיקוֹמָן. כְּשֶׁסַבָּא נָתַן אֶת הָאוֹת, כֻּלָּם קָמוּ מֵהַכִּסְאוֹת בִּמְהִירוּת וְהֵחֵלּוּ לְהִתְרוֹצֵץ בְּכָל הַבַּיִת.</p>
+                    <p>מִהַרְתִּי לַאֲרוֹן הַנַּעֲלַיִם, הוֹצֵאתִי אֶת הָאֲפִיקוֹמָן וְקָרָאתִי בְּקוֹל: "מָצָאתִי! מָצָאתִי אֶת הָאֲפִיקוֹמָן"!</p>
+                    <p>כֻּלָּם מָחֲאוּ לִי כַּפַּיִם. אֲנִי הִסְמַקְתִּי, הִשְׁפַּלְתִּי אֶת מַבָּטִי וְחִיַּכְתִּי.</p>
+                    <p>סַבָּא נָשַׁק לִי וְאָמַר בַּחֲגִיגִיּוּת: "כָּל הַכָּבוֹד, עֹמֶר! בְּסִיּוּם הַחַג נֵלֵךְ לִקְנוֹת לְךָ מַתָּנָה".</p>
+                    <p>בְּתֹם חֻפְשַׁת הַפֶּסַח סַבָּא וַאֲנִי הָלַכְנוּ לִקְנוֹת אֶת הַמַּתָּנָה. בַּדֶּרֶךְ הִתְכַּסּוּ עֵינַי בִּדְמָעוֹת, הִתְאַפַּקְתִּי שֶׁלֹּא לִבְכּוֹת. נֶעֱצַרְתִּי בַּכְּנִיסָה לַחֲנוּת, וְהַדְמָעוֹת הֵחֵלּוּ לִזְלֹג.</p>
+                    <p>סַבָּא הִבִּיט בִּי בְּעֵינַיִם שׁוֹאֲלוֹת. סִפַּרְתִּי לְסַבָּא בִּמְהִירוּת אֵיךְ מָצָאתִי אֶת הָאֲפִיקוֹמָן. עָצַרְתִּי אֶת נְשִׁימָתִי וְהִבַּטְתִּי בְּסַבָּא. סַבָּא חִבֵּק אוֹתִי חָזָק וַאֲנִי נָשַׁמְתִּי לִרְוָחָה.</p>
+                    <p>כְּשֶׁפָּנִיתִי לָצֵאת אֶל הָרְחוֹב סַבָּא שָׁאַל: "עֹמֶר, לֹא שָׁכַחְתָּ מַשֶּׁהוּ? מָה עִם הַלֶּגוֹ?"</p>
+                    <p>חִיַּכְתִּי לְסַבָּא וְנִכְנַסְנוּ יָד בְּיָד אֶל הַחֲנוּת.<br>
+                    לֹא יָדַעְתִּי מִמָּה לִשְׂמֹחַ יוֹתֵר: מֵהַלֶּגוֹ הֶחָדָשׁ אוֹ מֵהַהֲקָלָה שֶׁהִרְגַּשְׁתִּי אַחֲרֵי שֶׁסִּפַּרְתִּי לְסַבָּא אֶת הַכֹּל.</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                
+                <!-- Q1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">1</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">בַּשּׁוּרָה הָרִאשׁוֹנָה מוֹפִיעַ הַמִּשְׁפָּט: "כְּמוֹ בְּכָל שָׁנָה, גַּם הַשָּׁנָה <span class="text-emerald-600 underline">צְפִיתִי</span> לְלֵיל הַסֵּדֶר". בִּמְקוֹם הַפֹּעַל "צְפִיתִי" נִתָּן לִכְתֹּב:</p>
+                    <div class="flex flex-col gap-3 pr-4">
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q1" value="א" class="radio-custom">
+                            <span>א. רָצִיתִי</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q1" value="ב" class="radio-custom">
+                            <span>ב. כִּסִּיתִי</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q1" value="ג" class="radio-custom">
+                            <span>ג. חִכִּיתִי</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q1" value="ד" class="radio-custom">
+                            <span>ד. רָאִיתִי</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q2 (Matching) -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">2</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">בְּשׁוּרוֹת 3-7 מְתָאֵר עֹמֶר מָה קָרָה בַּשָּׁנִים הַקוֹדְמוֹת. הַתְאִימוּ אֶת הַזְּמַן לָאֵרוּעַ מִתּוֹךְ הָרְשִׁימָה (בחרו את התשובה הנכונה לכל זמן):</p>
+                    
+                    <div class="pr-4 space-y-4">
+                        <div class="flex flex-col md:flex-row md:items-center gap-2 pb-3 border-b border-slate-100">
+                            <span class="font-bold w-48 text-emerald-700">לִפְנֵי אַרְבַּע שָׁנִים:</span>
+                            <select name="q2_a" class="flex-grow bg-slate-50 border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 text-sm">
+                                <option value="" disabled selected>בחרו אירוע מתאים...</option>
+                                <option value="סבא החביא הרבה">סַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים.</option>
+                                <option value="גיל מצא">גִיל בֶּן דּוֹד שֶׁלִי מָצָא אֶת הָאֲפִיקוֹמָן וְקִבֵּל אוֹפַנַיִם.</option>
+                                <option value="הייתי ממש קטן">הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</option>
+                                <option value="ויתרתי לאחי">וִתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבְּכָה הָמוֹן.</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-2 pb-3 border-b border-slate-100">
+                            <span class="font-bold w-48 text-emerald-700">לִפְנֵי שָׁלוֹשׁ שָׁנִים:</span>
+                            <select name="q2_b" class="flex-grow bg-slate-50 border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 text-sm">
+                                <option value="" disabled selected>בחרו אירוע מתאים...</option>
+                                <option value="סבא החביא הרבה">סַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים.</option>
+                                <option value="גיל מצא">גִיל בֶּן דּוֹד שֶׁלִי מָצָא אֶת הָאֲפִיקוֹמָן וְקִבֵּל אוֹפַנַיִם.</option>
+                                <option value="הייתי ממש קטן">הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</option>
+                                <option value="ויתרתי לאחי">וִתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבְּכָה הָמוֹן.</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-2 pb-3 border-b border-slate-100">
+                            <span class="font-bold w-48 text-emerald-700">בְּפֶסַח שֶׁלְפָנָיו (לפני שנתיים):</span>
+                            <select name="q2_c" class="flex-grow bg-slate-50 border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 text-sm">
+                                <option value="" disabled selected>בחרו אירוע מתאים...</option>
+                                <option value="סבא החביא הרבה">סַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים.</option>
+                                <option value="גיל מצא">גִיל בֶּן דּוֹד שֶׁלִי מָצָא אֶת הָאֲפִיקוֹמָן וְקִבֵּל אוֹפַנַיִם.</option>
+                                <option value="הייתי ממש קטן">הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</option>
+                                <option value="ויתרתי לאחי">וִתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבְּכָה הָמוֹן.</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center gap-2">
+                            <span class="font-bold w-48 text-emerald-700">בְּפֶסַח בַּשָּׁנָה שֶׁעָבְרָה:</span>
+                            <select name="q2_d" class="flex-grow bg-slate-50 border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 text-sm">
+                                <option value="" disabled selected>בחרו אירוע מתאים...</option>
+                                <option value="סבא החביא הרבה">סַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים.</option>
+                                <option value="גיל מצא">גִיל בֶּן דּוֹד שֶׁלִי מָצָא אֶת הָאֲפִיקוֹמָן וְקִבֵּל אוֹפַנַיִם.</option>
+                                <option value="הייתי ממש קטן">הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</option>
+                                <option value="ויתרתי לאחי">וִתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבְּכָה הָמוֹן.</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">3</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">מַדּוּעַ, לְדַעְתְּכֶם, עֹמֶר חָשַׁב שֶׁ"אֵין זֶה נֶחְשָׁב" כְּשֶׁסַבָּא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים?</p>
+                    <div class="flex flex-col gap-3 pr-4">
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q3" value="א" class="radio-custom mt-1">
+                            <span>א. כִּי עֹמֶר לֹא רָצָה לִמְצֹא אֶת הָאֲפִיקוֹמָן וְקִוָּה שֶׁמִישֶׁהוּ אַחֵר יִמְצָא אוֹתוֹ לִפְנֵי שֶׁהוּא יִצְטָרֵךְ לְחַפֵּשׂ.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q3" value="ב" class="radio-custom mt-1">
+                            <span>ב. כִּי מְצִיאַת הָאֲפִיקוֹמָן כְּשֶׁיֵּשׁ הַרְבֵּה אֲפִיקוֹמָנִים לֹא הָיְתָה אֶתְגָּר אֲמִתִּי, וְלָכֵן עֹמֶר לֹא הִרְגִּישׁ סִפּוּק אוֹ גַּאֲוָה בַּהֶשֵּׂג שֶׁלּוֹ.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q3" value="ג" class="radio-custom mt-1">
+                            <span>ג. כִּי עֹמֶר חָשַׁב שֶׁסַבָּא צָרִיךְ לְהַחְבִּיא רַק אֲפִיקוֹמָן אֶחָד כְּדֵי לִשְׁמֹר עַל הַמָּסֹרֶת.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q3" value="ד" class="radio-custom mt-1">
+                            <span>ד. כִּי הַרְבֵּה אֲפִיקוֹמָנִים פֵּרוּשׁוֹ פָּחוֹת מַצּוֹת לְכָל אֶחָד בַּסְּעוּדָה.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">4</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">מָה הָיָה הָרֶמֶז שֶׁל סַבָּא כְּשֶׁהוּא יָצָא לְהַחְבִּיא אֶת הָאֲפִיקוֹמָן? (היעזרו בטקסט)</p>
+                    <div class="pr-4">
+                        <textarea name="q4" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="הקלידו את תשובתכם כאן..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">5</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">אֵיפֹה הִטְמִין (החביא) סַבָּא אֶת הָאֲפִיקוֹמָן?</p>
+                    <div class="pr-4">
+                        <textarea name="q5" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="הקלידו את תשובתכם כאן..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">6</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">מָה פֵּרוּשׁ הַמִּלָּה "בָּצַע" בַּמִּשְׁפָּט "אַחַר כָּךְ <span class="text-emerald-600 underline">בָּצַע</span> אֶת הַמַּצָּה לִשְׁנַיִם"?</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pr-4">
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q6" value="א" class="radio-custom">
+                            <span>א. אָכַל</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q6" value="ב" class="radio-custom">
+                            <span>ב. חָתַךְ / שָׁבַר</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q6" value="ג" class="radio-custom">
+                            <span>ג. הִגִּישׁ</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q6" value="ד" class="radio-custom">
+                            <span>ד. אָפָה</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">7</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">בַּטֶקְסְט נֶאֱמַר: "כְּשֶׁסַבָּא נָתַן אֶת הָאוֹת, כֻּלָּם קָמוּ מֵהַכִּסְאוֹת בִּמְהִירוּת". אֵיזוֹ מִלָּה יְכוֹלָה לְהַחְלִיף אֶת הַמִּלָּה "<span class="text-emerald-600 underline">אוֹת</span>"?</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pr-4">
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q7" value="א" class="radio-custom">
+                            <span>א. נֵס</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q7" value="ב" class="radio-custom">
+                            <span>ב. הַגָּדָה</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q7" value="ג" class="radio-custom">
+                            <span>ג. אֲפִיקוֹמָן</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q7" value="ד" class="radio-custom">
+                            <span>ד. סִימָן</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">8</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">מַדּוּעַ בָּכָה עֹמֶר כְּשֶׁהָלַךְ עִם סַבָּא לִקְנוֹת אֶת הַמַּתָּנָה?</p>
+                    <div class="pr-4">
+                        <textarea name="q8" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="הסבירו במילים שלכם..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Q9 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">9</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">בְּשׁוּרָה 27 כָּתוּב: "<span class="text-emerald-600 underline">עָצַרְתִּי אֶת נְשִׁימָתִי</span> וְהִבַּטְתִּי בְּסַבָּא". מָה פֵּרוּשׁ הַבִּטּוּי?</p>
+                    <div class="flex flex-col gap-3 pr-4">
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q9" value="א" class="radio-custom mt-1">
+                            <span>א. הֶחְזַקְתִּי אֶת הָאֲוִיר בְּתוֹךְ הָרֵאוֹת לְכַמָּה רְגָעִים.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q9" value="ב" class="radio-custom mt-1">
+                            <span>ב. שָׁרַקְתִּי בְּקוֹל חָזָק כְּדֵי לְהַפְתִּיעַ אֶת סַבָּא.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q9" value="ג" class="radio-custom mt-1">
+                            <span>ג. הִמְתַּנְתִּי בַּחֲשָׁשׁ וּבְהִתְרַגְּשׁוּת לִתְגוּבָתוֹ שֶׁל סַבָּא.</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer hover:bg-emerald-50 p-2 rounded-lg transition-colors">
+                            <input type="radio" name="q9" value="ד" class="radio-custom mt-1">
+                            <span>ד. הֶחְלַטְתִּי לֹא לְדַבֵּר יוֹתֵר עַל זֶה עִם סַבָּא.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q10 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">10</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">כָּתוּב: "סַבָּא חִבֵּק אוֹתִי חָזָק וַאֲנִי <span class="text-emerald-600 underline">נָשַׁמְתִּי לִרְוָחָה</span>." מַדּוּעַ נָשַׁם עֹמֶר לִרְוָחָה (נרגע, הוקל לו)?</p>
+                    <div class="pr-4">
+                        <textarea name="q10" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="הסבירו במילים שלכם..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Q11 (Ordering) -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">11</div>
+                    <p class="font-bold text-lg mb-4 text-slate-800 pr-4">שְׁאֵלַת רֶצֶף - סַדְּרוּ אֶת הָאֵרוּעִים הַבָּאִים לְפִי סֵדֶר הִתְרַחֲשׁוּתָם בַּסִּפּוּר (בחרו מספרים 1 עד 6):</p>
+                    
+                    <div class="pr-4 space-y-3">
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_a" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">עֹמֶר מוֹצֵא אֶת הָאֲפִיקוֹמָן.</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_b" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">עֹמֶר וְסַבָּא יוֹצְאִים לִקְנוֹת אֶת הַמַּתָּנָה.</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_c" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">עֹמֶר עוֹקֵב אַחֲרֵי סַבָּא וּמְגַלֶּה שֶׁהוּא מַחְבִּיא אֶת הָאֲפִיקוֹמָן בְּנַעֲלֵי הַבַּיִת שֶׁל סָבְתָא.</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_d" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">עֹמֶר מְגַלֶּה לְסַבָּא שֶׁעָקַב אַחֲרָיו וּמִתְרַגֵּשׁ מִתְּגוּבָתוֹ שֶׁל סַבָּא.</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_e" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">סַבָּא מַכְרִיז שֶׁהוּא יוֹצֵא לַשֵּׁרוּתִים וּמַדְגִּישׁ שֶׁהוּא רוֹצֶה לָלֶכֶת לְבַד.</span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <select name="q11_f" class="bg-white border border-slate-300 font-bold text-emerald-700 rounded-md p-1 focus:ring-2 focus:ring-emerald-500 w-16 text-center">
+                                <option value="" disabled selected>-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                            </select>
+                            <span class="flex-grow">לְאַחַר קְרִיאַת סִפּוּר יְצִיאַת מִצְרַיִם וּשְׁתִיַּת הַכּוֹס הַשְּׁנִיָּה, הִגִּיעַ זְמַן הַסְתָּרַת הָאֲפִיקוֹמָן.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q12 (Cloze) -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 print-break-inside-avoid relative">
+                    <div class="absolute -right-3 top-6 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg shadow-sm">12</div>
+                    <div class="pr-4">
+                        <p class="font-bold text-lg mb-2 text-slate-800">הַשְׁלִימוּ אֶת הַקֶּטַע הַבָּא בְּעֶזְרַת הַמִּלִּים בְּמַחְסַן הַמִּלִּים:</p>
+                        <div class="bg-emerald-50 p-3 rounded-lg text-emerald-800 font-bold text-center mb-6 border border-emerald-200">
+                            מחסן מילים: רָאָה | מִרְמָה | שָׂמַח | לֶגוֹ | הִתְוַדָּה | יִמְצָא | הֶחְבִּיא | הֵצִיק
+                        </div>
+                        
+                        <div class="text-reading leading-loose text-slate-700 text-justify">
+                            עֹמֶר תִּכְנַן הֵיטֵב אֶת הָאֹפֶן בּוֹ 
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            אֶת הָאֲפִיקוֹמָן הַשָּׁנָה. כַּאֲשֶׁר סַבָּא קָם לָלֶכֶת לַשֵּׁרוּתִים, עֹמֶר עָמַד בַּמִּסְדְרוֹן ו-
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            אֶת סַבָּא פּוֹתֵחַ אֶת אֲרוֹן הַנַּעֲלַיִם, ו-
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            אֶת הָאֲפִיקוֹמָן בְּתוֹךְ נַעֲלֵי הַבַּיִת שֶׁל סָבְתָא. כַּאֲשֶׁר עֹמֶר מָצָא אֶת הָאֲפִיקוֹמָן, הוּא הָיָה
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            מְאוֹד.<br><br>
+                            כְּכָל הַנִּרְאֶה, מַעֲשֵׂה ה-
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            שֶׁעָשָׂה עֹמֶר
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            לוֹ וְלִפְנֵי שֶׁהוּא וְסַבָּא נִכְנְסוּ לַחֲנוּת לִקְנוֹת אֶת ה-
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            , עֹמֶר
+                            <select class="cloze-select"><option value=""></option><option value="רָאָה">רָאָה</option><option value="מִרְמָה">מִרְמָה</option><option value="שָׂמַח">שָׂמַח</option><option value="לֶגוֹ">לֶגוֹ</option><option value="הִתְוַדָּה">הִתְוַדָּה</option><option value="יִמְצָא">יִמְצָא</option><option value="הֶחְבִּיא">הֶחְבִּיא</option><option value="הֵצִיק">הֵצִיק</option></select>
+                            בִּפְנֵי סַבָּא שֶׁעָקַב אַחֲרָיו וְכָךְ גִּלָּה הֵיכָן הָאֲפִיקוֹמָן.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Actions Section -->
+            <div class="mt-10 mb-8 p-6 bg-emerald-50 rounded-2xl border border-emerald-200 text-center no-print">
+                <h3 class="font-bold text-xl text-emerald-800 mb-2">סיימתם? כל הכבוד!</h3>
+                <p class="text-emerald-700 mb-6">עכשיו תוכלו לשמור ולהוריד את דף העבודה עם התשובות שלכם ולשלוח למורה.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="downloadAsHTML()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download"></i> הורדת קובץ לשליחה למורה
+                    </button>
+                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> שמירה כ-PDF / הדפסה
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </main>
+
+    <footer class="mt-auto bg-slate-800 text-slate-300 py-6 text-center text-sm no-print">
+        <p class="font-bold tracking-wider">אילנית שוורץ - קריאה להבנה</p>
+    </footer>
+
+    <!-- Scripts for state preservation and functionality -->
+    <script>
+        // Track changes to form inputs so they persist when downloading HTML
+        document.addEventListener('input', function(e) {
+            const target = e.target;
+            
+            if (target.tagName === 'INPUT') {
+                if (target.type === 'radio' || target.type === 'checkbox') {
+                    // Update radio groups visually in the DOM state
+                    const radios = document.getElementsByName(target.name);
+                    for (let i = 0; i < radios.length; i++) {
+                        radios[i].removeAttribute('checked');
+                    }
+                    target.setAttribute('checked', 'checked');
+                } else {
+                    target.setAttribute('value', target.value);
+                }
+            } else if (target.tagName === 'TEXTAREA') {
+                target.innerHTML = target.value;
+            } else if (target.tagName === 'SELECT') {
+                const options = target.options;
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                        options[i].setAttribute('selected', 'selected');
+                    } else {
+                        options[i].removeAttribute('selected');
+                    }
+                }
+            }
+        });
+
+        // Function to download the updated HTML file
+        function downloadAsHTML() {
+            const studentNameInput = document.getElementById('studentName');
+            const studentName = studentNameInput.value.trim() || 'תלמיד';
+            
+            // Validate name is entered
+            if (!studentNameInput.value.trim()) {
+                alert("אנא הזינו את שמכם בראש הדף לפני ההורדה.");
+                studentNameInput.focus();
+                return;
+            }
+
+            // Create a copy of the current HTML content
+            const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            
+            // Create Blob and download link
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = `דף_עבודה_האפיקומן_${studentName}.html`;
+            
+            // Trigger download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert("הקובץ נשמר בהצלחה!\nניתן כעת לצרף את הקובץ שירד ולשלוח למורה.");
+        }
+    </script>
+</body>
+</html>
