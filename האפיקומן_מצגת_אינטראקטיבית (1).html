@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>האפיקומן - קריאה להבנה</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F5A623;
+  --gold-light: #FFF3D6;
+  --blue: #4A90D9;
+  --blue-light: #E8F2FC;
+  --green: #5CB85C;
+  --green-light: #E6F9E6;
+  --red: #E74C3C;
+  --red-light: #FDE8E8;
+  --purple: #8E6FBF;
+  --purple-light: #F0E8F7;
+  --bg: #FFFDF5;
+  --text: #2D2A26;
+  --text-light: #6B6560;
+  --card: #FFFFFF;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Assistant', 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: 'Heebo', sans-serif; }
+
+/* Slide System */
+.slide {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.slide.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-inner {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Navigation */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-top: 2px solid var(--gold);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+
+.nav-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.nav-dot.active {
+  background: var(--gold);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(245,166,35,0.4);
+}
+.nav-dot:hover { background: var(--gold); opacity:0.7; }
+
+.nav-arrow {
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.nav-arrow:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(245,166,35,0.3);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Story Text */
+.story-text {
+  font-size: 1.15rem;
+  line-height: 2.2;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  border: 2px solid var(--gold-light);
+  position: relative;
+}
+
+.story-text .highlight-time {
+  background: var(--blue-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  border-bottom: 2px solid var(--blue);
+  transition: all 0.3s;
+}
+.story-text .highlight-cause {
+  background: var(--green-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  border-bottom: 2px solid var(--green);
+  transition: all 0.3s;
+}
+.story-text .highlight-contrast {
+  background: var(--purple-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  border-bottom: 2px solid var(--purple);
+  transition: all 0.3s;
+}
+.story-text .highlight-inference {
+  background: var(--gold-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  border-bottom: 2px solid var(--gold);
+  transition: all 0.3s;
+}
+
+.highlight-hidden .highlight-time,
+.highlight-hidden .highlight-cause,
+.highlight-hidden .highlight-contrast,
+.highlight-hidden .highlight-inference {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+/* Quiz */
+.quiz-option {
+  display: block;
+  width: 100%;
+  text-align: right;
+  padding: 1rem 1.5rem;
+  border: 2px solid #e0dcd6;
+  border-radius: 14px;
+  background: white;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-family: 'Assistant', sans-serif;
+  transition: all 0.3s;
+  margin-bottom: 0.5rem;
+}
+.quiz-option:hover {
+  border-color: var(--gold);
+  background: var(--gold-light);
+  transform: translateX(-4px);
+}
+.quiz-option.correct {
+  border-color: var(--green);
+  background: var(--green-light);
+  animation: pop 0.4s ease;
+}
+.quiz-option.wrong {
+  border-color: var(--red);
+  background: var(--red-light);
+  animation: shake 0.4s ease;
+}
+.quiz-option:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.quiz-option:disabled:hover {
+  transform: none;
+}
+
+.feedback {
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  margin-top: 0.75rem;
+  font-weight: 600;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+.feedback.show { display: block; }
+.feedback.correct-fb {
+  background: var(--green-light);
+  color: #2D7D2D;
+  border: 1px solid var(--green);
+}
+.feedback.wrong-fb {
+  background: var(--red-light);
+  color: #C0392B;
+  border: 1px solid var(--red);
+}
+
+/* Flip Cards */
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+  height: 180px;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  text-align: center;
+}
+.flip-card-front {
+  background: white;
+  border: 2px solid var(--gold);
+  box-shadow: var(--shadow);
+}
+.flip-card-back {
+  background: var(--gold);
+  color: white;
+  transform: rotateY(180deg);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Progress */
+.progress-ring {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+
+/* Connectors Legend */
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Sequencing */
+.seq-item {
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 2px solid #e0dcd6;
+  border-radius: 12px;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+.seq-item:active { cursor: grabbing; }
+.seq-item.dragging {
+  opacity: 0.5;
+  border-color: var(--gold);
+}
+.seq-item.correct-order {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+.seq-item.wrong-order {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+
+/* Cloze */
+.cloze-blank {
+  display: inline-block;
+  min-width: 80px;
+  border-bottom: 2px dashed var(--gold);
+  text-align: center;
+  padding: 2px 8px;
+  margin: 0 4px;
+  background: var(--gold-light);
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+.cloze-blank.filled {
+  border-bottom-style: solid;
+  background: var(--green-light);
+  border-color: var(--green);
+}
+
+.word-bank-word {
+  display: inline-block;
+  padding: 6px 14px;
+  background: white;
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin: 3px;
+}
+.word-bank-word:hover {
+  background: var(--gold-light);
+  transform: scale(1.05);
+}
+.word-bank-word.used {
+  opacity: 0.3;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes pop {
+  0% { transform:scale(1); }
+  50% { transform:scale(1.03); }
+  100% { transform:scale(1); }
+}
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25% { transform:translateX(-6px); }
+  75% { transform:translateX(6px); }
+}
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-8px); }
+}
+@keyframes sparkle {
+  0%,100% { opacity:0; transform:scale(0); }
+  50% { opacity:1; transform:scale(1); }
+}
+
+.float-anim { animation: float 3s ease-in-out infinite; }
+
+/* Decorative */
+.deco-star {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0.15;
+  animation: sparkle 4s ease-in-out infinite;
+}
+
+/* Step Cards */
+.step-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  border-right: 5px solid var(--gold);
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.step-card:hover {
+  transform: translateX(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.step-card .step-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s;
+  opacity: 0;
+}
+.step-card.open .step-detail {
+  max-height: 300px;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+/* Tooltip */
+.tooltip-trigger {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted var(--gold);
+}
+.tooltip-trigger .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 120%;
+  right: 50%;
+  transform: translateX(50%);
+  background: var(--text);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.tooltip-trigger:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  .slide { padding: 1.5rem 0.75rem; }
+  .card { padding: 1.25rem; }
+  .story-text { padding: 1rem 1.25rem; font-size: 1rem; }
+  .flip-card { height: 160px; }
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.35rem !important; }
+}
+
+body { padding-bottom: 60px; }
+</style>
+</head>
+<body>
+
+<!-- Progress Ring -->
+<div class="progress-ring" id="progressRing">
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <circle cx="22" cy="22" r="18" fill="none" stroke="#eee" stroke-width="3"/>
+    <circle id="progressCircle" cx="22" cy="22" r="18" fill="none" stroke="var(--gold)" stroke-width="3"
+      stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round"
+      transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 0.5s ease"/>
+  </svg>
+  <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--gold)" id="progressText">1</span>
+</div>
+
+<!-- ======================== SLIDE 1: OPENING ======================== -->
+<section class="slide visible" data-slide="0">
+  <div class="slide-inner text-center">
+    <div class="relative inline-block mb-6">
+      <span class="deco-star" style="top:-20px;right:-30px;animation-delay:0s">✨</span>
+      <span class="deco-star" style="top:10px;left:-40px;animation-delay:1s">⭐</span>
+      <span class="deco-star" style="bottom:-10px;right:-20px;animation-delay:2s">✨</span>
+      <div class="text-7xl float-anim mb-4">🫓</div>
+    </div>
+    <h1 class="text-4xl font-black mb-3" style="color:var(--gold);font-family:'Heebo',sans-serif;letter-spacing:-0.5px">
+      הָאֲפִיקוֹמָן
+    </h1>
+    <p class="text-lg mb-2" style="color:var(--text-light)">סיפור מאת <strong>אילנית שוורץ</strong></p>
+    <div class="card inline-block mt-6 text-right" style="max-width:500px; border-top:4px solid var(--gold)">
+      <p class="font-bold text-lg mb-2" style="color:var(--gold)">🎯 מה נלמד היום?</p>
+      <ul class="space-y-2 text-base" style="color:var(--text)">
+        <li>📖 נקרא את הסיפור "האפיקומן"</li>
+        <li>🔍 נלמד <strong>להסיק מסקנות</strong> מתוך הטקסט</li>
+        <li>🔗 נכיר <strong>מילות קישור</strong> – זמן, סיבה, ניגוד</li>
+        <li>❓ נענה על שאלות בממדי ההבנה השונים</li>
+      </ul>
+    </div>
+    <p class="mt-6 text-sm" style="color:var(--text-light)">⬇️ גוללים למטה או לוחצים על החצים למטה כדי להתקדם</p>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 2: STORY TEXT ======================== -->
+<section class="slide" data-slide="1">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-4 text-center" style="color:var(--gold)">📖 קוראים את הסיפור</h2>
+    <p class="text-center text-sm mb-3" style="color:var(--text-light)">לחצו על הכפתורים כדי להדגיש מילות קישור בטקסט!</p>
+    
+    <!-- Magic Buttons -->
+    <div class="flex flex-wrap justify-center gap-2 mb-4">
+      <button onclick="toggleHighlight('time')" class="legend-item" style="background:var(--blue-light);color:var(--blue);border:2px solid var(--blue);cursor:pointer" id="btn-time">
+        🕐 זמן
+      </button>
+      <button onclick="toggleHighlight('cause')" class="legend-item" style="background:var(--green-light);color:#2D7D2D;border:2px solid var(--green);cursor:pointer" id="btn-cause">
+        💡 סיבה
+      </button>
+      <button onclick="toggleHighlight('contrast')" class="legend-item" style="background:var(--purple-light);color:var(--purple);border:2px solid var(--purple);cursor:pointer" id="btn-contrast">
+        ↔️ ניגוד
+      </button>
+      <button onclick="toggleHighlight('inference')" class="legend-item" style="background:var(--gold-light);color:#B8860B;border:2px solid var(--gold);cursor:pointer" id="btn-inference">
+        🔍 הסקה
+      </button>
+    </div>
+
+    <div class="story-text highlight-hidden" id="storyText" style="max-height: 420px; overflow-y: auto;">
+      <p>
+        <span class="highlight-time">כְּמוֹ בְּכָל שָׁנָה</span>, <span class="highlight-time">גַּם הַשָּׁנָה</span> צִפִּיתִי לְלֵיל הַסֵּדֶר. אוּלַי הַשָּׁנָה אֶמְצָא סוֹף-סוֹף <span class="highlight-inference">אֶת הָאֲפִיקוֹמָן</span>!
+      </p>
+      <p class="mt-2">
+        <span class="highlight-contrast">אֲבָל</span> <span class="highlight-time">בְּפֶסַח שֶׁל לְפָנָיו</span> גִּיל בֶּן דּוֹד שֶׁלִּי מָצָא אֶת הָאֲפִיקוֹמָן וְקִיבֵּל אוֹפַנַּיִם. <span class="highlight-time">בְּפֶסַח שֶׁעָבַר</span> וִיתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבָּכָה וְעָזַרְתִּי לוֹ לִמְצֹא, <span class="highlight-cause">כִּי</span> <span class="highlight-time">לִפְנֵי חָמֵשׁ שָׁנִים</span> הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי. <span class="highlight-cause">כְּדֵי שֶׁכֻּלָּם יִמְצְאוּ</span>, <span class="highlight-time">אָז</span> זֶה סָבָא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים, <span class="highlight-inference">אָז זֶה לֹא נֶחְשָׁב</span>.
+      </p>
+      <p class="mt-2">
+        הַשָּׁנָה הִתְכַּנַּנְתִּי <span class="highlight-cause">כְּדֵי</span> לַעֲקֹב אַחֲרֵי סָבָא <span class="highlight-cause">כְּדֵי</span> לִרְאוֹת הֵיכָן הוּא מַחְבִּיא אֶת הָאֲפִיקוֹמָן.
+      </p>
+      <p class="mt-2">
+        וְלֵיל הַסֵּדֶר הִגִּיעַ וְהִתְחִיל. <span class="highlight-time">לְאַחַר</span> שֶׁקָרָאנוּ אֶת סִיפּוּר יְצִיאַת מִצְרַיִם וְכֻלָּם שָׁתוּ הַיַּיִן, הִגִּיעַ סָבָא לְ"מוֹצִיא מַצָּה", <span class="highlight-time">אַחַר כָּךְ</span> בָּצַע אֶת הַמַּצָּה לִשְׁנַיִם, וּפִתְאוֹם אָמַר שֶׁהוּא הוֹלֵךְ לַשֵּׁירוּתִים. "לְבַד!" הוּא הִדְגִּישׁ. <span class="highlight-inference">הֵבַנְתִּי שֶׁזֶּה הָרֶגַע שֶׁלִּי</span>.
+      </p>
+      <p class="mt-2">
+        חִיכִּיתִי רֶגַע. עָמַדְתִּי בִּקְצֵה הַמִּסְדְּרוֹן וְעָקַבְתִּי אַחֲרָיו בַּמַּבָּטִי. רָאִיתִי שֶׁסָּבָא פּוֹתֵחַ אֶת אֲרוֹן הַנַּעֲלַיִם. <span class="highlight-inference">זֶה הָיָה הָאֲפִיקוֹמָן!</span> הָאֲפִיקוֹמָן בְּתוֹךְ נַעֲלֵי הַבַּיִת שֶׁל סָבְתָא!
+      </p>
+      <p class="mt-2">
+        חִיכִּיתִי בְּמֶתַח וּ<span class="highlight-time">כְשֶׁסָּבָא נָתַן אֶת הָאוֹת</span>, כֻּלָּם קָמוּ מֵהַכִּיסָאוֹת בִּמְהִירוּת וְהֵחֵלּוּ לְהִתְרוֹצֵץ בְּכָל הַבַּיִת. מִיהַרְתִּי לַאֲרוֹן הַנַּעֲלַיִם, הוֹצֵאתִי אֶת הָאֲפִיקוֹמָן וְקָרָאתִי בְקוֹל: "מָצָאתִי! מָצָאתִי אֶת הָאֲפִיקוֹמָן!"
+      </p>
+      <p class="mt-2">
+        כֻּלָּם מָחֲאוּ לִי כַּפַּיִם. אֲנִי הִסְמַקְתִּי, הִשְׁפַּלְתִּי אֶת מַבָּטִי וְחִיַּכְתִּי. סָבָא נָשַׁק לִי וְאָמַר בַּחֲגִיגִיּוּת: "כָּל הַכָּבוֹד, עֹמֶר! בְּסִיּוּם הַחַג נֵלֵךְ לִקְנוֹת לְךָ מַתָּנָה".
+      </p>
+      <p class="mt-2">
+        בְּתֹם חֻפְשַׁת הַפֶּסַח סָבָא וַאֲנִי הָלַכְנוּ לִקְנוֹת אֶת הַמַּתָּנָה. בַּדֶּרֶךְ הִתְכַּסּוּ עֵינַי בִּדְמָעוֹת, הִתְאַפַּקְתִּי שֶׁלֹּא לִבְכּוֹת. נֶעֱצַרְתִּי בַּכְּנִיסָה לַחֲנוּת, וְהַדְּמָעוֹת הֵחֵלּוּ לִזְלֹג. סָבָא הִבִּיט בִּי בְּעֵינַיִם שׁוֹאֲלוֹת.
+      </p>
+      <p class="mt-2">
+        סִיפַּרְתִּי לַסָּבָא בִּמְהִירוּת אֵיךְ מָצָאתִי אֶת הָאֲפִיקוֹמָן. עָצַרְתִּי אֶת נְשִׁימָתִי וְהִבַּטְתִּי בַּסָּבָא. סָבָא חִיבֵּק אוֹתִי חָזָק וַאֲנִי נָשַׁמְתִּי לִרְוָחָה.
+      </p>
+      <p class="mt-2">
+        <span class="highlight-time">כְּשֶׁפָּנִיתִי לָצֵאת</span> אֶל הָרְחוֹב סָבָא שָׁאַל: "עֹמֶר, לֹא שָׁכַחְתָּ מַשֶּׁהוּ? מָה עִם הַלֶּגוֹ?" חִיַּכְתִּי לַסָּבָא וְנִכְנַסְנוּ יָד בְּיָד אֶל הַחֲנוּת.
+      </p>
+      <p class="mt-2">
+        <span class="highlight-inference">לֹא יָדַעְתִּי מִמָּה לִשְׂמֹחַ יוֹתֵר</span>: מֵהַלֶּגוֹ הֶחָדָשׁ אוֹ מֵהַהֲקָלָה שֶׁהִרְגַּשְׁתִּי <span class="highlight-time">אַחֲרֵי</span> שֶׁסִּיפַּרְתִּי לַסָּבָא אֶת הַכֹּל.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 3: VISUAL — TIMELINE ======================== -->
+<section class="slide" data-slide="2">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">⏰ ציר הזמן של עֹמֶר והאפיקומן</h2>
+    <p class="text-center text-sm mb-5" style="color:var(--text-light)">מה קרה בכל שנה? בואו נראה!</p>
+    <div style="max-width:700px; margin:0 auto;">
+      <canvas id="timelineChart" height="280"></canvas>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6" style="max-width:700px; margin:0 auto;">
+      <div class="card text-center p-3" style="border-top:3px solid var(--blue)">
+        <div class="text-2xl mb-1">👶</div>
+        <div class="text-xs font-bold">לפני 4 שנים</div>
+        <div class="text-xs" style="color:var(--text-light)">סבא החביא הרבה – לא נחשב</div>
+      </div>
+      <div class="card text-center p-3" style="border-top:3px solid var(--purple)">
+        <div class="text-2xl mb-1">🚲</div>
+        <div class="text-xs font-bold">לפני 3 שנים</div>
+        <div class="text-xs" style="color:var(--text-light)">גיל בן דוד מצא וקיבל אופניים</div>
+      </div>
+      <div class="card text-center p-3" style="border-top:3px solid var(--green)">
+        <div class="text-2xl mb-1">🤝</div>
+        <div class="text-xs font-bold">בפסח שעבר</div>
+        <div class="text-xs" style="color:var(--text-light)">ויתר לאחיו הקטן ועזר לו</div>
+      </div>
+      <div class="card text-center p-3" style="border-top:3px solid var(--gold)">
+        <div class="text-2xl mb-1">🏆</div>
+        <div class="text-xs font-bold">השנה!</div>
+        <div class="text-xs" style="color:var(--text-light)">עקב אחרי סבא ומצא לבד!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 4: TEACHING - INFERENCE ======================== -->
+<section class="slide" data-slide="3">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">🔍 מהי הסקת מסקנות?</h2>
+    <p class="text-center text-sm mb-5" style="color:var(--text-light)">לחצו על כל כרטיסייה כדי לגלות!</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="text-3xl mb-2">📝</div>
+            <div class="font-bold">מה כתוב?</div>
+            <div class="text-xs mt-1" style="color:var(--text-light)">לחצו לגלות</div>
+          </div>
+          <div class="flip-card-back">
+            <div class="font-bold mb-1">שלב 1: מה כתוב?</div>
+            קוראים את המשפט ומוצאים את הפרטים שנכתבו בטקסט במפורש.
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="text-3xl mb-2">🧠</div>
+            <div class="font-bold">מה אני יודע/ת?</div>
+            <div class="text-xs mt-1" style="color:var(--text-light)">לחצו לגלות</div>
+          </div>
+          <div class="flip-card-back">
+            <div class="font-bold mb-1">שלב 2: מה אני יודע/ת?</div>
+            מוסיפים ידע קודם שלנו מהחיים – דברים שאנחנו מכירים.
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="text-3xl mb-2">💡</div>
+            <div class="font-bold">המסקנה!</div>
+            <div class="text-xs mt-1" style="color:var(--text-light)">לחצו לגלות</div>
+          </div>
+          <div class="flip-card-back">
+            <div class="font-bold mb-1">שלב 3: מסיקים!</div>
+            מחברים את מה שכתוב + מה שאנחנו יודעים = מסקנה חדשה!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="border-right:5px solid var(--gold); max-width:650px; margin:0 auto;">
+      <h3 class="font-bold mb-3" style="color:var(--gold)">🌟 דוגמה מהסיפור:</h3>
+      <div class="mb-2"><strong>כתוב בטקסט:</strong> "פתאום אמר שהוא הולך לשירותים. 'לבד!' הוא הדגיש."</div>
+      <div class="mb-2"><strong>מה אנחנו יודעים:</strong> בליל הסדר, מחביאים את האפיקומן. סבא רוצה להיות לבד.</div>
+      <div style="background:var(--gold-light); padding:0.75rem 1rem; border-radius:10px;">
+        <strong>💡 מסקנה:</strong> סבא לא באמת הלך לשירותים – הוא הלך להחביא את האפיקומן!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 5: TEACHING - CONNECTORS ======================== -->
+<section class="slide" data-slide="4">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">🔗 מילות קישור</h2>
+    <p class="text-center text-sm mb-5" style="color:var(--text-light)">לחצו על כל קבוצה כדי לראות דוגמאות מהסיפור</p>
+
+    <div class="space-y-3" style="max-width:700px; margin:0 auto;">
+      <!-- Time -->
+      <div class="step-card" onclick="this.classList.toggle('open')" style="border-right-color:var(--blue)">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🕐</span>
+          <div>
+            <div class="font-bold" style="color:var(--blue)">מילות זמן</div>
+            <div class="text-sm" style="color:var(--text-light)">מתי קרה האירוע?</div>
+          </div>
+          <span class="mr-auto text-xl" style="color:var(--blue)">⬇</span>
+        </div>
+        <div class="step-detail">
+          <div style="background:var(--blue-light);padding:0.75rem 1rem;border-radius:10px;font-size:0.95rem">
+            <strong>דוגמאות:</strong> כמו בכל שנה, לפני ארבע שנים, לפני שלוש שנים, בפסח שעבר, אחר כך, כשסבא נתן את האות, אחרי שסיפרתי<br>
+            <strong>מה הן עושות?</strong> מסדרות לנו את האירועים לפי הזמן!
+          </div>
+        </div>
+      </div>
+
+      <!-- Cause -->
+      <div class="step-card" onclick="this.classList.toggle('open')" style="border-right-color:var(--green)">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <div class="font-bold" style="color:#2D7D2D">מילות סיבה</div>
+            <div class="text-sm" style="color:var(--text-light)">למה זה קרה?</div>
+          </div>
+          <span class="mr-auto text-xl" style="color:var(--green)">⬇</span>
+        </div>
+        <div class="step-detail">
+          <div style="background:var(--green-light);padding:0.75rem 1rem;border-radius:10px;font-size:0.95rem">
+            <strong>דוגמאות:</strong> כדי שכולם ימצאו, כי הייתי קטן, כדי לראות היכן, כדי למצוא<br>
+            <strong>מה הן עושות?</strong> מסבירות את הסיבה למה דבר מסוים קרה!
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast -->
+      <div class="step-card" onclick="this.classList.toggle('open')" style="border-right-color:var(--purple)">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">↔️</span>
+          <div>
+            <div class="font-bold" style="color:var(--purple)">מילות ניגוד</div>
+            <div class="text-sm" style="color:var(--text-light)">מה שונה ממה?</div>
+          </div>
+          <span class="mr-auto text-xl" style="color:var(--purple)">⬇</span>
+        </div>
+        <div class="step-detail">
+          <div style="background:var(--purple-light);padding:0.75rem 1rem;border-radius:10px;font-size:0.95rem">
+            <strong>דוגמאות:</strong> אבל, אולי, לא נחשב (מול נחשב)<br>
+            <strong>מה הן עושות?</strong> מראות הבדל בין שני דברים או מצבים!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 6: QUIZ 1 ======================== -->
+<section class="slide" data-slide="5">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">❓ בודקים הבנה – שאלה 1</h2>
+    <div class="card" style="max-width:650px; margin:0 auto;">
+      <p class="font-bold text-lg mb-4">בשורה הראשונה מופיע: "כמו בכל שנה, גם השנה <strong>צִפִּיתִי</strong> לליל הסדר". במקום "ציפיתי" ניתן לכתוב:</p>
+      <div id="quiz1">
+        <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">א. רָצִיתִי</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">ב. כִּסִיתִי</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz1',this,true)">ג. חִיכִּיתִי</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz1',this,false)">ד. רָאִיתִי</button>
+      </div>
+      <div class="feedback" id="quiz1-fb-correct">
+        ✅ כל הכבוד! "ציפיתי" = "חיכיתי" בהתרגשות. שתי המילים מביעות ציפייה והמתנה.
+      </div>
+      <div class="feedback" id="quiz1-fb-wrong">
+        ❌ נסו שוב! חשבו – מה עושים כשמצפים למשהו? מחכים בהתרגשות!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 7: QUIZ 2 ======================== -->
+<section class="slide" data-slide="6">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">❓ בודקים הבנה – שאלה 2</h2>
+    <div class="card" style="max-width:650px; margin:0 auto;">
+      <p class="font-bold text-lg mb-4">מדוע, לדעתכם, עֹמֶר חשב ש"אין זה נחשב" כשסבא החביא הרבה אפיקומנים?</p>
+      <div id="quiz2">
+        <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">א. כי עֹמֶר לא רצה למצוא את האפיקומן וקיווה שמישהו אחר ימצא לפניו</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz2',this,true)">ב. כי מציאת האפיקומן כשסבא החביא הרבה לא הייתה אתגר אמיתי, ולכן עֹמֶר לא הרגיש סיפוק</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">ג. כי עֹמֶר חשב שסבא צריך להחביא רק אפיקומן אחד כדי לשמור על המסורת</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz2',this,false)">ד. כי הרבה אפיקומנים פירושו פחות מצות לכל אחד בסעודה</button>
+      </div>
+      <div class="feedback" id="quiz2-fb-correct">
+        ✅ נכון מאוד! כשהמשימה קלה מדי, אין בה אתגר – וממילא אין תחושת הישג אמיתי. זו הסקת מסקנה!
+      </div>
+      <div class="feedback" id="quiz2-fb-wrong">
+        ❌ חשבו שוב: מה מרגישים כשמנצחים בקלות רבה מדי? האם מרגישים גאווה?
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 8: QUIZ 3 ======================== -->
+<section class="slide" data-slide="7">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">❓ בודקים הבנה – שאלה 3</h2>
+    <div class="card" style="max-width:650px; margin:0 auto;">
+      <p class="font-bold text-lg mb-4">מדוע רצה עֹמֶר כל כך למצוא את האפיקומן?</p>
+      <div id="quiz3">
+        <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">א. כי הוא רצה לקבל מתנה יקרה מסבא וסבתא</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">ב. כי הוא רצה להוכיח שהוא טוב יותר מכל שאר הילדים במשפחה</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz3',this,false)">ג. כי הוא חשב שאם ימצא את האפיקומן, יבטלו את שאר הסדר</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz3',this,true)">ד. כי בכל שנה מישהו אחר מוצא את האפיקומן, והשנה הוא רצה סוף סוף להצליח בעצמו</button>
+      </div>
+      <div class="feedback" id="quiz3-fb-correct">
+        ✅ מצוין! עֹמֶר רצה להרגיש הישג אישי – להצליח לבד, לא בגלל המתנה!
+      </div>
+      <div class="feedback" id="quiz3-fb-wrong">
+        ❌ קראו שוב את תחילת הסיפור. מה עֹמֶר אומר על השנים הקודמות?
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 9: QUIZ 4 - Connectors ======================== -->
+<section class="slide" data-slide="8">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">❓ בודקים הבנה – שאלה 4</h2>
+    <div class="card" style="max-width:650px; margin:0 auto;">
+      <p class="font-bold text-lg mb-2">בטקסט נאמר: "כשסבא נתן את <strong>האוֹת</strong>, כולם קמו מהכיסאות".</p>
+      <p class="mb-4">איזו מילה יכולה להחליף את המילה "אוֹת"?</p>
+      <div id="quiz4">
+        <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">א. נֵס</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">ב. הַגָּדָה</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz4',this,false)">ג. אֲפִיקוֹמָן</button>
+        <button class="quiz-option" onclick="checkQuiz('quiz4',this,true)">ד. סִימָן</button>
+      </div>
+      <div class="feedback" id="quiz4-fb-correct">
+        ✅ נכון! "אוֹת" = "סימן". סבא נתן סימן שמותר להתחיל לחפש!
+      </div>
+      <div class="feedback" id="quiz4-fb-wrong">
+        ❌ חשבו: מה נותנים כדי שמישהו ידע שהוא יכול להתחיל? סימן!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 10: SEQUENCE ORDERING ======================== -->
+<section class="slide" data-slide="9">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">🔢 סדרו את האירועים</h2>
+    <p class="text-center text-sm mb-4" style="color:var(--text-light)">גררו את האירועים לסדר הנכון (או לחצו על המספרים)</p>
+
+    <div class="card" style="max-width:650px; margin:0 auto;">
+      <div class="space-y-2" id="sequenceContainer">
+        <!-- Items will be generated by JS -->
+      </div>
+      <button onclick="checkSequence()" class="mt-4 w-full py-3 rounded-xl font-bold text-white text-lg" style="background:var(--gold);border:none;cursor:pointer;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        בדקו את הסדר! ✅
+      </button>
+      <div class="feedback" id="seq-fb-correct">✅ מצוין! סדרתם את האירועים נכון!</div>
+      <div class="feedback" id="seq-fb-wrong">❌ עוד לא מדויק. נסו שוב – חשבו מה קרה קודם ומה אחר כך.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 11: CLOZE ======================== -->
+<section class="slide" data-slide="10">
+  <div class="slide-inner">
+    <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--gold)">📝 השלימו את הקטע</h2>
+    <p class="text-center text-sm mb-4" style="color:var(--text-light)">לחצו על מילה מהמחסן ואז על המקום המתאים</p>
+
+    <div class="card" style="max-width:700px; margin:0 auto;">
+      <div class="mb-4 p-3 rounded-xl" style="background:var(--gold-light); text-align:center;" id="wordBank">
+        <!-- Word bank generated by JS -->
+      </div>
+      <div class="text-base leading-loose" id="clozeText">
+        <!-- Cloze text generated by JS -->
+      </div>
+      <button onclick="checkCloze()" class="mt-4 w-full py-3 rounded-xl font-bold text-white text-lg" style="background:var(--gold);border:none;cursor:pointer;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+        בדקו! ✅
+      </button>
+      <div class="feedback" id="cloze-fb-correct">✅ כל הכבוד! השלמתם נכון!</div>
+      <div class="feedback" id="cloze-fb-wrong">❌ יש טעויות. נסו שוב!</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SLIDE 12: SUMMARY ======================== -->
+<section class="slide" data-slide="11">
+  <div class="slide-inner text-center">
+    <div class="text-6xl mb-4 float-anim">🌟</div>
+    <h2 class="text-3xl font-black mb-4" style="color:var(--gold);font-family:'Heebo',sans-serif">כל הכבוד! סיימנו!</h2>
+    
+    <div class="card inline-block text-right mb-6" style="max-width:550px; border-top:4px solid var(--green)">
+      <h3 class="font-bold text-lg mb-3 text-center" style="color:var(--green)">🎯 מה למדנו היום?</h3>
+      <div class="space-y-3">
+        <div class="flex items-start gap-2">
+          <span class="text-xl">🔍</span>
+          <div><strong>הסקת מסקנות</strong> – חיברנו מה שכתוב בטקסט + מה שאנחנו יודעים כדי להבין דברים שלא נכתבו במפורש.</div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-xl">🕐</span>
+          <div><strong>מילות זמן</strong> – לפני, אחרי, כשׁ, אחר כך – עוזרות לנו לסדר אירועים.</div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-xl">💡</span>
+          <div><strong>מילות סיבה</strong> – כי, כדי ש, בגלל – מסבירות למה משהו קרה.</div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-xl">↔️</span>
+          <div><strong>מילות ניגוד</strong> – אבל, אולם – מראות הבדל בין שני דברים.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card inline-block mb-4" style="max-width:400px; background:var(--gold-light); border:2px solid var(--gold)">
+      <p class="text-lg font-bold" style="color:#B8860B">
+        💬 זכרו: קורא טוב לא רק קורא מילים – הוא גם <em>חושב</em> בין השורות!
+      </p>
+    </div>
+
+    <div class="mt-8" style="color:var(--text-light); font-size:0.9rem;">
+      <div style="width:60px;height:2px;background:var(--gold);margin:0 auto 0.75rem"></div>
+      <p><strong>אילנית שוורץ – קריאה להבנה</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== NAVIGATION BAR ======================== -->
+<div class="nav-bar" id="navBar">
+  <button class="nav-arrow" onclick="goToSlide(currentSlide-1)" id="prevBtn">→</button>
+  <div class="flex gap-1 items-center" id="navDots"></div>
+  <button class="nav-arrow" onclick="goToSlide(currentSlide+1)" id="nextBtn">←</button>
+</div>
+
+<script>
+// ===== SLIDE NAVIGATION =====
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+let currentSlide = 0;
+
+function buildNav() {
+  const dotsContainer = document.getElementById('navDots');
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function goToSlide(n) {
+  if (n < 0 || n >= totalSlides) return;
+  currentSlide = n;
+  slides.forEach((s, i) => {
+    if (i === n) {
+      s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  updateNav();
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+  const circle = document.getElementById('progressCircle');
+  const offset = 113 - (113 * (currentSlide + 1) / totalSlides);
+  circle.style.strokeDashoffset = offset;
+  document.getElementById('progressText').textContent = currentSlide + 1;
+}
+
+// Intersection Observer for scroll-based navigation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      const idx = parseInt(entry.target.dataset.slide);
+      if (!isNaN(idx)) {
+        currentSlide = idx;
+        updateNav();
+      }
+    }
+  });
+}, { threshold: 0.35 });
+
+slides.forEach(s => observer.observe(s));
+
+buildNav();
+
+// ===== HIGHLIGHT TOGGLE =====
+const activeHighlights = new Set();
+
+const highlightColors = {
+  time:      { bg: '#E8F2FC', border: '#4A90D9' },
+  cause:     { bg: '#E6F9E6', border: '#5CB85C' },
+  contrast:  { bg: '#F0E8F7', border: '#8E6FBF' },
+  inference: { bg: '#FFF3D6', border: '#F5A623' }
+};
+
+function toggleHighlight(type) {
+  if (activeHighlights.has(type)) {
+    activeHighlights.delete(type);
+  } else {
+    activeHighlights.add(type);
+  }
+  applyHighlights();
+}
+
+function applyHighlights() {
+  const st = document.getElementById('storyText');
+  const allTypes = ['time', 'cause', 'contrast', 'inference'];
+  allTypes.forEach(t => {
+    const spans = st.querySelectorAll('.highlight-' + t);
+    const isActive = activeHighlights.has(t);
+    spans.forEach(sp => {
+      if (isActive) {
+        sp.style.background = highlightColors[t].bg;
+        sp.style.borderBottomColor = highlightColors[t].border;
+        sp.style.borderBottomWidth = '2px';
+        sp.style.borderBottomStyle = 'solid';
+        sp.style.borderRadius = '4px';
+        sp.style.padding = '0 4px';
+        sp.style.transition = 'all 0.3s';
+      } else {
+        sp.style.background = 'transparent';
+        sp.style.borderBottomColor = 'transparent';
+      }
+    });
+
+    // Update button
+    const btn = document.getElementById('btn-' + t);
+    if (btn) {
+      if (isActive) {
+        btn.style.fontWeight = '800';
+        btn.style.transform = 'scale(1.08)';
+        btn.style.boxShadow = '0 2px 10px rgba(0,0,0,0.15)';
+      } else {
+        btn.style.fontWeight = '600';
+        btn.style.transform = 'scale(1)';
+        btn.style.boxShadow = 'none';
+      }
+    }
+  });
+}
+
+// ===== CHART =====
+function buildChart() {
+  const ctx = document.getElementById('timelineChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['לפני 4 שנים', 'לפני 3 שנים', 'בפסח שעבר', 'השנה!'],
+      datasets: [{
+        label: 'רמת ההישג של עֹמֶר',
+        data: [1, 2, 3, 5],
+        backgroundColor: [
+          'rgba(74,144,217,0.3)',
+          'rgba(142,111,191,0.3)',
+          'rgba(92,184,92,0.3)',
+          'rgba(245,166,35,0.5)'
+        ],
+        borderColor: [
+          'rgba(74,144,217,1)',
+          'rgba(142,111,191,1)',
+          'rgba(92,184,92,1)',
+          'rgba(245,166,35,1)'
+        ],
+        borderWidth: 2,
+        borderRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const tips = [
+                'סבא החביא הרבה – לא נחשב',
+                'גיל בן דוד מצא',
+                'ויתר לאחיו הקטן',
+                'מצא לבד! הצליח!'
+              ];
+              return tips[ctx.dataIndex];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          display: false,
+          max: 6
+        },
+        y: {
+          ticks: {
+            font: { family: 'Heebo', size: 13, weight: '600' }
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ===== QUIZ =====
+function checkQuiz(quizId, btn, isCorrect) {
+  const container = document.getElementById(quizId);
+  const buttons = container.querySelectorAll('.quiz-option');
+  buttons.forEach(b => { b.disabled = true; b.classList.remove('correct','wrong'); });
+  
+  if (isCorrect) {
+    btn.classList.add('correct');
+    const fb = document.getElementById(quizId + '-fb-correct');
+    fb.classList.add('show', 'correct-fb');
+    document.getElementById(quizId + '-fb-wrong').classList.remove('show');
+  } else {
+    btn.classList.add('wrong');
+    const fb = document.getElementById(quizId + '-fb-wrong');
+    fb.classList.add('show', 'wrong-fb');
+    document.getElementById(quizId + '-fb-correct').classList.remove('show');
+    // Re-enable after 1.5s
+    setTimeout(() => {
+      buttons.forEach(b => { b.disabled = false; b.classList.remove('wrong'); });
+      fb.classList.remove('show');
+    }, 1800);
+  }
+}
+
+// ===== SEQUENCE =====
+const correctOrder = [
+  'לאחר קריאת סיפור יציאת מצרים ושתיית הכוס השנייה, הגיע זמן הסתרת האפיקומן.',
+  'סבא מכריז שהוא יוצא לשירותים ומדגיש שהוא רוצה ללכת לבד.',
+  'עֹמֶר עוקב אחרי סבא ומגלה שהוא מחביא את האפיקומן בנעלי הבית של סבתא.',
+  'עֹמֶר מוצא את האפיקומן.',
+  'עֹמֶר מגלה לסבא שעקב אחריו ומתרגש מתגובתו של סבא.',
+  'עֹמֶר וסבא יוצאים לקנות את המתנה.'
+];
+
+let seqItems = [];
+
+function buildSequence() {
+  const container = document.getElementById('sequenceContainer');
+  // Shuffle
+  seqItems = [...correctOrder];
+  for (let i = seqItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [seqItems[i], seqItems[j]] = [seqItems[j], seqItems[i]];
+  }
+  
+  container.innerHTML = '';
+  seqItems.forEach((text, idx) => {
+    const div = document.createElement('div');
+    div.className = 'seq-item flex items-center gap-3';
+    div.draggable = true;
+    div.dataset.idx = idx;
+    
+    // Number selector
+    const select = document.createElement('select');
+    select.className = 'rounded-lg border-2 p-1 text-center font-bold';
+    select.style.cssText = 'border-color:var(--gold);min-width:45px;background:var(--gold-light);cursor:pointer;';
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '?';
+    select.appendChild(defaultOpt);
+    for (let n = 1; n <= correctOrder.length; n++) {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      select.appendChild(opt);
+    }
+    
+    const span = document.createElement('span');
+    span.textContent = text;
+    span.style.fontSize = '0.9rem';
+    
+    div.appendChild(select);
+    div.appendChild(span);
+    container.appendChild(div);
+  });
+}
+
+function checkSequence() {
+  const container = document.getElementById('sequenceContainer');
+  const items = container.querySelectorAll('.seq-item');
+  let allCorrect = true;
+  let allFilled = true;
+  
+  items.forEach(item => {
+    const select = item.querySelector('select');
+    const text = item.querySelector('span').textContent;
+    const chosenNum = parseInt(select.value);
+    const correctNum = correctOrder.indexOf(text) + 1;
+    
+    item.classList.remove('correct-order', 'wrong-order');
+    
+    if (!select.value) {
+      allFilled = false;
+      return;
+    }
+    
+    if (chosenNum === correctNum) {
+      item.classList.add('correct-order');
+    } else {
+      item.classList.add('wrong-order');
+      allCorrect = false;
+    }
+  });
+  
+  if (!allFilled) {
+    alert('בחרו מספר לכל אירוע!');
+    return;
+  }
+  
+  const fbC = document.getElementById('seq-fb-correct');
+  const fbW = document.getElementById('seq-fb-wrong');
+  fbC.classList.remove('show');
+  fbW.classList.remove('show');
+  
+  if (allCorrect) {
+    fbC.classList.add('show', 'correct-fb');
+  } else {
+    fbW.classList.add('show', 'wrong-fb');
+  }
+}
+
+// ===== CLOZE =====
+const clozeAnswers = {
+  'b1': 'ימצא',
+  'b2': 'ראה',
+  'b3': 'החביא',
+  'b4': 'שמח',
+  'b5': 'מרמה',
+  'b6': 'הציק',
+  'b7': 'לגו',
+  'b8': 'התוודה'
+};
+
+const clozeWords = ['ראה', 'מרמה', 'שמח', 'לגו', 'התוודה', 'ימצא', 'החביא', 'הציק'];
+let selectedWord = null;
+
+function buildCloze() {
+  const bank = document.getElementById('wordBank');
+  const shuffled = [...clozeWords].sort(() => Math.random() - 0.5);
+  bank.innerHTML = '<span class="text-sm font-bold block mb-2" style="color:#B8860B">מחסן מילים:</span>';
+  shuffled.forEach(w => {
+    const span = document.createElement('span');
+    span.className = 'word-bank-word';
+    span.textContent = w;
+    span.onclick = () => selectWord(span, w);
+    bank.appendChild(span);
+  });
+  
+  const text = document.getElementById('clozeText');
+  text.innerHTML = `
+    עֹמֶר תכנן היטב את האופן בו <span class="cloze-blank" data-answer="b1" onclick="fillBlank(this)">______</span> את האפיקומן השנה. כאשר סבא קם ללכת לשירותים, עֹמֶר עמד במסדרון ו<span class="cloze-blank" data-answer="b2" onclick="fillBlank(this)">______</span> את סבא פותח את ארון הנעליים, ו<span class="cloze-blank" data-answer="b3" onclick="fillBlank(this)">______</span> את האפיקומן בתוך נעלי הבית של סבתא. כאשר עֹמֶר מצא את האפיקומן, הוא היה <span class="cloze-blank" data-answer="b4" onclick="fillBlank(this)">______</span> מאוד.
+    <br><br>
+    ככל הנראה, מעשה ה<span class="cloze-blank" data-answer="b5" onclick="fillBlank(this)">______</span> שעשה עֹמֶר <span class="cloze-blank" data-answer="b6" onclick="fillBlank(this)">______</span> לו ולפני שהוא וסבא נכנסו לחנות לקנות את ה<span class="cloze-blank" data-answer="b7" onclick="fillBlank(this)">______</span>, עֹמֶר <span class="cloze-blank" data-answer="b8" onclick="fillBlank(this)">______</span> בפני סבא שעקב אחריו וכך גילה היכן האפיקומן.
+  `;
+}
+
+function selectWord(el, word) {
+  if (el.classList.contains('used')) return;
+  document.querySelectorAll('.word-bank-word').forEach(w => w.style.outline = 'none');
+  el.style.outline = '3px solid var(--gold)';
+  selectedWord = { el, word };
+}
+
+function fillBlank(blank) {
+  if (!selectedWord) return;
+  
+  // If blank already has a word, return it to bank
+  if (blank.dataset.currentWord) {
+    const bankWords = document.querySelectorAll('.word-bank-word');
+    bankWords.forEach(bw => {
+      if (bw.textContent === blank.dataset.currentWord) {
+        bw.classList.remove('used');
+      }
+    });
+  }
+  
+  blank.textContent = selectedWord.word;
+  blank.dataset.currentWord = selectedWord.word;
+  blank.classList.add('filled');
+  selectedWord.el.classList.add('used');
+  selectedWord.el.style.outline = 'none';
+  selectedWord = null;
+}
+
+function checkCloze() {
+  const blanks = document.querySelectorAll('.cloze-blank');
+  let allCorrect = true;
+  let allFilled = true;
+  
+  blanks.forEach(b => {
+    const key = b.dataset.answer;
+    const word = b.dataset.currentWord;
+    if (!word) { allFilled = false; return; }
+    if (word !== clozeAnswers[key]) allCorrect = false;
+  });
+  
+  if (!allFilled) {
+    alert('השלימו את כל החלקים הריקים!');
+    return;
+  }
+  
+  const fbC = document.getElementById('cloze-fb-correct');
+  const fbW = document.getElementById('cloze-fb-wrong');
+  fbC.classList.remove('show');
+  fbW.classList.remove('show');
+  
+  if (allCorrect) {
+    fbC.classList.add('show', 'correct-fb');
+  } else {
+    fbW.classList.add('show', 'wrong-fb');
+  }
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  buildChart();
+  buildSequence();
+  buildCloze();
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') goToSlide(currentSlide + 1);
+  if (e.key === 'ArrowUp' || e.key === 'ArrowRight') goToSlide(currentSlide - 1);
+});
+</script>
+
+</body>
+</html>
