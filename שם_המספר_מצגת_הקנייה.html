@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שם המספר – מצגת הקנייה | כיתה ט</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0f1729;--navy2:#1a2744;--navy3:#243356;
+  --teal:#14b8a6;--teal-d:#0d9488;--teal-l:#5eead4;--teal-bg:rgba(20,184,166,.08);
+  --amber:#f59e0b;--amber-l:#fcd34d;--amber-bg:rgba(245,158,11,.08);
+  --rose:#f43f5e;--rose-bg:rgba(244,63,94,.06);
+  --sky:#38bdf8;--sky-bg:rgba(56,189,248,.08);
+  --slate:#94a3b8;--slate2:#64748b;--slate3:#475569;
+  --white:#f8fafc;--card:rgba(255,255,255,.03);
+  --card-border:rgba(255,255,255,.08);
+  --r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Assistant','Heebo',sans-serif;background:var(--navy);color:var(--white);line-height:1.8;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Heebo',sans-serif;line-height:1.3}
+::selection{background:var(--teal);color:var(--navy)}
+
+/* slide system */
+.slide{min-height:100vh;padding:2.5rem 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.slide.vis{opacity:1;transform:translateY(0)}
+.si{max-width:880px;width:100%;margin:0 auto}
+
+/* nav */
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,41,.92);backdrop-filter:blur(12px);border-top:1px solid var(--card-border);padding:.5rem 1rem;display:flex;align-items:center;justify-content:center;gap:.4rem;z-index:100}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--slate3);border:none;cursor:pointer;transition:all .3s;padding:0}
+.dot.on{background:var(--teal);transform:scale(1.4);box-shadow:0 0 8px rgba(20,184,166,.5)}
+.dot:hover{background:var(--teal-d);opacity:.7}
+.arr{background:var(--teal);color:var(--navy);border:none;border-radius:50%;width:34px;height:34px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:800}
+.arr:hover{background:var(--teal-l);transform:scale(1.08)}
+
+/* progress */
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:100}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:0 0 0 4px;transition:width .5s ease;width:0%}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:1.5rem 1.75rem;backdrop-filter:blur(4px)}
+
+/* table */
+.num-tbl{width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1px solid var(--card-border);font-size:.92rem}
+.num-tbl th{background:var(--teal-d);color:var(--navy);padding:.5rem .6rem;font-weight:700;text-align:center;font-size:.85rem}
+.num-tbl td{padding:.4rem .5rem;border-bottom:1px solid var(--card-border);text-align:center;vertical-align:middle}
+.num-tbl tr:nth-child(even) td{background:rgba(20,184,166,.04)}
+.num-tbl tr:last-child td{border-bottom:none}
+.num-tbl tr:hover td{background:rgba(20,184,166,.08)}
+
+/* rule card */
+.rule{border-radius:14px;padding:1.25rem 1.5rem;border-right:4px solid;margin-bottom:.75rem;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.rule:hover{transform:translateX(-3px)}
+.rule .detail{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s ease,opacity .3s}
+.rule.open .detail{max-height:400px;opacity:1;margin-top:.75rem}
+.rule .toggle{position:absolute;left:1rem;top:1.25rem;transition:transform .3s;font-size:1rem}
+.rule.open .toggle{transform:rotate(180deg)}
+
+/* example box */
+.ex{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.15);border-radius:10px;padding:.6rem 1rem;font-size:.95rem;margin-top:.5rem}
+.ex-wrong{background:var(--rose-bg);border-color:rgba(244,63,94,.15)}
+.ex-right{background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.2)}
+
+/* step */
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0}
+
+/* quiz in presentation */
+.pq-opt{display:block;width:100%;text-align:right;padding:.65rem 1rem;border:2px solid var(--card-border);border-radius:12px;background:transparent;cursor:pointer;font-size:1rem;font-family:'Assistant',sans-serif;color:var(--white);transition:all .25s;margin-bottom:.35rem}
+.pq-opt:hover{border-color:var(--teal);background:var(--teal-bg)}
+.pq-opt.right{border-color:var(--teal);background:rgba(20,184,166,.15);animation:pop .4s}
+.pq-opt.wrong{border-color:var(--rose);background:var(--rose-bg);animation:shake .4s}
+.pq-opt:disabled{cursor:default;opacity:.7}
+.pq-opt:disabled:hover{transform:none}
+
+.fb{padding:.6rem 1rem;border-radius:10px;margin-top:.5rem;font-weight:600;display:none;font-size:.95rem}
+.fb.show{display:block;animation:fadeUp .3s}
+.fb.ok{background:rgba(20,184,166,.12);color:var(--teal-l);border:1px solid rgba(20,184,166,.2)}
+.fb.no{background:var(--rose-bg);color:#fda4af;border:1px solid rgba(244,63,94,.15)}
+
+/* flip card */
+.flip{perspective:1000px;cursor:pointer;height:150px}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.fl .flip-in{transform:rotateY(180deg)}
+.flip-f,.flip-b{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center}
+.flip-f{background:var(--navy2);border:1px solid var(--card-border)}
+.flip-b{background:var(--teal-d);color:var(--navy);transform:rotateY(180deg);font-weight:600;font-size:.9rem;line-height:1.5}
+
+/* tag */
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.8rem;font-weight:700}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.float{animation:float 3s ease-in-out infinite}
+
+/* glow dot */
+.glow{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+@media(max-width:640px){.slide{padding:1.5rem .75rem}.card{padding:1rem 1.15rem}.num-tbl{font-size:.8rem}h1{font-size:1.6rem!important}h2{font-size:1.25rem!important}.flip{height:130px}}
+body{padding-bottom:55px}
+</style>
+</head>
+<body>
+
+<div class="prog"><div class="prog-bar" id="pBar"></div></div>
+
+<!-- ═══════════ SLIDE 1: OPENING ═══════════ -->
+<section class="slide vis" data-s="0">
+<div class="si text-center">
+  <div class="text-6xl mb-4 float">🔢</div>
+  <h1 class="text-4xl font-black mb-2" style="background:linear-gradient(135deg,var(--teal-l),var(--amber-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent">שֵׁם הַמִּסְפָּר</h1>
+  <p class="text-lg mb-1" style="color:var(--slate)">כיצד נהגה מספרים בעברית תקנית?</p>
+  <p class="text-sm mb-6" style="color:var(--slate2)">כיתה ט | מצגת הקנייה</p>
+  <div class="card inline-block text-right" style="max-width:500px;border-top:2px solid var(--teal)">
+    <p class="font-bold text-base mb-2" style="color:var(--teal)">🎯 מה נלמד היום?</p>
+    <div class="space-y-2 text-sm" style="color:var(--slate)">
+      <p>▸ השלבים בקביעת ההגייה הנכונה של שם המספר</p>
+      <p>▸ טבלת המספרים המונים – זכר ונקבה, נפרד ונסמך</p>
+      <p>▸ כללי תפס"ת: תאריך, פי, סתמי, ת' בסמיכות</p>
+      <p>▸ מאות, אלפים, שברים וניקוד אותיות השימוש</p>
+    </div>
+  </div>
+  <p class="mt-6 text-xs" style="color:var(--slate3)">⬇ גוללים או לוחצים על החצים כדי להתקדם</p>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 2: THE 3 STEPS ═══════════ -->
+<section class="slide" data-s="1">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">📐 שלושת השלבים</h2>
+  <p class="text-center text-sm mb-6" style="color:var(--slate)">כדי להגות כהלכה את שם המספר, עוברים שלושה שלבים:</p>
+  <div class="space-y-4">
+    <div class="card flex items-start gap-4">
+      <div class="step-num" style="background:var(--teal);color:var(--navy)">1</div>
+      <div>
+        <p class="font-bold">לאיזה שם עצם המספר מכוון?</p>
+        <p class="text-sm" style="color:var(--slate)">בודקים: את מה סופרים? מזהים את שם העצם שהמספר מלווה.</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-4">
+      <div class="step-num" style="background:var(--amber);color:var(--navy)">2</div>
+      <div>
+        <p class="font-bold">קובעים את מין שם העצם</p>
+        <p class="text-sm" style="color:var(--slate)">נוטים את שם העצם ליחיד ומצמידים שם תואר. לדוגמה: קיר → קיר <strong>גבוה</strong> → זכר.</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-4">
+      <div class="step-num" style="background:var(--rose);color:white">3</div>
+      <div>
+        <p class="font-bold">נעזרים בטבלה ובוחרים את הצורה המתאימה</p>
+        <p class="text-sm" style="color:var(--slate)">מהגים את המספר בזכר או בנקבה, נפרד או נסמך – לפי הצורך.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ex mt-5">
+    <strong style="color:var(--teal)">דוגמה:</strong> כיצד נהגה את המספר בצירוף "3 קירות"?<br>
+    קירות → קיר → קיר <strong>גבוה</strong> → זכר → <strong style="color:var(--amber)">שלושה קירות</strong> ✓
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 3: TABLE ═══════════ -->
+<section class="slide" data-s="2">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">📊 טבלת המספרים המונים</h2>
+  <p class="text-center text-sm mb-4" style="color:var(--slate)">שימו לב: בעברית, <strong style="color:var(--amber)">המספר והשם הם בחילופי מינים</strong> (1–10)</p>
+  <div style="overflow-x:auto">
+    <table class="num-tbl">
+      <thead>
+        <tr>
+          <th rowspan="2" style="background:var(--navy2);color:var(--teal-l)">מספר</th>
+          <th colspan="2" style="border-left:1px solid rgba(0,0,0,.15)">זכר</th>
+          <th colspan="2">נקבה</th>
+        </tr>
+        <tr>
+          <th>נפרד</th><th style="border-left:1px solid rgba(0,0,0,.15)">נסמך</th>
+          <th>נפרד</th><th>נסמך</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--amber)">1</td><td>אֶחָד</td><td>אַחַד</td><td>אַחַת</td><td>אַחַת</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">2</td><td>שְׁנַיִם</td><td>שְׁנֵי</td><td>שְׁתַּיִם</td><td>שְׁתֵּי</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">3</td><td>שְׁלֹשָׁה</td><td>שְׁלֹשֶׁת</td><td>שָׁלֹשׁ</td><td>שְׁלֹשׁ</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">4</td><td>אַרְבָּעָה</td><td>אַרְבַּעַת</td><td>אַרְבַּע</td><td>אַרְבַּע</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">5</td><td>חֲמִשָּׁה</td><td>חֲמֶשֶׁת</td><td>חָמֵשׁ</td><td>חֲמֵשׁ</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">6</td><td>שִׁשָּׁה</td><td>שֵׁשֶׁת</td><td>שֵׁשׁ</td><td>שֵׁשׁ</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">7</td><td>שִׁבְעָה</td><td>שִׁבְעַת</td><td>שֶׁבַע</td><td>שֶׁבַע</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">8</td><td>שְׁמוֹנָה</td><td>שְׁמוֹנַת</td><td>שְׁמוֹנֶה</td><td>שְׁמוֹנֶה</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">9</td><td>תִּשְׁעָה</td><td>תִּשְׁעַת</td><td>תֵּשַׁע</td><td>תֵּשַׁע</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">10</td><td>עֲשָׂרָה</td><td>עֲשֶׂרֶת</td><td>עֶשֶׂר</td><td>עֶשֶׂר</td></tr>
+        <tr style="border-top:2px solid var(--card-border)"><td style="font-weight:700;color:var(--amber)">11</td><td>אַחַד עָשָׂר*</td><td>—</td><td>אַחַת עֶשְׂרֵה</td><td>—</td></tr>
+        <tr><td style="font-weight:700;color:var(--amber)">12</td><td>שְׁנֵים עָשָׂר</td><td>—</td><td>שְׁתֵּים עֶשְׂרֵה</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-xs mt-3" style="color:var(--slate2)">* שימו לב: אַחַד עָשָׂר (ולא: אֶחָד עשר) &nbsp;|&nbsp; מעל 10 אין צורות סמיכות</p>
+  <div class="card mt-4" style="border-right:3px solid var(--amber)">
+    <p class="font-bold text-sm" style="color:var(--amber)">💡 עיקרון חילופי המינים (1–10):</p>
+    <p class="text-sm" style="color:var(--slate)">שם עצם <strong>זכר</strong> → מספר מסתיים ב-ה (שלוש<strong>ה</strong> ילדים) &nbsp;|&nbsp; שם עצם <strong>נקבה</strong> → מספר ללא ה (שלוש ילדות)</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 4: CONSTRUCT FORM ═══════════ -->
+<section class="slide" data-s="3">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">🔗 צורת סמיכות</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">מתי משתמשים בצורת הסמיכות של המספר?</p>
+  <div class="card mb-4">
+    <p class="font-bold mb-2" style="color:var(--teal)">הכלל:</p>
+    <p class="text-sm" style="color:var(--slate)">כאשר <strong style="color:var(--white)">שם העצם מיודע</strong> (עם ה' הידיעה), נשתמש בצורת הסמיכות של המספר.</p>
+    <div class="ex mt-3"><strong style="color:var(--teal)">✓</strong> <strong>שלושת</strong> הילדים &nbsp;(מיודע → סמיכות)</div>
+    <div class="ex mt-2"><strong style="color:var(--teal)">✓</strong> <strong>שלושה</strong> ילדים &nbsp;(לא מיודע → נפרד)</div>
+  </div>
+  <div class="card" style="border-right:3px solid var(--rose)">
+    <p class="font-bold text-sm mb-2" style="color:var(--rose)">⚠ חשוב לזכור:</p>
+    <div class="text-sm space-y-2" style="color:var(--slate)">
+      <p>▸ מעל 10 <strong style="color:var(--white)">אין צורות סמיכות</strong>: שלושים <strong>ושלושה</strong> הספרים (ולא: ושלושת)</p>
+      <p>▸ <strong style="color:var(--white)">ת' בסמיכות מופיעה רק בזכר</strong>: שלוש<strong>ת</strong> הבנים ✓ &nbsp;|&nbsp; <strong>שלוש</strong> הבנות ✓ (ולא: שלושת הבנות ✗)</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 5: תפס"ת RULES ═══════════ -->
+<section class="slide" data-s="4">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--amber-l)">📜 כללי תפס"ת</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">ארבעה כללים מרכזיים. לחצו על כל כלל כדי לראות דוגמאות:</p>
+  
+  <div class="rule" style="background:var(--teal-bg);border-color:var(--teal)" onclick="this.classList.toggle('open')">
+    <span class="toggle">⬇</span>
+    <div class="flex items-center gap-2">
+      <span class="tag" style="background:var(--teal);color:var(--navy)">ת</span>
+      <span class="font-bold">תאריך</span>
+      <span class="text-sm" style="color:var(--slate)">– היום בחודש תמיד בזכר</span>
+    </div>
+    <div class="detail">
+      <div class="ex"><strong style="color:var(--teal)">✓</strong> תשעה במאי &nbsp;|&nbsp; <strong>אחד</strong> בחודש (ולא: ראשון, שני)</div>
+      <div class="ex ex-wrong mt-1"><strong style="color:var(--rose)">✗</strong> תשע במאי</div>
+    </div>
+  </div>
+
+  <div class="rule" style="background:var(--amber-bg);border-color:var(--amber)" onclick="this.classList.toggle('open')">
+    <span class="toggle">⬇</span>
+    <div class="flex items-center gap-2">
+      <span class="tag" style="background:var(--amber);color:var(--navy)">פ</span>
+      <span class="font-bold">אחרי "פי"</span>
+      <span class="text-sm" style="color:var(--slate)">– המספר תמיד בזכר</span>
+    </div>
+    <div class="detail">
+      <div class="ex"><strong style="color:var(--teal)">✓</strong> פי <strong>שלושה</strong></div>
+      <div class="ex ex-wrong mt-1"><strong style="color:var(--rose)">✗</strong> פי שלוש</div>
+    </div>
+  </div>
+
+  <div class="rule" style="background:var(--sky-bg);border-color:var(--sky)" onclick="this.classList.toggle('open')">
+    <span class="toggle">⬇</span>
+    <div class="flex items-center gap-2">
+      <span class="tag" style="background:var(--sky);color:var(--navy)">ס</span>
+      <span class="font-bold">מספר סתמי</span>
+      <span class="text-sm" style="color:var(--slate)">– תמיד בנקבה</span>
+    </div>
+    <div class="detail">
+      <p class="text-sm mb-2" style="color:var(--slate)">כשלא סופרים דבר אלא רק מציינים מספר (חדר, עמוד, גיל, ערוץ, תרגיל):</p>
+      <div class="ex"><strong style="color:var(--teal)">✓</strong> ערוץ <strong>אחת</strong> (ערוץ מספר אחת) &nbsp;|&nbsp; אני בן שלוש <strong>עשרה</strong></div>
+      <div class="ex ex-wrong mt-1"><strong style="color:var(--rose)">✗</strong> ערוץ אחד &nbsp;|&nbsp; אני בן שלושה עשר</div>
+    </div>
+  </div>
+
+  <div class="rule" style="background:var(--rose-bg);border-color:var(--rose)" onclick="this.classList.toggle('open')">
+    <span class="toggle">⬇</span>
+    <div class="flex items-center gap-2">
+      <span class="tag" style="background:var(--rose);color:white">ת</span>
+      <span class="font-bold">ת' בסמיכות – רק בזכר</span>
+    </div>
+    <div class="detail">
+      <div class="ex"><strong style="color:var(--teal)">✓</strong> <strong>שלוש</strong> הבנות &nbsp;|&nbsp; <strong>שלושת</strong> הבנים</div>
+      <div class="ex ex-wrong mt-1"><strong style="color:var(--rose)">✗</strong> שלושת הבנות</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 6: HUNDREDS & THOUSANDS ═══════════ -->
+<section class="slide" data-s="5">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">🏗 מאות ואלפים</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">לחצו על הכרטיסיות כדי לגלות את הכלל:</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in">
+        <div class="flip-f"><div class="text-3xl mb-2">💯</div><div class="font-bold">מאה</div><div class="text-xs" style="color:var(--slate)">לחצו לגלות</div></div>
+        <div class="flip-b">
+          <p><strong>מאה</strong> = מילה בנקבה</p>
+          <p>המספר לפני המאות יהיה <strong>בנקבה</strong></p>
+          <p class="mt-1" style="font-size:.85rem">דוגמה: <strong>שמונה</strong> מאות חיילים</p>
+        </div>
+      </div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in">
+        <div class="flip-f"><div class="text-3xl mb-2">🔢</div><div class="font-bold">אלף</div><div class="text-xs" style="color:var(--slate)">לחצו לגלות</div></div>
+        <div class="flip-b">
+          <p><strong>אלף</strong> = מילה בזכר</p>
+          <p>המספר לפני האלפים יהיה <strong>בזכר ובסמיכות</strong></p>
+          <p class="mt-1" style="font-size:.85rem">דוגמה: <strong>שמונת</strong> אלפים &nbsp;|&nbsp; שמונה עשר <strong>אלף</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="border-right:3px solid var(--amber)">
+    <p class="font-bold text-sm mb-1" style="color:var(--amber)">📝 מָאתַיִם – שימו לב!</p>
+    <p class="text-sm" style="color:var(--slate)">ה-א' נחה: <strong>מָאתַיִם</strong> (ולא: מָאֲתַיִם). וכן: <strong>אלפיים</strong> (ולא: שני אלפים).</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 7: FRACTIONS ═══════════ -->
+<section class="slide" data-s="6">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">🔹 שברים</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">גם בשברים – המין של שם השבר קובע:</p>
+  <div class="card mb-4">
+    <p class="font-bold mb-2" style="color:var(--teal)">הכלל:</p>
+    <p class="text-sm" style="color:var(--slate)">בודקים: האם שם השבר הוא זכר או נקבה? לפי זה בוחרים את המונה.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+      <div class="ex">
+        <p><strong>שליש</strong> → זכר</p>
+        <p>לכן: <strong>שני</strong> שלישים ✓</p>
+      </div>
+      <div class="ex">
+        <p><strong>שמינית</strong> → נקבה</p>
+        <p>לכן: <strong>חמש</strong> שמיניות ✓</p>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="border-right:3px solid var(--sky)">
+    <p class="font-bold text-sm mb-2" style="color:var(--sky)">📐 שבר מעורב:</p>
+    <p class="text-sm" style="color:var(--slate)">קודם המספר השלם, אחריו שם העצם, ולבסוף השבר:</p>
+    <div class="ex mt-2"><strong style="color:var(--teal)">✓</strong> חמישה פרקים וחצי</div>
+    <div class="ex ex-wrong mt-1"><strong style="color:var(--rose)">✗</strong> חמישה וחצי פרקים</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 8: NIKUD PREFIX LETTERS ═══════════ -->
+<section class="slide" data-s="7">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--amber-l)">✏ ניקוד אותיות השימוש (וכל"ב)</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">חמישה כללים לניקוד אותיות השימוש לפני מספרים:</p>
+  <div class="space-y-3">
+    <div class="card flex items-start gap-3" style="border-right:3px solid var(--teal)">
+      <span class="tag" style="background:var(--teal);color:var(--navy)">1</span>
+      <div>
+        <p class="font-bold text-sm">הניקוד הרגיל – שווא</p>
+        <p class="text-sm" style="color:var(--slate)">שלושים <strong>וְ</strong>חָמֵשׁ</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:3px solid var(--amber)">
+      <span class="tag" style="background:var(--amber);color:var(--navy)">2</span>
+      <div>
+        <p class="font-bold text-sm">לפני שווא → חיריק, ו' בשורוק</p>
+        <p class="text-sm" style="color:var(--slate)">שלושים <strong>וּ</strong>שְׁנַיִם &nbsp;|&nbsp; <strong>כִּ</strong>שְׁלושה</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:3px solid var(--sky)">
+      <span class="tag" style="background:var(--sky);color:var(--navy)">3</span>
+      <div>
+        <p class="font-bold text-sm">לפני חטף → מקבלים את תנועת החטף</p>
+        <p class="text-sm" style="color:var(--slate)"><strong>בַּ</strong>עֲשָׂרָה (חטף פתח → פתח)</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:3px solid var(--rose)">
+      <span class="tag" style="background:var(--rose);color:white">4</span>
+      <div>
+        <p class="font-bold text-sm">ו' בשורוק גם לפני ב' ו' מ' פ'</p>
+        <p class="text-sm" style="color:var(--slate)"><strong>וּ</strong>מאתיים</p>
+      </div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:3px solid var(--slate)">
+      <span class="tag" style="background:var(--slate3);color:white">5</span>
+      <div>
+        <p class="font-bold text-sm">ו' בקמץ לפני: רבע, חצי</p>
+        <p class="text-sm" style="color:var(--slate)"><strong>וָ</strong>חֵצִי</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 9: QUICK QUIZ ═══════════ -->
+<section class="slide" data-s="8">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">❓ בדקו את עצמכם</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--slate)">3 שאלות קצרות על מה שלמדנו:</p>
+
+  <div class="card mb-4" id="pq1">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--teal);color:var(--navy)">1</span> &nbsp;איזו צורה נכונה? "קניתי ___ עטים"</p>
+    <button class="pq-opt" onclick="pqCheck('pq1',this,true)">חָמֵשׁ עטים</button>
+    <button class="pq-opt" onclick="pqCheck('pq1',this,false)">חֲמִשָּׁה עטים</button>
+    <div class="fb" id="pq1-ok">✅ נכון! עט → עט <strong>חדש</strong> → זכר. אבל "עט" בזכר → המספר בנקבה (חילופי מינים) = חָמֵשׁ.</div>
+    <div class="fb" id="pq1-no">❌ לא. עט = זכר → בגלל חילופי מינים המספר יהיה בנקבה: חָמֵשׁ.</div>
+  </div>
+
+  <div class="card mb-4" id="pq2">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--amber);color:var(--navy)">2</span> &nbsp;"ערוץ 1" – איך נהגה?</p>
+    <button class="pq-opt" onclick="pqCheck('pq2',this,false)">ערוץ אחד</button>
+    <button class="pq-opt" onclick="pqCheck('pq2',this,true)">ערוץ אחת</button>
+    <button class="pq-opt" onclick="pqCheck('pq2',this,false)">ערוץ ראשון</button>
+    <div class="fb" id="pq2-ok">✅ נכון! מספר סתמי (לא סופרים דבר) → תמיד בנקבה: ערוץ <strong>אחת</strong>.</div>
+    <div class="fb" id="pq2-no">❌ זכרו: מספר סתמי (חדר, ערוץ, עמוד) = תמיד נקבה → ערוץ <strong>אחת</strong>.</div>
+  </div>
+
+  <div class="card" id="pq3">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--rose);color:white">3</span> &nbsp;"שלוש__ הבנות" – מה נוסיף?</p>
+    <button class="pq-opt" onclick="pqCheck('pq3',this,false)">שלושת הבנות</button>
+    <button class="pq-opt" onclick="pqCheck('pq3',this,true)">שלוש הבנות</button>
+    <div class="fb" id="pq3-ok">✅ מצוין! ת' הסמיכות מופיעה רק בזכר. בנות = נקבה → שלוש (ללא ת').</div>
+    <div class="fb" id="pq3-no">❌ זכרו: ת' הסמיכות = רק בזכר. "בנות" = נקבה → <strong>שלוש</strong> הבנות.</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 10: MORE QUIZ ═══════════ -->
+<section class="slide" data-s="9">
+<div class="si">
+  <h2 class="text-2xl font-bold mb-2 text-center" style="color:var(--teal-l)">❓ עוד קצת תרגול</h2>
+
+  <div class="card mb-4" id="pq4">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--sky);color:var(--navy)">4</span> &nbsp;"הטיול בתאריך 9 במאי" – איך?</p>
+    <button class="pq-opt" onclick="pqCheck('pq4',this,true)">תשעה במאי</button>
+    <button class="pq-opt" onclick="pqCheck('pq4',this,false)">תשע במאי</button>
+    <button class="pq-opt" onclick="pqCheck('pq4',this,false)">תשיעי במאי</button>
+    <div class="fb" id="pq4-ok">✅ נכון! תאריך = תמיד בזכר: <strong>תשעה</strong> במאי.</div>
+    <div class="fb" id="pq4-no">❌ כלל ה-ת' של תפס"ת: תאריך = תמיד בזכר → <strong>תשעה</strong> במאי.</div>
+  </div>
+
+  <div class="card mb-4" id="pq5">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--teal);color:var(--navy)">5</span> &nbsp;"המדינה גדולה מישראל פי ___"</p>
+    <button class="pq-opt" onclick="pqCheck('pq5',this,false)">פי שלוש</button>
+    <button class="pq-opt" onclick="pqCheck('pq5',this,true)">פי שלושה</button>
+    <div class="fb" id="pq5-ok">✅ נכון! אחרי "פי" = תמיד בזכר: פי <strong>שלושה</strong>.</div>
+    <div class="fb" id="pq5-no">❌ כלל ה-פ' של תפס"ת: אחרי "פי" = תמיד זכר → פי <strong>שלושה</strong>.</div>
+  </div>
+
+  <div class="card" id="pq6">
+    <p class="font-bold mb-3"><span class="tag" style="background:var(--amber);color:var(--navy)">6</span> &nbsp;"___ אלף רקדניות השתתפו בשבוע המחול"</p>
+    <button class="pq-opt" onclick="pqCheck('pq6',this,false)">אחת עשרה אלף</button>
+    <button class="pq-opt" onclick="pqCheck('pq6',this,true)">אחד עשר אלף</button>
+    <div class="fb" id="pq6-ok">✅ נכון! "אלף" = זכר → המספר שלפני "אלף" בזכר: <strong>אחד עשר</strong> אלף. (גם אם סופרים רקדניות!)</div>
+    <div class="fb" id="pq6-no">❌ "אלף" = זכר → המספר שלפניו בזכר: <strong>אחד עשר</strong> אלף רקדניות.</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════ SLIDE 11: SUMMARY ═══════════ -->
+<section class="slide" data-s="10">
+<div class="si text-center">
+  <div class="text-5xl mb-4 float">🎯</div>
+  <h2 class="text-3xl font-black mb-4" style="background:linear-gradient(135deg,var(--teal-l),var(--amber-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent">סיכום – מה למדנו?</h2>
+  <div class="card text-right mb-5" style="max-width:600px;margin:0 auto;border-top:2px solid var(--teal)">
+    <div class="space-y-3 text-sm">
+      <div class="flex items-start gap-2">
+        <span style="color:var(--teal)">📐</span>
+        <div><strong>3 שלבים</strong> לקביעת צורת המספר: מזהים שם עצם → קובעים מין → בוחרים צורה מהטבלה.</div>
+      </div>
+      <div class="flex items-start gap-2">
+        <span style="color:var(--amber)">📊</span>
+        <div><strong>חילופי מינים</strong> (1–10): שם עצם זכר → מספר בנקבה, ולהפך.</div>
+      </div>
+      <div class="flex items-start gap-2">
+        <span style="color:var(--sky)">📜</span>
+        <div><strong>תפס"ת</strong>: תאריך ופי = זכר | סתמי = נקבה | ת' סמיכות = רק בזכר.</div>
+      </div>
+      <div class="flex items-start gap-2">
+        <span style="color:var(--rose)">🔗</span>
+        <div><strong>סמיכות</strong> רק כששם העצם מיודע. מעל 10 אין סמיכות.</div>
+      </div>
+      <div class="flex items-start gap-2">
+        <span style="color:var(--teal-l)">🏗</span>
+        <div><strong>מאה</strong> = נקבה, <strong>אלף</strong> = זכר (בסמיכות). שברים לפי מין שם השבר.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card inline-block" style="max-width:420px;background:var(--teal-bg);border:1px solid rgba(20,184,166,.2)">
+    <p class="text-base font-bold" style="color:var(--teal-l)">💬 בשיעור הבא: תרגול מעשי עם דפי עבודה אינטראקטיביים!</p>
+  </div>
+  <div class="mt-8">
+    <div style="width:50px;height:2px;background:var(--teal);margin:0 auto .75rem;border-radius:2px"></div>
+    <p class="text-xs" style="color:var(--slate2)">מבוסס על חוברת העבודה "שם המספר ומילות יחס" מאת גאולה ברקוביץ</p>
+    <p class="text-sm font-bold mt-1" style="color:var(--slate)">אילנית שוורץ – קריאה להבנה</p>
+  </div>
+</div>
+</section>
+
+<!-- NAV -->
+<div class="nav" id="navBar">
+  <button class="arr" onclick="go(cur-1)" id="prevB">→</button>
+  <div class="flex gap-1 items-center" id="dots"></div>
+  <button class="arr" onclick="go(cur+1)" id="nextB">←</button>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let cur=0;
+
+function buildNav(){
+  const d=document.getElementById('dots');
+  for(let i=0;i<total;i++){
+    const b=document.createElement('button');
+    b.className='dot'+(i===0?' on':'');
+    b.onclick=()=>go(i);
+    d.appendChild(b);
+  }
+}
+
+function go(n){
+  if(n<0||n>=total)return;
+  cur=n;
+  slides[n].scrollIntoView({behavior:'smooth',block:'start'});
+  upNav();
+}
+
+function upNav(){
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
+  document.getElementById('pBar').style.width=((cur+1)/total*100)+'%';
+}
+
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      const idx=parseInt(e.target.dataset.s);
+      if(!isNaN(idx)){cur=idx;upNav()}
+    }
+  });
+},{threshold:.3});
+
+slides.forEach(s=>obs.observe(s));
+buildNav();
+
+// Quiz
+function pqCheck(qId,btn,ok){
+  const c=document.getElementById(qId);
+  const bs=c.querySelectorAll('.pq-opt');
+  bs.forEach(b=>{b.disabled=true;b.classList.remove('right','wrong')});
+  if(ok){
+    btn.classList.add('right');
+    const fb=document.getElementById(qId+'-ok');
+    fb.classList.add('show','ok');
+    document.getElementById(qId+'-no').classList.remove('show');
+  }else{
+    btn.classList.add('wrong');
+    const fb=document.getElementById(qId+'-no');
+    fb.classList.add('show','no');
+    document.getElementById(qId+'-ok').classList.remove('show');
+    setTimeout(()=>{
+      bs.forEach(b=>{b.disabled=false;b.classList.remove('wrong')});
+      fb.classList.remove('show');
+    },2000);
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowLeft')go(cur+1);
+  if(e.key==='ArrowUp'||e.key==='ArrowRight')go(cur-1);
+});
+</script>
+</body>
+</html>

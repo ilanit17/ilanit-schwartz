@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דפי תרגול – שם המספר | כיתה ט</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0f1729;--navy2:#1a2744;--navy3:#243356;
+  --teal:#14b8a6;--teal-d:#0d9488;--teal-l:#5eead4;--teal-bg:rgba(20,184,166,.08);
+  --amber:#f59e0b;--amber-l:#fcd34d;--amber-bg:rgba(245,158,11,.08);
+  --rose:#f43f5e;--rose-bg:rgba(244,63,94,.06);
+  --sky:#38bdf8;--sky-bg:rgba(56,189,248,.08);
+  --green:#22c55e;--green-bg:rgba(34,197,94,.08);
+  --slate:#94a3b8;--slate2:#64748b;--slate3:#475569;
+  --white:#f8fafc;
+  --card:rgba(255,255,255,.03);--card-border:rgba(255,255,255,.08);
+  --r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Assistant','Heebo',sans-serif;background:var(--navy);color:var(--white);line-height:1.85;min-height:100vh}
+h1,h2,h3,h4{font-family:'Heebo',sans-serif;line-height:1.3}
+::selection{background:var(--teal);color:var(--navy)}
+
+.wrap{max-width:840px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* progress */
+.prog-wrap{position:sticky;top:0;z-index:50;background:rgba(15,23,41,.92);backdrop-filter:blur(10px);padding:.5rem 0;border-bottom:1px solid var(--card-border)}
+.prog-track{height:6px;background:var(--navy3);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:100px;transition:width .5s;width:0%}
+
+/* section head */
+.sec-head{display:flex;align-items:center;gap:10px;padding:.75rem 1.25rem;border-radius:var(--r);margin:1.5rem 0 1rem;font-weight:800;font-size:1.05rem}
+
+/* card */
+.qc{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:1.5rem 1.75rem;margin-bottom:1rem;backdrop-filter:blur(4px);position:relative;transition:border-color .3s}
+.qc.done{border-color:rgba(20,184,166,.3)}
+.qc.done::after{content:'✓';position:absolute;top:.65rem;left:.65rem;width:22px;height:22px;background:var(--teal);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}
+
+/* badge */
+.qb{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--teal);color:var(--navy);font-weight:800;font-size:.85rem;flex-shrink:0}
+
+/* radio options */
+.opt{display:flex;align-items:flex-start;gap:10px;padding:.6rem 1rem;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .25s;background:transparent;margin-bottom:.35rem;font-size:.98rem;line-height:1.7;color:var(--white)}
+.opt:hover{border-color:var(--teal);background:var(--teal-bg)}
+.opt input[type="radio"]{accent-color:var(--teal);width:17px;height:17px;margin-top:5px;flex-shrink:0}
+.opt.sel{border-color:var(--teal);background:rgba(20,184,166,.1)}
+
+/* textarea */
+.atx{width:100%;min-height:44px;border:2px solid var(--card-border);border-radius:12px;padding:.55rem .85rem;font-family:'Assistant',sans-serif;font-size:.98rem;line-height:1.7;resize:vertical;direction:rtl;background:rgba(255,255,255,.03);color:var(--white);transition:border-color .3s,box-shadow .3s}
+.atx:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+.atx::placeholder{color:var(--slate3)}
+
+/* inline input */
+.inl{display:inline-block;min-width:100px;border:none;border-bottom:2px dashed var(--teal);background:transparent;color:var(--teal-l);font-family:'Assistant',sans-serif;font-size:1rem;font-weight:700;padding:0 4px;text-align:center;transition:border-color .3s}
+.inl:focus{outline:none;border-bottom-style:solid;border-color:var(--amber)}
+.inl::placeholder{color:var(--slate3);font-weight:400}
+
+/* context block */
+.ctx{background:var(--navy2);border:1px solid var(--card-border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;line-height:2;font-size:1rem}
+.ctx .num-slot{display:inline-block;min-width:90px;border-bottom:2px dashed var(--amber);color:var(--amber-l);font-weight:700;text-align:center;padding:0 4px;cursor:text}
+
+/* mc highlight */
+.mc-item{display:inline-block;padding:3px 12px;border:2px solid var(--card-border);border-radius:20px;cursor:pointer;transition:all .25s;margin:2px;font-size:.95rem}
+.mc-item:hover{border-color:var(--teal);background:var(--teal-bg)}
+.mc-item.picked{border-color:var(--teal);background:rgba(20,184,166,.15);color:var(--teal-l);font-weight:700}
+
+/* buttons */
+.btn1{display:inline-flex;align-items:center;gap:8px;padding:.65rem 1.5rem;background:var(--teal);color:var(--navy);border:none;border-radius:12px;font-family:'Heebo',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .25s}
+.btn1:hover{background:var(--teal-l);transform:translateY(-1px)}
+.btn2{display:inline-flex;align-items:center;gap:8px;padding:.6rem 1.3rem;background:transparent;color:var(--teal-l);border:2px solid rgba(20,184,166,.3);border-radius:12px;font-family:'Heebo',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .25s}
+.btn2:hover{background:var(--teal-bg);border-color:var(--teal);transform:translateY(-1px)}
+
+/* name */
+.nm-in{border:2px solid rgba(20,184,166,.3);border-radius:12px;padding:.55rem 1rem;font-family:'Assistant',sans-serif;font-size:1.05rem;width:100%;max-width:300px;direction:rtl;background:rgba(255,255,255,.03);color:var(--white);transition:border-color .3s}
+.nm-in:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+.nm-in.err{border-color:var(--rose)}
+
+/* toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--teal-d);color:var(--navy);padding:.7rem 1.5rem;border-radius:12px;font-weight:700;box-shadow:0 12px 32px rgba(0,0,0,.3);z-index:999;transition:transform .4s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.78rem;font-weight:700}
+.helper{font-size:.82rem;color:var(--slate3);margin-top:.3rem}
+
+@media print{.prog-wrap,.no-print{display:none!important}body{background:#fff;color:#000}.qc{border:1px solid #ddd;break-inside:avoid}}
+@media(max-width:640px){.wrap{padding:1rem .5rem 3rem}.qc{padding:1rem 1.1rem}h1{font-size:1.5rem!important}}
+</style>
+</head>
+<body>
+
+<div class="prog-wrap">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <div class="flex items-center gap-3">
+      <div class="prog-track flex-1"><div class="prog-fill" id="pFill"></div></div>
+      <span class="text-sm font-bold" style="color:var(--teal)" id="pLbl">0 / 20</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<header class="text-center mb-6">
+  <div class="text-4xl mb-2">🔢</div>
+  <h1 class="text-2xl font-black mb-1" style="background:linear-gradient(135deg,var(--teal-l),var(--amber-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent">דפי תרגול – שם המספר</h1>
+  <p class="text-sm" style="color:var(--slate)">עבודה עצמית | כיתה ט</p>
+</header>
+
+<!-- NAME -->
+<div class="qc" style="border-right:3px solid var(--teal)">
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="font-bold" style="color:var(--teal-l)">👤 שם:</label>
+    <input type="text" id="sName" class="nm-in" placeholder="הקלידו את שמכם..." oninput="onNm()" autocomplete="off">
+  </div>
+  <p class="text-xs mt-1" style="color:var(--rose);display:none" id="nmErr">⚠ יש להזין שם לפני שמירה</p>
+</div>
+
+<!-- ═══════════ SECTION A: השלמה בהקשר ═══════════ -->
+<div class="sec-head" style="background:var(--teal-bg);color:var(--teal-l)">📝 תרגיל 1: השלימו במילים את המספרים</div>
+<p class="text-sm mb-3" style="color:var(--slate);padding:0 .5rem">כתבו את המספרים במילים בהתאם לכללים שלמדנו. אין צורך לנקד.</p>
+
+<!-- Q1 -->
+<div class="qc" data-q="1" id="q1">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">1</span><p class="font-bold text-sm" style="color:var(--amber)">בשיעור מתמטיקה ביקשה המורה:</p></div>
+  <div class="ctx">
+    פתחו, בבקשה, את החוברת בעמוד <strong>3</strong> <input class="inl" data-q="1" placeholder="?" oninput="chkFill('1',2)"> ופתרו את <strong>5</strong> <input class="inl" data-q="1" placeholder="?" oninput="chkFill('1',2)"> הבעיות הראשונות.
+  </div>
+  <p class="helper">💡 עמוד = מספר סתמי (נקבה). בעיות = שם עצם נקבה, מיודע → סמיכות.</p>
+</div>
+
+<!-- Q2 -->
+<div class="qc" data-q="2" id="q2">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">2</span><p class="font-bold text-sm" style="color:var(--amber)">בסיום מהדורת החדשות:</p></div>
+  <div class="ctx">
+    ב-<strong>3</strong> <input class="inl" data-q="2" placeholder="?" oninput="chkFill('2',3)"> הימים הראשונים של השבוע ירדו כ-<strong>5</strong> <input class="inl" data-q="2" placeholder="?" oninput="chkFill('2',3)"> מ"מ גשמים.<br>
+    גובה הגלים יגיע ל-<strong>7</strong> <input class="inl" data-q="2" placeholder="?" oninput="chkFill('2',3)"> מטרים.
+  </div>
+  <p class="helper">💡 ימים = זכר, מיודע → סמיכות. מ"מ = זכר. מטרים = זכר.</p>
+</div>
+
+<!-- Q3 -->
+<div class="qc" data-q="3" id="q3">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">3</span><p class="font-bold text-sm" style="color:var(--amber)">במודעת נופש:</p></div>
+  <div class="ctx">
+    בכל יחידה יש <strong>2</strong> <input class="inl" data-q="3" placeholder="?" oninput="chkFill('3',4)"> חדרים מרווחים, היכולים להכיל <strong>6</strong> <input class="inl" data-q="3" placeholder="?" oninput="chkFill('3',4)"> אנשים.<br>
+    <strong>10</strong> <input class="inl" data-q="3" placeholder="?" oninput="chkFill('3',4)"> המזמינים הראשונים יקבלו הנחה.<br>
+    למזמינים <strong>3</strong> <input class="inl" data-q="3" placeholder="?" oninput="chkFill('3',4)"> לילות יינתן לילה אחד חינם.
+  </div>
+  <p class="helper">💡 חדרים = זכר. אנשים = זכר. מזמינים = זכר, מיודע → סמיכות. לילות = זכר.</p>
+</div>
+
+<!-- Q4 -->
+<div class="qc" data-q="4" id="q4">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">4</span><p class="font-bold text-sm" style="color:var(--amber)">מתוך לוח הצעות עבודה:</p></div>
+  <div class="ctx">
+    המשכורת הממוצעת היא בסביבות <strong>9</strong> <input class="inl" data-q="4" placeholder="?" oninput="chkFill('4',3)"> אלפים ש"ח.<br>
+    ב-<strong>10</strong> <input class="inl" data-q="4" placeholder="?" oninput="chkFill('4',3)"> החודשים הראשונים, ולאחר מכן תחול העלאה של <strong>2</strong> <input class="inl" data-q="4" placeholder="?" oninput="chkFill('4',3)"> אחוזים וחצי.
+  </div>
+  <p class="helper">💡 אלפים: "אלף" = זכר → סמיכות. חודשים = זכר, מיודע → סמיכות. אחוזים = זכר.</p>
+</div>
+
+<!-- Q5 -->
+<div class="qc" data-q="5" id="q5">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">5</span><p class="font-bold text-sm" style="color:var(--amber)">אמא ביקשה מעמרי לקנות:</p></div>
+  <div class="ctx">
+    <strong>5</strong> <input class="inl" data-q="5" placeholder="?" oninput="chkFill('5',4)"> ביצים<br>
+    <strong>7</strong> <input class="inl" data-q="5" placeholder="?" oninput="chkFill('5',4)"> ק"ג עגבניות<br>
+    <strong>6</strong> <input class="inl" data-q="5" placeholder="?" oninput="chkFill('5',4)"> שקיות שוקו<br>
+    <strong>4</strong> <input class="inl" data-q="5" placeholder="?" oninput="chkFill('5',4)"> חבילות מסטיק
+  </div>
+  <p class="helper">💡 ביצים = נקבה. ק"ג = זכר. שקיות = נקבה. חבילות = נקבה.</p>
+</div>
+
+<!-- ═══════════ SECTION B: בחירת צורה נכונה ═══════════ -->
+<div class="sec-head" style="background:var(--amber-bg);color:var(--amber-l)">🎯 תרגיל 2: סמנו את הצורה הנכונה</div>
+<p class="text-sm mb-3" style="color:var(--slate);padding:0 .5rem">בכל משפט מופיעות שתי צורות או יותר. בחרו את הצורה הנכונה.</p>
+
+<!-- Q6 -->
+<div class="qc" data-q="6" id="q6">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">6</span><p class="font-bold text-sm">קניתי ___ עטים.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q6')">חָמֵשׁ</span>
+    <span class="mc-item" onclick="mcPick(this,'q6')">חֲמִשָּׁה</span>
+  </div>
+  <p class="helper">💡 עט = זכר → חילופי מינים</p>
+</div>
+
+<!-- Q7 -->
+<div class="qc" data-q="7" id="q7">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">7</span><p class="font-bold text-sm">דיברנו בשיעור תנ"ך על ___ המכות.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q7')">עֶשֶׂר</span>
+    <span class="mc-item" onclick="mcPick(this,'q7')">עֲשֶׂרֶת</span>
+  </div>
+  <p class="helper">💡 מכות = נקבה, מיודע → סמיכות. אבל ת' סמיכות רק בזכר!</p>
+</div>
+
+<!-- Q8 -->
+<div class="qc" data-q="8" id="q8">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">8</span><p class="font-bold text-sm">מתחרה עשרים ___ ניצח בתחרות.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q8')">וְשָׁלֹשׁ</span>
+    <span class="mc-item" onclick="mcPick(this,'q8')">וּשְׁלֹשָׁה</span>
+    <span class="mc-item" onclick="mcPick(this,'q8')">וְשְׁלֹשָׁה</span>
+  </div>
+  <p class="helper">💡 מספר סתמי (מספר מתחרה) = תמיד נקבה. שימו לב גם לניקוד ו' השימוש!</p>
+</div>
+
+<!-- Q9 -->
+<div class="qc" data-q="9" id="q9">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">9</span><p class="font-bold text-sm">המדינה הזו גדולה מישראל פי שלושים ___.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q9')">וּשְׁנַיִם</span>
+    <span class="mc-item" onclick="mcPick(this,'q9')">וּשְׁתַּיִם</span>
+    <span class="mc-item" onclick="mcPick(this,'q9')">וְשְׁנַיִם</span>
+  </div>
+  <p class="helper">💡 אחרי "פי" = תמיד זכר. ו' לפני שווא = ?</p>
+</div>
+
+<!-- Q10 -->
+<div class="qc" data-q="10" id="q10">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">10</span><p class="font-bold text-sm">הסיור ייערך ___.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q10')">בשני לאוקטובר</span>
+    <span class="mc-item" onclick="mcPick(this,'q10')">בשניים באוקטובר</span>
+    <span class="mc-item" onclick="mcPick(this,'q10')">בשניים לאוקטובר</span>
+  </div>
+  <p class="helper">💡 תאריך = תמיד בזכר. "באוקטובר" או "לאוקטובר"?</p>
+</div>
+
+<!-- Q11 -->
+<div class="qc" data-q="11" id="q11">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">11</span><p class="font-bold text-sm">ניפגש באולם ___.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q11')">מָאֲתַיִם וְאַחַת</span>
+    <span class="mc-item" onclick="mcPick(this,'q11')">מָאתַיִם וְאֶחָד</span>
+    <span class="mc-item" onclick="mcPick(this,'q11')">מָאתַיִם וְאַחַת</span>
+  </div>
+  <p class="helper">💡 מספר אולם = סתמי → נקבה. שימו לב לניקוד "מאתיים".</p>
+</div>
+
+<!-- Q12 -->
+<div class="qc" data-q="12" id="q12">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">12</span><p class="font-bold text-sm">___ הציפורים נעמדו על אדן החלון.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q12')">חֲמֶשֶׁת</span>
+    <span class="mc-item" onclick="mcPick(this,'q12')">חֲמֵשׁ</span>
+  </div>
+  <p class="helper">💡 ציפורים = נקבה, מיודע. ת' סמיכות = רק בזכר!</p>
+</div>
+
+<!-- Q13 -->
+<div class="qc" data-q="13" id="q13">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">13</span><p class="font-bold text-sm">___ אלף רקדניות השתתפו בשבוע המחול.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q13')">אֶחָד עָשָׂר</span>
+    <span class="mc-item" onclick="mcPick(this,'q13')">אַחַת עֶשְׂרֵה</span>
+    <span class="mc-item" onclick="mcPick(this,'q13')">אַחַד עָשָׂר</span>
+  </div>
+  <p class="helper">💡 "אלף" = זכר → המספר שלפניו בזכר. שימו לב: אַחַד (ולא אֶחָד).</p>
+</div>
+
+<!-- Q14 -->
+<div class="qc" data-q="14" id="q14">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">14</span><p class="font-bold text-sm">כרטיס הגרלה מספר ___ זכה.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q14')">שֶׁבַע</span>
+    <span class="mc-item" onclick="mcPick(this,'q14')">שִׁבְעָה</span>
+  </div>
+  <p class="helper">💡 מספר כרטיס = מספר סתמי → תמיד נקבה.</p>
+</div>
+
+<!-- Q15 -->
+<div class="qc" data-q="15" id="q15">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">15</span><p class="font-bold text-sm">החופשה תסתיים ___.</p></div>
+  <div class="flex flex-wrap gap-2">
+    <span class="mc-item" onclick="mcPick(this,'q15')">בַּשְּׁלִישִׁי לינואר</span>
+    <span class="mc-item" onclick="mcPick(this,'q15')">בִּשְׁלֹשָׁה בינואר</span>
+  </div>
+  <p class="helper">💡 תאריך: "באחד, בשניים, בשלושה..." ולא: "בראשון, בשני, בשלישי".</p>
+</div>
+
+<!-- ═══════════ SECTION C: הקשר מורחב ═══════════ -->
+<div class="sec-head" style="background:var(--sky-bg);color:var(--sky)">📰 תרגיל 3: השלימו בהקשר מורחב</div>
+<p class="text-sm mb-3" style="color:var(--slate);padding:0 .5rem">קראו את הקטעים והשלימו את כל המספרים במילים.</p>
+
+<!-- Q16 -->
+<div class="qc" data-q="16" id="q16">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">16</span><p class="font-bold text-sm" style="color:var(--sky)">בעיתון אופנה פורסם:</p></div>
+  <div class="ctx">
+    מחירה של שמלת הכלה המעוצבת הוא <strong>15</strong> <input class="inl" data-q="16" placeholder="?" oninput="chkFill('16',3)"> אלף ש"ח.<br>
+    <strong>8</strong> <input class="inl" data-q="16" placeholder="?" oninput="chkFill('16',3)"> הכלות המאושרות שלבשו אותה שילמו <strong>5</strong> <input class="inl" data-q="16" placeholder="?" oninput="chkFill('16',3)"> אחוזים פחות.
+  </div>
+  <p class="helper">💡 אלף = זכר. כלות = נקבה, מיודע. אחוזים = זכר.</p>
+</div>
+
+<!-- Q17 -->
+<div class="qc" data-q="17" id="q17">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">17</span><p class="font-bold text-sm" style="color:var(--sky)">חברת הבנייה מודיעה:</p></div>
+  <div class="ctx">
+    מגוון דירות בנות <strong>3</strong> <input class="inl" data-q="17" placeholder="?" oninput="chkFill('17',3)"> חדרים במחירי מבצע.<br>
+    רק בחודש הקרוב תוכלו לשלם ב-<strong>12</strong> <input class="inl" data-q="17" placeholder="?" oninput="chkFill('17',3)"> תשלומים.<br>
+    הנחה מיוחדת של <strong>10</strong> <input class="inl" data-q="17" placeholder="?" oninput="chkFill('17',3)"> אחוזים תינתן ל-<strong>24</strong> הרוכשים הראשונים.
+  </div>
+  <p class="helper">💡 חדרים = זכר. תשלומים = זכר. אחוזים = זכר.</p>
+</div>
+
+<!-- Q18 -->
+<div class="qc" data-q="18" id="q18">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">18</span><p class="font-bold text-sm" style="color:var(--sky)">הודעה להורים:</p></div>
+  <div class="ctx">
+    בתאריך <strong>23.4</strong> <input class="inl" data-q="18" placeholder="?" oninput="chkFill('18',3)"> יצאו תלמידי הכיתה לטיול בן <strong>3</strong> <input class="inl" data-q="18" placeholder="?" oninput="chkFill('18',3)"> ימים לאזור ירושלים.<br>
+    התלמידים מתבקשים להצטייד ב-<strong>3</strong> <input class="inl" data-q="18" placeholder="?" oninput="chkFill('18',3)"> ליטרים מים.
+  </div>
+  <p class="helper">💡 תאריך = זכר. ימים = זכר. ליטרים = זכר.</p>
+</div>
+
+<!-- ═══════════ SECTION D: שאלות פתוחות ═══════════ -->
+<div class="sec-head" style="background:var(--rose-bg);color:#fda4af">✍ תרגיל 4: שאלות פתוחות</div>
+
+<!-- Q19 -->
+<div class="qc" data-q="19" id="q19">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">19</span>
+    <div>
+      <p class="font-bold text-sm">הסבירו בשלושה-ארבעה משפטים: מהם שלושת השלבים לקביעת הצורה הנכונה של שם המספר?</p>
+      <p class="helper">רמז: חשבו על הדוגמה "3 קירות" מהמצגת.</p>
+    </div>
+  </div>
+  <textarea class="atx" style="min-height:90px" data-q="19" placeholder="כתבו כאן..." oninput="onTxt(this,'19')"></textarea>
+</div>
+
+<!-- Q20 -->
+<div class="qc" data-q="20" id="q20">
+  <div class="flex items-start gap-2 mb-3"><span class="qb">20</span>
+    <div>
+      <p class="font-bold text-sm">כתבו פסקה קצרה (4–5 משפטים) שמכילה לפחות 6 מספרים שונים במילים. נושא: מודעת דרושים או פרסומת לחנות.</p>
+      <p class="helper">השתמשו בכללי תפס"ת, צורת סמיכות, ומספרים מעל 10.</p>
+    </div>
+  </div>
+  <textarea class="atx" style="min-height:130px" data-q="20" placeholder="כתבו כאן מודעה שמכילה מספרים במילים..." oninput="onTxt(this,'20')"></textarea>
+</div>
+
+<!-- ═══════════ ACTIONS ═══════════ -->
+<div class="qc no-print text-center" style="border:1px solid rgba(20,184,166,.2);background:var(--teal-bg)">
+  <h3 class="font-bold text-lg mb-4" style="color:var(--teal-l)">📤 שמירה ושליחה</h3>
+  <div class="flex flex-wrap justify-center gap-3">
+    <button class="btn1" onclick="dlAns()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      הורדת תשובות
+    </button>
+    <button class="btn2" onclick="cpAns()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      העתקה
+    </button>
+    <button class="btn2" onclick="sendT()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      שליחה למורה
+    </button>
+  </div>
+</div>
+
+<footer class="text-center mt-8 pb-4">
+  <div style="width:50px;height:2px;background:var(--teal);margin:0 auto .75rem;border-radius:2px"></div>
+  <p class="text-xs" style="color:var(--slate3)">מבוסס על חוברת "שם המספר ומילות יחס" מאת גאולה ברקוביץ</p>
+  <p class="text-sm font-bold mt-1" style="color:var(--slate)">אילנית שוורץ – קריאה להבנה</p>
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOT=20;
+const ans=new Set();
+
+function upProg(){
+  const p=(ans.size/TOT)*100;
+  document.getElementById('pFill').style.width=p+'%';
+  document.getElementById('pLbl').textContent=ans.size+' / '+TOT;
+  document.querySelectorAll('.qc[data-q]').forEach(c=>c.classList.toggle('done',ans.has(c.dataset.q)));
+}
+
+// Fill-in questions
+function chkFill(qn,needed){
+  const inputs=document.querySelectorAll('.qc[data-q="'+qn+'"] .inl');
+  let filled=0;
+  inputs.forEach(i=>{if(i.value.trim())filled++});
+  if(filled>=needed)ans.add(qn);else ans.delete(qn);
+  upProg();
+}
+
+// MC pick
+function mcPick(el,qId){
+  const card=document.getElementById(qId);
+  card.querySelectorAll('.mc-item').forEach(m=>m.classList.remove('picked'));
+  el.classList.add('picked');
+  ans.add(qId.replace('q',''));
+  upProg();
+}
+
+// Radio
+function selOpt(lbl,qId){
+  const card=document.getElementById(qId);
+  card.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  lbl.classList.add('sel');
+  lbl.querySelector('input').checked=true;
+  ans.add(qId.replace('q',''));
+  upProg();
+}
+
+// Textarea
+function onTxt(el,n){
+  if(el.value.trim().length>0)ans.add(n);else ans.delete(n);
+  upProg();
+}
+
+// Name
+function onNm(){document.getElementById('sName').classList.remove('err');document.getElementById('nmErr').style.display='none'}
+function getName(){const n=document.getElementById('sName').value.trim();if(!n){document.getElementById('sName').classList.add('err');document.getElementById('nmErr').style.display='block';document.getElementById('sName').focus();return null}return n}
+
+// Collect
+function collect(){
+  const a={};
+  a['שם']=document.getElementById('sName').value.trim()||'(לא הוזן)';
+
+  // Q1-5, Q16-18: fill-in
+  [1,2,3,4,5,16,17,18].forEach(n=>{
+    const inputs=document.querySelectorAll('.qc[data-q="'+n+'"] .inl');
+    let vals=[];
+    inputs.forEach((inp,i)=>vals.push((i+1)+'. '+(inp.value.trim()||'____')));
+    a['שאלה '+n+' (השלמה)']=vals.join('  |  ');
+  });
+
+  // Q6-15: MC
+  for(let n=6;n<=15;n++){
+    const card=document.getElementById('q'+n);
+    const picked=card.querySelector('.mc-item.picked');
+    a['שאלה '+n+' (בחירה)']=picked?picked.textContent:'(לא נענתה)';
+  }
+
+  // Q19-20: open
+  [19,20].forEach(n=>{
+    const ta=document.querySelector('textarea[data-q="'+n+'"]');
+    a['שאלה '+n+' (פתוחה)']=ta?(ta.value.trim()||'(לא נענתה)'):'(לא נענתה)';
+  });
+
+  return a;
+}
+
+function fmt(a){
+  let t='══════════════════════════════════════\n';
+  t+='   דפי תרגול – שם המספר | כיתה ט\n';
+  t+='══════════════════════════════════════\n\n';
+  t+='שם: '+a['שם']+'\nתאריך: '+new Date().toLocaleDateString('he-IL')+'\n\n';
+  t+='──────────────────────────────────────\n\n';
+  Object.keys(a).filter(k=>k!=='שם').forEach(k=>{t+='📌 '+k+':\n'+a[k]+'\n\n'});
+  t+='──────────────────────────────────────\n';
+  t+='אילנית שוורץ – קריאה להבנה\n';
+  return t;
+}
+
+function dlAns(){const n=getName();if(!n)return;const t=fmt(collect());const b=new Blob(['\ufeff'+t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='שם_המספר_תשובות_'+n+'.txt';a.click();URL.revokeObjectURL(u);showToast('📥 הקובץ הורד!')}
+function cpAns(){const n=getName();if(!n)return;const t=fmt(collect());navigator.clipboard.writeText(t).then(()=>showToast('📋 הועתק!')).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 הועתק!')})}
+function sendT(){const n=getName();if(!n)return;const t=fmt(collect());const b=new Blob(['\ufeff'+t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='שליחה_למורה_שם_המספר_'+n+'.txt';a.click();URL.revokeObjectURL(u);showToast('📤 מוכן לשליחה!')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+document.addEventListener('DOMContentLoaded',()=>upProg());
+</script>
+</body>
+</html>
