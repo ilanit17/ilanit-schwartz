@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף עבודה – "האפיקומן" | קריאה להבנה</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --em-50: #ecfdf5; --em-100: #d1fae5; --em-200: #a7f3d0; --em-300: #6ee7b7;
+  --em-400: #34d399; --em-500: #10b981; --em-600: #059669; --em-700: #047857;
+  --em-800: #065f46; --em-900: #064e3b;
+  --sand-50: #fefdfb; --sand-100: #faf6f0; --sand-200: #f0e9de;
+  --ink: #1a2e2a; --ink-light: #4a6360; --ink-faint: #8a9e9b;
+  --card: #ffffff; --card-hover: #f8fdfb;
+  --danger: #ef4444; --warn: #f59e0b;
+  --radius: 14px;
+  --shadow-sm: 0 1px 3px rgba(6,78,59,0.06);
+  --shadow: 0 4px 16px rgba(6,78,59,0.07);
+  --shadow-lg: 0 12px 32px rgba(6,78,59,0.10);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Assistant', 'Heebo', sans-serif;
+  background: var(--sand-50);
+  color: var(--ink);
+  line-height: 1.85;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 { font-family: 'Heebo', sans-serif; line-height: 1.4; }
+
+/* ─── Top accent bar ─── */
+.top-bar {
+  height: 5px;
+  background: linear-gradient(90deg, var(--em-400), var(--em-600), var(--em-400));
+}
+
+/* ─── Container ─── */
+.worksheet-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* ─── Cards ─── */
+.q-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--em-100);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+.q-card:hover {
+  border-color: var(--em-200);
+  box-shadow: var(--shadow);
+}
+.q-card.answered {
+  border-color: var(--em-300);
+}
+.q-card.answered::after {
+  content: '✓';
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  width: 24px; height: 24px;
+  background: var(--em-500);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* ─── Question badge ─── */
+.q-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--em-600);
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ─── Radio / Checkbox options ─── */
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: white;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.option-label:hover {
+  border-color: var(--em-300);
+  background: var(--em-50);
+}
+.option-label input[type="radio"] {
+  accent-color: var(--em-600);
+  width: 18px; height: 18px;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.option-label.selected {
+  border-color: var(--em-500);
+  background: var(--em-50);
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.15);
+}
+
+/* ─── Textarea ─── */
+.answer-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  resize: vertical;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  direction: rtl;
+  background: white;
+  color: var(--ink);
+}
+.answer-textarea:focus {
+  outline: none;
+  border-color: var(--em-400);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+.answer-textarea::placeholder { color: var(--ink-faint); }
+
+/* ─── Matching table ─── */
+.match-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--em-100);
+}
+.match-table th {
+  background: var(--em-600);
+  color: white;
+  padding: 0.6rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.match-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--em-100);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+.match-table tr:last-child td { border-bottom: none; }
+.match-table tr:nth-child(even) td { background: var(--em-50); }
+.match-table select {
+  padding: 0.35rem 0.5rem;
+  border: 2px solid var(--em-200);
+  border-radius: 8px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  color: var(--ink);
+}
+.match-table select:focus {
+  outline: none;
+  border-color: var(--em-400);
+}
+
+/* ─── Sequence ─── */
+.seq-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: white;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  transition: border-color 0.2s;
+}
+.seq-row:hover { border-color: var(--em-300); }
+.seq-select {
+  width: 46px; height: 36px;
+  border: 2px solid var(--em-300);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--em-50);
+  color: var(--em-800);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.seq-select:focus {
+  outline: none;
+  border-color: var(--em-500);
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+}
+
+/* ─── Cloze ─── */
+.cloze-blank {
+  display: inline-block;
+  min-width: 75px;
+  border-bottom: 2.5px dashed var(--em-400);
+  text-align: center;
+  padding: 1px 6px;
+  margin: 0 3px;
+  background: var(--em-50);
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--em-800);
+  transition: all 0.25s;
+  min-height: 26px;
+  line-height: 1.6;
+}
+.cloze-blank.filled {
+  border-bottom-style: solid;
+  background: var(--em-100);
+  border-color: var(--em-600);
+}
+.cloze-blank:hover { background: var(--em-100); }
+
+.wb-chip {
+  display: inline-block;
+  padding: 5px 14px;
+  background: white;
+  border: 2px solid var(--em-400);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  margin: 3px;
+  user-select: none;
+}
+.wb-chip:hover { background: var(--em-50); transform: translateY(-1px); }
+.wb-chip.used {
+  opacity: 0.3;
+  text-decoration: line-through;
+  cursor: default;
+  transform: none;
+}
+.wb-chip.selected-chip {
+  background: var(--em-500);
+  color: white;
+  border-color: var(--em-600);
+  transform: scale(1.05);
+}
+
+/* ─── Name input ─── */
+.name-input {
+  border: 2px solid var(--em-200);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 320px;
+  direction: rtl;
+  background: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.name-input:focus {
+  outline: none;
+  border-color: var(--em-400);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+.name-input.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+}
+
+/* ─── Buttons ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.75rem;
+  background: var(--em-600);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+}
+.btn-primary:hover {
+  background: var(--em-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.65rem 1.5rem;
+  background: white;
+  color: var(--em-700);
+  border: 2px solid var(--em-300);
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-secondary:hover {
+  background: var(--em-50);
+  border-color: var(--em-400);
+  transform: translateY(-1px);
+}
+
+/* ─── Story box ─── */
+.story-box {
+  background: white;
+  border-radius: var(--radius);
+  border: 2px solid var(--em-200);
+  padding: 1.5rem 1.75rem;
+  font-size: 1.08rem;
+  line-height: 2.15;
+  max-height: 450px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.story-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--em-300), var(--em-500), var(--em-300));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.story-box .line-num {
+  display: inline-block;
+  width: 26px;
+  color: var(--em-400);
+  font-size: 0.8rem;
+  font-weight: 600;
+  user-select: none;
+  text-align: left;
+}
+
+/* ─── Progress bar ─── */
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(254,253,251,0.92);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--em-100);
+}
+.progress-track {
+  height: 8px;
+  background: var(--em-100);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em-400), var(--em-600));
+  border-radius: 100px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--em-800);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── Animations ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.5s ease both; }
+
+/* ─── Writing task ─── */
+.letter-frame {
+  background: white;
+  border: 2px solid var(--em-200);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+}
+.letter-frame::before {
+  content: '✉️';
+  position: absolute;
+  top: -14px;
+  right: 1.5rem;
+  background: white;
+  padding: 0 8px;
+  font-size: 1.25rem;
+}
+.letter-textarea {
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1.05rem;
+  line-height: 2;
+  resize: vertical;
+  direction: rtl;
+  color: var(--ink);
+  background: transparent;
+}
+.letter-textarea:focus { outline: none; }
+.letter-lines {
+  background-image: repeating-linear-gradient(
+    transparent, transparent 31px, var(--em-100) 31px, var(--em-100) 32px
+  );
+  background-position: 0 6px;
+}
+
+/* ─── Print ─── */
+@media print {
+  .progress-wrap, .no-print { display: none !important; }
+  body { background: white; }
+  .q-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .worksheet-container { padding: 1rem 0.5rem 3rem; }
+  .q-card { padding: 1rem 1.15rem; }
+  .story-box { padding: 1rem 1.15rem; font-size: 1rem; }
+  h1 { font-size: 1.6rem !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<!-- ═══ Progress ═══ -->
+<div class="progress-wrap">
+  <div class="worksheet-container" style="padding-top:0;padding-bottom:0;margin-bottom:0;">
+    <div class="flex items-center gap-3">
+      <div class="progress-track flex-1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="text-sm font-bold" style="color:var(--em-600)" id="progressLabel">0 / 14</span>
+    </div>
+  </div>
+</div>
+
+<div class="worksheet-container">
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header class="text-center mb-8 fade-in" style="animation-delay:0.1s">
+  <div class="text-5xl mb-3">🫓</div>
+  <h1 class="text-3xl font-black mb-1" style="color:var(--em-800)">דף עבודה – "האפיקומן"</h1>
+  <p class="text-base mb-1" style="color:var(--ink-light)">הסקת מסקנות, מילות קישור וממדי הבנה</p>
+  <p class="text-sm" style="color:var(--ink-faint)">סיפור מאת אילנית שוורץ&nbsp;|&nbsp;כיתה ד</p>
+</header>
+
+<!-- ═══ Student Name ═══ -->
+<div class="q-card fade-in" style="animation-delay:0.15s; border-right:4px solid var(--em-500)">
+  <div class="flex flex-wrap items-center gap-3">
+    <label for="studentName" class="font-bold text-lg" style="color:var(--em-800)">👤 שם התלמיד/ה:</label>
+    <input type="text" id="studentName" class="name-input" placeholder="הקלידו את שמכם כאן..." oninput="onNameInput()" autocomplete="off">
+  </div>
+  <p class="text-xs mt-1" style="color:var(--danger); display:none;" id="nameError">⚠️ יש להזין שם לפני שמירה או שליחה</p>
+</div>
+
+<!-- ═══════════════════════════ STORY TEXT ═══════════════════════════ -->
+<div class="q-card fade-in" style="animation-delay:0.2s">
+  <h2 class="text-xl font-bold mb-3 flex items-center gap-2" style="color:var(--em-800)">
+    <span>📖</span> טקסט המקור
+  </h2>
+  <div class="story-box" id="storyBox">
+    <p><span class="line-num">1</span> כמו בכל שנה, גם השנה צפיתי לליל הסדר. אולי השנה אמצא סוף-סוף</p>
+    <p>את האפיקומן!</p>
+    <p><span class="line-num">3</span> או שלא. בפסח של לפניו גיל בן דוד שלי מצא את האפיקומן וקיבל אופנים.</p>
+    <p>ובפסח שעבר, שכלם ימצאו, אז זה סבא החביא הרבה אפיקומנים, כדי</p>
+    <p><span class="line-num">5</span> שכלם ימצאו, אז זה לא נחשב.</p>
+    <p>ויתרתי לאחי הקטן שבכה ועזרתי לו למצא, ולפני חמש שנים</p>
+    <p>הייתי ממש קטן בעצמי.</p>
+    <p><span class="line-num">8</span> השנה התכננתי לעקב אחרי סבא כדי לראות היכן הוא מחביא את האפיקומן.</p>
+    <p>וליל הסדר הגיע והתחיל. לאחר שקראנו את סיפור יציאת מצרים וכלם</p>
+    <p><span class="line-num">10</span> שתו היין, הגיע סבא ל"מוציא מצה", אחר כך בצע את המצה לשנים,</p>
+    <p>ופתאום אמר שהוא הולך לשירותים. "לבד!" הוא הדגיש. הבנתי שזה הרגע</p>
+    <p>שלי.</p>
+    <p><span class="line-num">13</span> חיכיתי רגע. עמדתי בקצה המסדרון ועקבתי אחריו במבטי. ראיתי שסבא</p>
+    <p>פותח את ארון הנעלים. זה היה האפיקומן!</p>
+    <p><span class="line-num">15</span> האפיקומן בתוך נעלי הבית של סבתא!</p>
+    <p>חיכיתי במתח וכשסבא נתן את האות, כלם קמו מהכיסאות במהירות</p>
+    <p>והחלו להתרוצץ בכל הבית. מיהרתי לארון הנעלים, הוצאתי את האפיקומן</p>
+    <p>וקראתי בקול: "מצאתי! מצאתי את האפיקומן!"</p>
+    <p><span class="line-num">20</span> כלם מחאו לי כפים.</p>
+    <p>אני הסמקתי, השפלתי את מבטי וחיכתי. סבא נשק לי ואמר בחגיגיות:</p>
+    <p>"כל הכבוד, עמר! בסיום החג נלך לקנות לך מתנה".</p>
+    <p><span class="line-num">23</span> בתם חפשת הפסח סבא ואני הלכנו לקנות את המתנה. בדרך התכסו עיני</p>
+    <p>בדמעות, התאפקתי שלא לבכות. נעצרתי בכניסה לחנות, והדמעות החלו לזלג.</p>
+    <p><span class="line-num">25</span> סבא הביט בי בעינים שואלות.</p>
+    <p>סיפרתי לסבא במהירות איך מצאתי את האפיקומן.</p>
+    <p><span class="line-num">27</span> עצרתי את נשימתי והבטתי בסבא. סבא חיבק אותי חזק ואני נשמתי</p>
+    <p>לרוחה.</p>
+    <p>כשפניתי לצאת אל הרחוב סבא שאל: "עמר, לא שכחת משהו? מה עם הלגו?"</p>
+    <p><span class="line-num">30</span> חיכתי לסבא ונכנסנו יד ביד אל החנות.</p>
+    <p>לא ידעתי ממה לשמח יותר: מהלגו החדש או מההקלה שהרגשתי</p>
+    <p>אחרי שסיפרתי לסבא את הכל.</p>
+  </div>
+  <p class="text-xs mt-2 text-left" style="color:var(--ink-faint)">הטקסט מתוך: גלים פרו מבית סנונית ועת הדעת</p>
+</div>
+
+<!-- ═══════════════════════════ QUESTIONS ═══════════════════════════ -->
+
+<!-- Q1 -->
+<div class="q-card" data-q="1" id="q1">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">1</span>
+    <p class="font-bold text-base">בשורה הראשונה מופיע המשפט: "כמו בכל שנה, גם השנה <strong>צפיתי</strong> לליל הסדר". במקום הפעל "צפיתי" נתן לכתב:</p>
+  </div>
+  <div class="space-y-1" id="q1-options">
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="א"> א. רציתי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ב"> ב. כסיתי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ג"> ג. חיכיתי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ד"> ד. ראיתי</label>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" data-q="2" id="q2">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">2</span>
+    <p class="font-bold text-base">בשורות 3–7, מתאר עמר מה קרה ומי מצא את האפיקומן בשנים הקודמות. התאימו על פי הכתוב בין הזמן לבין האירוע הקשור באפיקומן.</p>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="match-table">
+      <thead>
+        <tr>
+          <th style="width:35%">הזמן</th>
+          <th style="width:10%">↔</th>
+          <th>אירוע בנושא האפיקומן</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-semibold">לפני ארבע שנים</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>א.</strong> גיל בן דוד שלי מצא את האפיקומן וקיבל אופנים.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">לפני שלוש שנים</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ב.</strong> סבא החביא הרבה אפיקומנים, כדי שכלם ימצאו, אז זה לא נחשב.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">בפסח שלפניו (לפני שנתים)</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ג.</strong> הייתי ממש קטן בעצמי.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">בפסח בשנה שעברה</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ד.</strong> ויתרתי לאחי הקטן שבכה ועזרתי לו למצא.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" data-q="3" id="q3">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">3</span>
+    <p class="font-bold text-base">מדוע, לדעתכם, עמר חשב ש"אין זה נחשב" כשסבא החביא הרבה אפיקומנים?</p>
+  </div>
+  <div class="space-y-1" id="q3-options">
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="א"> א. כי עמר לא רצה למצא את האפיקומן וקיוה שמישהו אחר ימצא אותו לפני שהוא יצטרך לחפש.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ב"> ב. כי מציאת האפיקומן בשנה שסבא החביא הרבה אפיקומנים לא היתה אתגר אמתי, ולכן עמר לא הרגיש סיפוק או גאוה בהשג שלו.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ג"> ג. כי עמר חשב שסבא צריך להחביא רק אפיקומן אחד כדי לשמר על המסרת.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ד"> ד. כי הרבה אפיקומנים פרושו פחות מצות לכל אחד בסעודה, ועמר אהב לאכל הרבה מצות.</label>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" data-q="4" id="q4">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">4</span>
+    <p class="font-bold text-base">מה תכנן עמר לעשות השנה כדי למצא את האפיקומן?</p>
+  </div>
+  <div class="space-y-1" id="q4-options">
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="א"> א. עמר תכנן לעקב אחר תנועותיו של סבא.</label>
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="ב"> ב. עמר תכנן לגנב את האפיקומן בחשאי.</label>
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="ג"> ג. עמר תכנן לעקב אחר צעדיו של אחיו הקטן.</label>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" data-q="5" id="q5">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">5</span>
+    <p class="font-bold text-base">מדוע רצה עמר כל כך למצא את האפיקומן?</p>
+  </div>
+  <div class="space-y-1" id="q5-options">
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="א"> א. כי הוא רצה לקבל מתנה יקרה מסבא וסבתא.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ב"> ב. כי הוא רצה להוכיח שהוא טוב יותר מכל שאר הילדים במשפחה.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ג"> ג. כי הוא חשב שאם ימצא את האפיקומן, יבטלו את שאר הסדר.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ד"> ד. כי בכל שנה מישהו אחר מוצא את האפיקומן, והשנה הוא רצה סוף סוף להצליח בעצמו.</label>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" data-q="6" id="q6">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">6</span>
+    <p class="font-bold text-base">מה פרוש המלה "<strong>בצע</strong>" במשפט "אחר כך <strong>בצע</strong> את המצה לשנים" (שורה 10)?</p>
+  </div>
+  <div class="space-y-1" id="q6-options">
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="א"> א. אכל</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ב"> ב. חתך</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ג"> ג. הגיש</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ד"> ד. אפה</label>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" data-q="7" id="q7">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">7</span>
+    <p class="font-bold text-base">מה היה הרמז של סבא כשהוא יצא להחביא את האפיקומן?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="7" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q7')"></textarea>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" data-q="8" id="q8">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">8</span>
+    <p class="font-bold text-base">איפה הטמין סבא את האפיקומן?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="8" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q8')"></textarea>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" data-q="9" id="q9">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">9</span>
+    <div>
+      <p class="font-bold text-base">בטקסט נאמר: "כשסבא נתן את <strong>האות</strong>, כלם קמו מהכיסאות במהירות והחלו להתרוצץ בכל הבית".</p>
+      <p class="text-base mt-1">איזו מלה יכולה להחליף את המלה "<strong>אות</strong>"?</p>
+    </div>
+  </div>
+  <div class="space-y-1" id="q9-options">
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="א"> א. נס</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ב"> ב. הגדה</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ג"> ג. אפיקומן</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ד"> ד. סימן</label>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" data-q="10" id="q10">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">10</span>
+    <p class="font-bold text-base">מדוע בכה עמר כשהלך עם סבא לקנות את המתנה?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="10" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q10')"></textarea>
+</div>
+
+<!-- Q11 -->
+<div class="q-card" data-q="11" id="q11">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">11</span>
+    <div>
+      <p class="font-bold text-base">בשורה 27 כתוב: "עצרתי את נשימתי והבטתי בסבא".</p>
+      <p class="text-base mt-1">מה פרוש הביטוי <strong>'עצרתי את נשימתי'</strong>?</p>
+    </div>
+  </div>
+  <div class="space-y-1" id="q11-options">
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="א"> א. החזקתי את האויר בתוך הראות לכמה רגעים.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ב"> ב. שרקתי בקול חזק כדי להפתיע את סבא.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ג"> ג. המתנתי בחשש ובהתרגשות לתגובתו של סבא.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ד"> ד. החלטתי לא לדבר יותר על זה עם סבא.</label>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card" data-q="12" id="q12">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">12</span>
+    <div>
+      <p class="font-bold text-base">בשורה 27 כתוב: "סבא חיבק אותי חזק ואני נשמתי לרוחה."</p>
+      <p class="text-base mt-1">מדוע נשם עמר לרוחה (נרגע, הוקל לו) כאשר סבא חיבק אותו?</p>
+    </div>
+  </div>
+  <textarea class="answer-textarea" data-q="12" style="min-height:100px" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q12')"></textarea>
+</div>
+
+<!-- Q13 – Sequence -->
+<div class="q-card" data-q="13" id="q13">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">13</span>
+    <p class="font-bold text-base">שאלת רצף – סדרו את האירועים הבאים לפי סדר התרחשותם בסיפור (1 = קרה ראשון):</p>
+  </div>
+  <div class="space-y-1" id="seqContainer"></div>
+</div>
+
+<!-- Q14 – Cloze -->
+<div class="q-card" data-q="14" id="q14">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">14</span>
+    <p class="font-bold text-base">השלימו את הקטע הבא בעזרת המילים במחסן המילים:</p>
+  </div>
+  <div class="p-3 rounded-xl mb-4 text-center" style="background:var(--em-50); border:2px dashed var(--em-300)">
+    <p class="text-xs font-bold mb-2" style="color:var(--em-700)">מחסן מילים:</p>
+    <div id="wordBank"></div>
+  </div>
+  <div class="text-base leading-loose" id="clozeText"></div>
+  <p class="text-xs mt-2" style="color:var(--ink-faint)">💡 טיפ: לחצו על מילה מהמחסן, ואז לחצו על המקום הריק המתאים.</p>
+</div>
+
+<!-- ═══ WRITING TASK (Bonus) ═══ -->
+<div class="q-card" style="border-right:4px solid var(--em-400)">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge" style="background:var(--em-400)">✍</span>
+    <div>
+      <p class="font-bold text-base">משימת כתיבה – מכתב לעמר</p>
+      <p class="text-sm mt-1" style="color:var(--ink-light)">כתבו מכתב לעמר, הדמות הראשית בסיפור. הציגו את עצמכם, שתפו אותו במה שלמדתם עליו, הביעו את דעתכם על התנהגותו, והציעו לו המלצות.</p>
+    </div>
+  </div>
+  <div class="letter-frame">
+    <div class="text-sm mb-2 font-semibold" style="color:var(--em-600)">מבנה מוצע: 1. פניה לעמר &nbsp;→&nbsp; 2. הצגת עצמכם &nbsp;→&nbsp; 3. מה למדתם עליו &nbsp;→&nbsp; 4. דעתכם ונמוקים &nbsp;→&nbsp; 5. המלצות &nbsp;→&nbsp; 6. סיום וחתימה</div>
+    <textarea class="letter-textarea letter-lines" id="letterArea" placeholder="עמר היקר,&#10;&#10;שמי..." oninput="onLetterInput()"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ACTIONS ═══════════════════════════ -->
+<div class="q-card no-print text-center" style="background: var(--em-50); border:2px solid var(--em-200)">
+  <h3 class="font-bold text-lg mb-4" style="color:var(--em-800)">📤 שמירה ושליחה</h3>
+  <div class="flex flex-wrap justify-center gap-3">
+    <button class="btn-primary" onclick="downloadAnswers()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      הורדת דף עם תשובות
+    </button>
+    <button class="btn-secondary" onclick="copyAnswers()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      העתקת תשובות
+    </button>
+    <button class="btn-secondary" onclick="sendToTeacher()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      שליחה למורה
+    </button>
+  </div>
+  <p class="text-xs mt-3" style="color:var(--ink-faint)">* שליחה למורה – מורידה קובץ טקסט עם כל התשובות</p>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="text-center mt-8 pb-4">
+  <div style="width:60px;height:2px;background:var(--em-400);margin:0 auto 0.75rem;border-radius:2px"></div>
+  <p class="text-sm font-bold" style="color:var(--ink-light)">אילנית שוורץ – קריאה להבנה</p>
+</footer>
+
+</div><!-- /container -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════ STATE ═══════════
+const totalQuestions = 14;
+const answeredSet = new Set();
+
+// ═══════════ PROGRESS ═══════════
+function updateProgress() {
+  const pct = (answeredSet.size / totalQuestions) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = answeredSet.size + ' / ' + totalQuestions;
+  
+  // Mark answered cards
+  document.querySelectorAll('.q-card[data-q]').forEach(card => {
+    const qn = card.dataset.q;
+    card.classList.toggle('answered', answeredSet.has(qn));
+  });
+}
+
+// ═══════════ RADIO OPTIONS ═══════════
+function selectOption(label, qId) {
+  const card = document.getElementById(qId);
+  card.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+  answeredSet.add(qId.replace('q',''));
+  updateProgress();
+}
+
+// ═══════════ TEXTAREA ═══════════
+function onTextInput(el, qId) {
+  const num = qId.replace('q','');
+  if (el.value.trim().length > 0) {
+    answeredSet.add(num);
+  } else {
+    answeredSet.delete(num);
+  }
+  updateProgress();
+}
+
+// ═══════════ MATCHING (Q2) ═══════════
+function onMatchChange(qId) {
+  const selects = document.querySelectorAll(`select[data-match="${qId}"]`);
+  let filled = 0;
+  selects.forEach(s => { if (s.value) filled++; });
+  if (filled === selects.length) {
+    answeredSet.add('2');
+  } else {
+    answeredSet.delete('2');
+  }
+  updateProgress();
+}
+
+// ═══════════ SEQUENCE (Q13) ═══════════
+const seqEvents = [
+  'עמר מוצא את האפיקומן.',
+  'עמר וסבא יוצאים לקנות את המתנה.',
+  'עמר עוקב אחרי סבא ומגלה שהוא מחביא את האפיקומן בנעלי הבית של סבתא.',
+  'עמר מגלה לסבא שעקב אחריו ומתרגש מתגובתו של סבא.',
+  'סבא מכריז שהוא יוצא לשירותים ומדגיש שהוא רוצה ללכת לבד.',
+  'לאחר קריאת סיפור יציאת מצרים ושתית הכוס השניה, הגיע זמן הסתרת האפיקומן.'
+];
+
+function buildSequence() {
+  const container = document.getElementById('seqContainer');
+  // Shuffle for display
+  const shuffled = [...seqEvents].sort(() => Math.random() - 0.5);
+  container.innerHTML = '';
+  shuffled.forEach(text => {
+    const row = document.createElement('div');
+    row.className = 'seq-row';
+    const sel = document.createElement('select');
+    sel.className = 'seq-select';
+    sel.onchange = () => checkSeqFilled();
+    const def = document.createElement('option');
+    def.value = ''; def.textContent = '?';
+    sel.appendChild(def);
+    for (let n = 1; n <= 6; n++) {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      sel.appendChild(o);
+    }
+    const span = document.createElement('span');
+    span.className = 'flex-1';
+    span.textContent = text;
+    row.appendChild(sel);
+    row.appendChild(span);
+    container.appendChild(row);
+  });
+}
+
+function checkSeqFilled() {
+  const selects = document.querySelectorAll('#seqContainer .seq-select');
+  let filled = 0;
+  selects.forEach(s => { if (s.value) filled++; });
+  if (filled === selects.length) {
+    answeredSet.add('13');
+  } else {
+    answeredSet.delete('13');
+  }
+  updateProgress();
+}
+
+// ═══════════ CLOZE (Q14) ═══════════
+const clozeAnswers = {
+  'c1': 'ימצא',
+  'c2': 'ראה',
+  'c3': 'החביא',
+  'c4': 'שמח',
+  'c5': 'מרמה',
+  'c6': 'הציק',
+  'c7': 'לגו',
+  'c8': 'התודה'
+};
+const clozeWords = ['ראה','מרמה','שמח','לגו','התודה','ימצא','החביא','הציק'];
+let selectedWord = null;
+
+function buildCloze() {
+  const bank = document.getElementById('wordBank');
+  const shuffled = [...clozeWords].sort(() => Math.random() - 0.5);
+  bank.innerHTML = '';
+  shuffled.forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'wb-chip';
+    chip.textContent = w;
+    chip.onclick = () => selectClozeWord(chip, w);
+    bank.appendChild(chip);
+  });
+
+  document.getElementById('clozeText').innerHTML = `
+    עמר תכנן היטב את האפן בו <span class="cloze-blank" data-answer="c1" onclick="fillCloze(this)"></span> את האפיקומן השנה. כאשר סבא קם ללכת לשירותים, עמר עמד במסדרון ו<span class="cloze-blank" data-answer="c2" onclick="fillCloze(this)"></span> את סבא פותח את ארון הנעלים, ו<span class="cloze-blank" data-answer="c3" onclick="fillCloze(this)"></span> את האפיקומן בתוך נעלי הבית של סבתא. כאשר עמר מצא את האפיקומן, הוא היה <span class="cloze-blank" data-answer="c4" onclick="fillCloze(this)"></span> מאוד.
+    <br><br>
+    ככל הנראה, מעשה ה<span class="cloze-blank" data-answer="c5" onclick="fillCloze(this)"></span> שעשה עמר <span class="cloze-blank" data-answer="c6" onclick="fillCloze(this)"></span> לו ולפני שהוא וסבא נכנסו לחנות לקנות את ה<span class="cloze-blank" data-answer="c7" onclick="fillCloze(this)"></span>, עמר <span class="cloze-blank" data-answer="c8" onclick="fillCloze(this)"></span> בפני סבא שעקב אחריו וכך גילה היכן האפיקומן.
+  `;
+}
+
+function selectClozeWord(chip, word) {
+  if (chip.classList.contains('used')) return;
+  document.querySelectorAll('.wb-chip').forEach(c => c.classList.remove('selected-chip'));
+  chip.classList.add('selected-chip');
+  selectedWord = { chip, word };
+}
+
+function fillCloze(blank) {
+  if (!selectedWord) return;
+  // Return previous word if exists
+  if (blank.dataset.currentWord) {
+    document.querySelectorAll('.wb-chip').forEach(c => {
+      if (c.textContent === blank.dataset.currentWord) c.classList.remove('used');
+    });
+  }
+  blank.textContent = selectedWord.word;
+  blank.dataset.currentWord = selectedWord.word;
+  blank.classList.add('filled');
+  selectedWord.chip.classList.add('used');
+  selectedWord.chip.classList.remove('selected-chip');
+  selectedWord = null;
+  checkClozeFilled();
+}
+
+function checkClozeFilled() {
+  const blanks = document.querySelectorAll('.cloze-blank');
+  let filled = 0;
+  blanks.forEach(b => { if (b.dataset.currentWord) filled++; });
+  if (filled === blanks.length) {
+    answeredSet.add('14');
+  } else {
+    answeredSet.delete('14');
+  }
+  updateProgress();
+}
+
+// ═══════════ NAME ═══════════
+function onNameInput() {
+  const inp = document.getElementById('studentName');
+  inp.classList.remove('error');
+  document.getElementById('nameError').style.display = 'none';
+}
+
+function getStudentName() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) {
+    document.getElementById('studentName').classList.add('error');
+    document.getElementById('nameError').style.display = 'block';
+    document.getElementById('studentName').focus();
+    return null;
+  }
+  return name;
+}
+
+// ═══════════ LETTER ═══════════
+function onLetterInput() {
+  // Not counted in the 14 questions progress
+}
+
+// ═══════════ COLLECT ANSWERS ═══════════
+function collectAnswers() {
+  const answers = {};
+  const name = document.getElementById('studentName').value.trim();
+  answers['שם התלמיד/ה'] = name || '(לא הוזן)';
+
+  // Q1,3,4,5,6,9,11 – radio
+  [1,3,4,5,6,9,11].forEach(n => {
+    const checked = document.querySelector(`input[name="q${n}"]:checked`);
+    answers[`שאלה ${n}`] = checked ? checked.value : '(לא נענתה)';
+  });
+
+  // Q2 – matching
+  const matchSelects = document.querySelectorAll('select[data-match="q2"]');
+  const matchLabels = ['לפני ארבע שנים','לפני שלוש שנים','בפסח שלפניו (שנתיים)','בפסח בשנה שעברה'];
+  let q2Ans = '';
+  matchSelects.forEach((s, i) => {
+    q2Ans += matchLabels[i] + ' ← ' + (s.value || '?') + '\n';
+  });
+  answers['שאלה 2 (התאמה)'] = q2Ans.trim();
+
+  // Q7,8,10,12 – textarea
+  [7,8,10,12].forEach(n => {
+    const ta = document.querySelector(`textarea[data-q="${n}"]`);
+    answers[`שאלה ${n}`] = ta ? (ta.value.trim() || '(לא נענתה)') : '(לא נענתה)';
+  });
+
+  // Q13 – sequence
+  const seqRows = document.querySelectorAll('#seqContainer .seq-row');
+  let q13Ans = '';
+  seqRows.forEach(row => {
+    const sel = row.querySelector('select');
+    const text = row.querySelector('span').textContent;
+    q13Ans += (sel.value || '?') + '. ' + text + '\n';
+  });
+  answers['שאלה 13 (רצף)'] = q13Ans.trim();
+
+  // Q14 – cloze
+  const blanks = document.querySelectorAll('.cloze-blank');
+  let q14Ans = '';
+  blanks.forEach((b, i) => {
+    q14Ans += `(${i+1}) ${b.dataset.currentWord || '____'}  `;
+  });
+  answers['שאלה 14 (השלמה)'] = q14Ans.trim();
+
+  // Letter
+  const letter = document.getElementById('letterArea').value.trim();
+  if (letter) answers['משימת כתיבה – מכתב לעומר'] = letter;
+
+  return answers;
+}
+
+function formatAnswersText(answers) {
+  let text = '══════════════════════════════════════\n';
+  text += '   דף עבודה – "האפיקומן" | קריאה להבנה\n';
+  text += '══════════════════════════════════════\n\n';
+  text += `שם התלמיד/ה: ${answers['שם התלמיד/ה']}\n`;
+  text += `תאריך: ${new Date().toLocaleDateString('he-IL')}\n\n`;
+  text += '──────────────────────────────────────\n\n';
+
+  const keys = Object.keys(answers).filter(k => k !== 'שם התלמיד/ה');
+  keys.forEach(k => {
+    text += `📌 ${k}:\n${answers[k]}\n\n`;
+  });
+
+  text += '──────────────────────────────────────\n';
+  text += 'אילנית שוורץ – קריאה להבנה\n';
+  return text;
+}
+
+// ═══════════ DOWNLOAD ═══════════
+function downloadAnswers() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  const blob = new Blob(['\ufeff' + text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `האפיקומן_תשובות_${name}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 הקובץ הורד בהצלחה!');
+}
+
+// ═══════════ COPY ═══════════
+function copyAnswers() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 התשובות הועתקו ללוח!');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 התשובות הועתקו ללוח!');
+  });
+}
+
+// ═══════════ SEND TO TEACHER ═══════════
+function sendToTeacher() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  const blob = new Blob(['\ufeff' + text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `שליחה_למורה_האפיקומן_${name}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 הקובץ מוכן לשליחה למורה!');
+}
+
+// ═══════════ TOAST ═══════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════ INIT ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildSequence();
+  buildCloze();
+  updateProgress();
+});
+</script>
+
+</body>
+</html>

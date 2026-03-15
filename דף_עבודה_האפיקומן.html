@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף עבודה – "הָאֲפִיקוֹמָן" | קריאה להבנה</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --em-50: #ecfdf5; --em-100: #d1fae5; --em-200: #a7f3d0; --em-300: #6ee7b7;
+  --em-400: #34d399; --em-500: #10b981; --em-600: #059669; --em-700: #047857;
+  --em-800: #065f46; --em-900: #064e3b;
+  --sand-50: #fefdfb; --sand-100: #faf6f0; --sand-200: #f0e9de;
+  --ink: #1a2e2a; --ink-light: #4a6360; --ink-faint: #8a9e9b;
+  --card: #ffffff; --card-hover: #f8fdfb;
+  --danger: #ef4444; --warn: #f59e0b;
+  --radius: 14px;
+  --shadow-sm: 0 1px 3px rgba(6,78,59,0.06);
+  --shadow: 0 4px 16px rgba(6,78,59,0.07);
+  --shadow-lg: 0 12px 32px rgba(6,78,59,0.10);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Assistant', 'Heebo', sans-serif;
+  background: var(--sand-50);
+  color: var(--ink);
+  line-height: 1.85;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 { font-family: 'Heebo', sans-serif; line-height: 1.4; }
+
+/* ─── Top accent bar ─── */
+.top-bar {
+  height: 5px;
+  background: linear-gradient(90deg, var(--em-400), var(--em-600), var(--em-400));
+}
+
+/* ─── Container ─── */
+.worksheet-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+/* ─── Cards ─── */
+.q-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--em-100);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+.q-card:hover {
+  border-color: var(--em-200);
+  box-shadow: var(--shadow);
+}
+.q-card.answered {
+  border-color: var(--em-300);
+}
+.q-card.answered::after {
+  content: '✓';
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  width: 24px; height: 24px;
+  background: var(--em-500);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* ─── Question badge ─── */
+.q-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--em-600);
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ─── Radio / Checkbox options ─── */
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0.7rem 1rem;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: white;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.option-label:hover {
+  border-color: var(--em-300);
+  background: var(--em-50);
+}
+.option-label input[type="radio"] {
+  accent-color: var(--em-600);
+  width: 18px; height: 18px;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.option-label.selected {
+  border-color: var(--em-500);
+  background: var(--em-50);
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.15);
+}
+
+/* ─── Textarea ─── */
+.answer-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  resize: vertical;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  direction: rtl;
+  background: white;
+  color: var(--ink);
+}
+.answer-textarea:focus {
+  outline: none;
+  border-color: var(--em-400);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+.answer-textarea::placeholder { color: var(--ink-faint); }
+
+/* ─── Matching table ─── */
+.match-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--em-100);
+}
+.match-table th {
+  background: var(--em-600);
+  color: white;
+  padding: 0.6rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.match-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--em-100);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+.match-table tr:last-child td { border-bottom: none; }
+.match-table tr:nth-child(even) td { background: var(--em-50); }
+.match-table select {
+  padding: 0.35rem 0.5rem;
+  border: 2px solid var(--em-200);
+  border-radius: 8px;
+  font-family: 'Assistant', sans-serif;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  color: var(--ink);
+}
+.match-table select:focus {
+  outline: none;
+  border-color: var(--em-400);
+}
+
+/* ─── Sequence ─── */
+.seq-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: white;
+  border: 2px solid var(--em-100);
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  transition: border-color 0.2s;
+}
+.seq-row:hover { border-color: var(--em-300); }
+.seq-select {
+  width: 46px; height: 36px;
+  border: 2px solid var(--em-300);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--em-50);
+  color: var(--em-800);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.seq-select:focus {
+  outline: none;
+  border-color: var(--em-500);
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+}
+
+/* ─── Cloze ─── */
+.cloze-blank {
+  display: inline-block;
+  min-width: 75px;
+  border-bottom: 2.5px dashed var(--em-400);
+  text-align: center;
+  padding: 1px 6px;
+  margin: 0 3px;
+  background: var(--em-50);
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--em-800);
+  transition: all 0.25s;
+  min-height: 26px;
+  line-height: 1.6;
+}
+.cloze-blank.filled {
+  border-bottom-style: solid;
+  background: var(--em-100);
+  border-color: var(--em-600);
+}
+.cloze-blank:hover { background: var(--em-100); }
+
+.wb-chip {
+  display: inline-block;
+  padding: 5px 14px;
+  background: white;
+  border: 2px solid var(--em-400);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  margin: 3px;
+  user-select: none;
+}
+.wb-chip:hover { background: var(--em-50); transform: translateY(-1px); }
+.wb-chip.used {
+  opacity: 0.3;
+  text-decoration: line-through;
+  cursor: default;
+  transform: none;
+}
+.wb-chip.selected-chip {
+  background: var(--em-500);
+  color: white;
+  border-color: var(--em-600);
+  transform: scale(1.05);
+}
+
+/* ─── Name input ─── */
+.name-input {
+  border: 2px solid var(--em-200);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1.1rem;
+  width: 100%;
+  max-width: 320px;
+  direction: rtl;
+  background: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.name-input:focus {
+  outline: none;
+  border-color: var(--em-400);
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+}
+.name-input.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+}
+
+/* ─── Buttons ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.75rem;
+  background: var(--em-600);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+}
+.btn-primary:hover {
+  background: var(--em-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.65rem 1.5rem;
+  background: white;
+  color: var(--em-700);
+  border: 2px solid var(--em-300);
+  border-radius: 12px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-secondary:hover {
+  background: var(--em-50);
+  border-color: var(--em-400);
+  transform: translateY(-1px);
+}
+
+/* ─── Story box ─── */
+.story-box {
+  background: white;
+  border-radius: var(--radius);
+  border: 2px solid var(--em-200);
+  padding: 1.5rem 1.75rem;
+  font-size: 1.08rem;
+  line-height: 2.15;
+  max-height: 450px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.story-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--em-300), var(--em-500), var(--em-300));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.story-box .line-num {
+  display: inline-block;
+  width: 26px;
+  color: var(--em-400);
+  font-size: 0.8rem;
+  font-weight: 600;
+  user-select: none;
+  text-align: left;
+}
+
+/* ─── Progress bar ─── */
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(254,253,251,0.92);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--em-100);
+}
+.progress-track {
+  height: 8px;
+  background: var(--em-100);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--em-400), var(--em-600));
+  border-radius: 100px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--em-800);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── Animations ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.5s ease both; }
+
+/* ─── Writing task ─── */
+.letter-frame {
+  background: white;
+  border: 2px solid var(--em-200);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+}
+.letter-frame::before {
+  content: '✉️';
+  position: absolute;
+  top: -14px;
+  right: 1.5rem;
+  background: white;
+  padding: 0 8px;
+  font-size: 1.25rem;
+}
+.letter-textarea {
+  width: 100%;
+  min-height: 200px;
+  border: none;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1.05rem;
+  line-height: 2;
+  resize: vertical;
+  direction: rtl;
+  color: var(--ink);
+  background: transparent;
+}
+.letter-textarea:focus { outline: none; }
+.letter-lines {
+  background-image: repeating-linear-gradient(
+    transparent, transparent 31px, var(--em-100) 31px, var(--em-100) 32px
+  );
+  background-position: 0 6px;
+}
+
+/* ─── Print ─── */
+@media print {
+  .progress-wrap, .no-print { display: none !important; }
+  body { background: white; }
+  .q-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .worksheet-container { padding: 1rem 0.5rem 3rem; }
+  .q-card { padding: 1rem 1.15rem; }
+  .story-box { padding: 1rem 1.15rem; font-size: 1rem; }
+  h1 { font-size: 1.6rem !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<!-- ═══ Progress ═══ -->
+<div class="progress-wrap">
+  <div class="worksheet-container" style="padding-top:0;padding-bottom:0;margin-bottom:0;">
+    <div class="flex items-center gap-3">
+      <div class="progress-track flex-1">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="text-sm font-bold" style="color:var(--em-600)" id="progressLabel">0 / 14</span>
+    </div>
+  </div>
+</div>
+
+<div class="worksheet-container">
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header class="text-center mb-8 fade-in" style="animation-delay:0.1s">
+  <div class="text-5xl mb-3">🫓</div>
+  <h1 class="text-3xl font-black mb-1" style="color:var(--em-800)">דַּף עֲבוֹדָה – "הָאֲפִיקוֹמָן"</h1>
+  <p class="text-base mb-1" style="color:var(--ink-light)">הֲסָקַת מַסְקָנוֹת, מִילוֹת קִישׁוּר וּמַמְדֵּי הֲבָנָה</p>
+  <p class="text-sm" style="color:var(--ink-faint)">סיפור מאת אילנית שוורץ&nbsp;|&nbsp;כיתה ד</p>
+</header>
+
+<!-- ═══ Student Name ═══ -->
+<div class="q-card fade-in" style="animation-delay:0.15s; border-right:4px solid var(--em-500)">
+  <div class="flex flex-wrap items-center gap-3">
+    <label for="studentName" class="font-bold text-lg" style="color:var(--em-800)">👤 שֵׁם הַתַּלְמִיד/ָה:</label>
+    <input type="text" id="studentName" class="name-input" placeholder="הקלידו את שמכם כאן..." oninput="onNameInput()" autocomplete="off">
+  </div>
+  <p class="text-xs mt-1" style="color:var(--danger); display:none;" id="nameError">⚠️ יש להזין שם לפני שמירה או שליחה</p>
+</div>
+
+<!-- ═══════════════════════════ STORY TEXT ═══════════════════════════ -->
+<div class="q-card fade-in" style="animation-delay:0.2s">
+  <h2 class="text-xl font-bold mb-3 flex items-center gap-2" style="color:var(--em-800)">
+    <span>📖</span> טֶקְסט הַמָּקוֹר
+  </h2>
+  <div class="story-box" id="storyBox">
+    <p><span class="line-num">1</span> כְּמוֹ בְּכָל שָׁנָה, גַּם הַשָּׁנָה צִפִּיתִי לְלֵיל הַסֵּדֶר. אוּלַי הַשָּׁנָה אֶמְצָא סוֹף-סוֹף</p>
+    <p>אֶת הָאֲפִיקוֹמָן!</p>
+    <p><span class="line-num">3</span> אוֹ שֶׁלֹּא. בְּפֶסַח שֶׁל לְפָנָיו גִּיל בֶּן דּוֹד שֶׁלִּי מָצָא אֶת הָאֲפִיקוֹמָן וְקִיבֵּל אוֹפַנַּיִם.</p>
+    <p>וּבְפֶסַח שֶׁעָבַר, שֶׁכֻּלָּם יִמְצְאוּ, אָז זֶה סָבָא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים, כְּדֵי</p>
+    <p><span class="line-num">5</span> שֶׁכֻּלָּם יִמְצְאוּ, אָז זֶה לֹא נֶחְשָׁב.</p>
+    <p>וִיתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבָּכָה וְעָזַרְתִּי לוֹ לִמְצֹא, וְלִפְנֵי חָמֵשׁ שָׁנִים</p>
+    <p>הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</p>
+    <p><span class="line-num">8</span> הַשָּׁנָה הִתְכַּנַּנְתִּי לַעֲקֹב אַחֲרֵי סָבָא כְּדֵי לִרְאוֹת הֵיכָן הוּא מַחְבִּיא אֶת הָאֲפִיקוֹמָן.</p>
+    <p>וְלֵיל הַסֵּדֶר הִגִּיעַ וְהִתְחִיל. לְאַחַר שֶׁקָרָאנוּ אֶת סִיפּוּר יְצִיאַת מִצְרַיִם וְכֻלָּם</p>
+    <p><span class="line-num">10</span> שָׁתוּ הַיַּיִן, הִגִּיעַ סָבָא לְ"מוֹצִיא מַצָּה", אַחַר כָּךְ בָּצַע אֶת הַמַּצָּה לִשְׁנַיִם,</p>
+    <p>וּפִתְאוֹם אָמַר שֶׁהוּא הוֹלֵךְ לַשֵּׁירוּתִים. "לְבַד!" הוּא הִדְגִּישׁ. הֵבַנְתִּי שֶׁזֶּה הָרֶגַע</p>
+    <p>שֶׁלִּי.</p>
+    <p><span class="line-num">13</span> חִיכִּיתִי רֶגַע. עָמַדְתִּי בִּקְצֵה הַמִּסְדְּרוֹן וְעָקַבְתִּי אַחֲרָיו בַּמַּבָּטִי. רָאִיתִי שֶׁסָּבָא</p>
+    <p>פּוֹתֵחַ אֶת אֲרוֹן הַנַּעֲלַיִם. זֶה הָיָה הָאֲפִיקוֹמָן!</p>
+    <p><span class="line-num">15</span> הָאֲפִיקוֹמָן בְּתוֹךְ נַעֲלֵי הַבַּיִת שֶׁל סָבְתָא!</p>
+    <p>חִיכִּיתִי בְּמֶתַח וּכְשֶׁסָּבָא נָתַן אֶת הָאוֹת, כֻּלָּם קָמוּ מֵהַכִּיסָאוֹת בִּמְהִירוּת</p>
+    <p>וְהֵחֵלּוּ לְהִתְרוֹצֵץ בְּכָל הַבַּיִת. מִיהַרְתִּי לַאֲרוֹן הַנַּעֲלַיִם, הוֹצֵאתִי אֶת הָאֲפִיקוֹמָן</p>
+    <p>וְקָרָאתִי בְקוֹל: "מָצָאתִי! מָצָאתִי אֶת הָאֲפִיקוֹמָן!"</p>
+    <p><span class="line-num">20</span> כֻּלָּם מָחֲאוּ לִי כַּפַּיִם.</p>
+    <p>אֲנִי הִסְמַקְתִּי, הִשְׁפַּלְתִּי אֶת מַבָּטִי וְחִיַּכְתִּי. סָבָא נָשַׁק לִי וְאָמַר בַּחֲגִיגִיּוּת:</p>
+    <p>"כָּל הַכָּבוֹד, עֹמֶר! בְּסִיּוּם הַחַג נֵלֵךְ לִקְנוֹת לְךָ מַתָּנָה".</p>
+    <p><span class="line-num">23</span> בְּתֹם חֻפְשַׁת הַפֶּסַח סָבָא וַאֲנִי הָלַכְנוּ לִקְנוֹת אֶת הַמַּתָּנָה. בַּדֶּרֶךְ הִתְכַּסּוּ עֵינַי</p>
+    <p>בִּדְמָעוֹת, הִתְאַפַּקְתִּי שֶׁלֹּא לִבְכּוֹת. נֶעֱצַרְתִּי בַּכְּנִיסָה לַחֲנוּת, וְהַדְּמָעוֹת הֵחֵלּוּ לִזְלֹג.</p>
+    <p><span class="line-num">25</span> סָבָא הִבִּיט בִּי בְּעֵינַיִם שׁוֹאֲלוֹת.</p>
+    <p>סִיפַּרְתִּי לַסָּבָא בִּמְהִירוּת אֵיךְ מָצָאתִי אֶת הָאֲפִיקוֹמָן.</p>
+    <p><span class="line-num">27</span> עָצַרְתִּי אֶת נְשִׁימָתִי וְהִבַּטְתִּי בַּסָּבָא. סָבָא חִיבֵּק אוֹתִי חָזָק וַאֲנִי נָשַׁמְתִּי</p>
+    <p>לִרְוָחָה.</p>
+    <p>כְּשֶׁפָּנִיתִי לָצֵאת אֶל הָרְחוֹב סָבָא שָׁאַל: "עֹמֶר, לֹא שָׁכַחְתָּ מַשֶּׁהוּ? מָה עִם הַלֶּגוֹ?"</p>
+    <p><span class="line-num">30</span> חִיַּכְתִּי לַסָּבָא וְנִכְנַסְנוּ יָד בְּיָד אֶל הַחֲנוּת.</p>
+    <p>לֹא יָדַעְתִּי מִמָּה לִשְׂמֹחַ יוֹתֵר: מֵהַלֶּגוֹ הֶחָדָשׁ אוֹ מֵהַהֲקָלָה שֶׁהִרְגַּשְׁתִּי</p>
+    <p>אַחֲרֵי שֶׁסִּיפַּרְתִּי לַסָּבָא אֶת הַכֹּל.</p>
+  </div>
+  <p class="text-xs mt-2 text-left" style="color:var(--ink-faint)">הטקסט מתוך: גלים פרו מבית סנונית ועת הדעת</p>
+</div>
+
+<!-- ═══════════════════════════ QUESTIONS ═══════════════════════════ -->
+
+<!-- Q1 -->
+<div class="q-card" data-q="1" id="q1">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">1</span>
+    <p class="font-bold text-base">בַּשׁוּרָה הָרִאשׁוֹנָה מוֹפִיעַ הַמִּשְׁפָּט: "כְּמוֹ בְּכָל שָׁנָה, גַּם הַשָּׁנָה <strong>צִפִּיתִי</strong> לְלֵיל הַסֵּדֶר". בִּמְקוֹם הַפֹּעַל "צִפִּיתִי" נִתָּן לִכְתֹּב:</p>
+  </div>
+  <div class="space-y-1" id="q1-options">
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="א"> א. רָצִיתִי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ב"> ב. כִּסִיתִי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ג"> ג. חִיכִּיתִי</label>
+    <label class="option-label" onclick="selectOption(this,'q1')"><input type="radio" name="q1" value="ד"> ד. רָאִיתִי</label>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" data-q="2" id="q2">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">2</span>
+    <p class="font-bold text-base">בְּשׁוּרוֹת 3–7, מְתָאֵר עֹמֶר מָה קָרָה וּמִי מָצָא אֶת הָאֲפִיקוֹמָן בַּשָּׁנִים הַקּוֹדְמוֹת. הַתְאִימוּ עַל פִּי הַכָּתוּב בֵּין הַזְּמָן לְבֵין הָאֵירוּעַ הַקָּשׁוּר בָּאֲפִיקוֹמָן.</p>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="match-table">
+      <thead>
+        <tr>
+          <th style="width:35%">הַזְּמָן</th>
+          <th style="width:10%">↔</th>
+          <th>אֵירוּעַ בְּנוֹשֵׂא הָאֲפִיקוֹמָן</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-semibold">לִפְנֵי אַרְבַּע שָׁנִים</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>א.</strong> גִּיל בֶּן דּוֹד שֶׁלִּי מָצָא אֶת הָאֲפִיקוֹמָן וְקִיבֵּל אוֹפַנַּיִם.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">לִפְנֵי שָׁלוֹשׁ שָׁנִים</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ב.</strong> סָבָא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים, כְּדֵי שֶׁכֻּלָּם יִמְצְאוּ, אָז זֶה לֹא נֶחְשָׁב.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">בְּפֶסַח שֶׁלְּפָנָיו (לִפְנֵי שְׁנָתַיִם)</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ג.</strong> הָיִיתִי מַמָּשׁ קָטָן בְּעַצְמִי.</td>
+        </tr>
+        <tr>
+          <td class="font-semibold">בְּפֶסַח בַּשָּׁנָה שֶׁעָבְרָה</td>
+          <td class="text-center">
+            <select onchange="onMatchChange('q2')" data-match="q2">
+              <option value="">?</option><option value="א">א</option><option value="ב">ב</option><option value="ג">ג</option><option value="ד">ד</option>
+            </select>
+          </td>
+          <td><strong>ד.</strong> וִיתַּרְתִּי לְאָחִי הַקָּטָן שֶׁבָּכָה וְעָזַרְתִּי לוֹ לִמְצֹא.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" data-q="3" id="q3">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">3</span>
+    <p class="font-bold text-base">מַדּוּעַ, לְדַעְתְּכֶם, עֹמֶר חָשַׁב שֶׁ"אֵין זֶה נֶחְשָׁב" כְּשֶׁסָּבָא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים?</p>
+  </div>
+  <div class="space-y-1" id="q3-options">
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="א"> א. כִּי עֹמֶר לֹא רָצָה לִמְצֹא אֶת הָאֲפִיקוֹמָן וְקִיוָּה שֶׁמִּישֶׁהוּ אַחֵר יִמְצָא אוֹתוֹ לִפְנֵי שֶׁהוּא יִצְטָרֵךְ לְחַפֵּשׂ.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ב"> ב. כִּי מְצִיאַת הָאֲפִיקוֹמָן בַּשָּׁנָה שֶׁסָּבָא הֶחְבִּיא הַרְבֵּה אֲפִיקוֹמָנִים לֹא הָיְתָה אֶתְגָר אֲמִתִּי, וְלָכֵן עֹמֶר לֹא הִרְגִּישׁ סִיפּוּק אוֹ גַּאֲוָה בַּהֶשֵּׂג שֶׁלּוֹ.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ג"> ג. כִּי עֹמֶר חָשַׁב שֶׁסָּבָא צָרִיךְ לְהַחְבִּיא רַק אֲפִיקוֹמָן אֶחָד כְּדֵי לִשְׁמֹר עַל הַמָּסֹרֶת.</label>
+    <label class="option-label" onclick="selectOption(this,'q3')"><input type="radio" name="q3" value="ד"> ד. כִּי הַרְבֵּה אֲפִיקוֹמָנִים פֵּרוּשׁוֹ פָּחוֹת מַצּוֹת לְכָל אֶחָד בַּסְּעוּדָה, וְעֹמֶר אָהַב לֶאֱכֹל הַרְבֵּה מַצּוֹת.</label>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" data-q="4" id="q4">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">4</span>
+    <p class="font-bold text-base">מָה תִּכְנֵן עֹמֶר לַעֲשׂוֹת הַשָּׁנָה כְּדֵי לִמְצֹא אֶת הָאֲפִיקוֹמָן?</p>
+  </div>
+  <div class="space-y-1" id="q4-options">
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="א"> א. עֹמֶר תִּכְנֵן לַעֲקֹב אַחַר תְּנוּעוֹתָיו שֶׁל סָבָא.</label>
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="ב"> ב. עֹמֶר תִּכְנֵן לִגְנֹב אֶת הָאֲפִיקוֹמָן בַּחֲשָׁאִי.</label>
+    <label class="option-label" onclick="selectOption(this,'q4')"><input type="radio" name="q4" value="ג"> ג. עֹמֶר תִּכְנֵן לַעֲקֹב אַחַר צְעָדָיו שֶׁל אָחִיו הַקָּטָן.</label>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" data-q="5" id="q5">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">5</span>
+    <p class="font-bold text-base">מַדּוּעַ רָצָה עֹמֶר כָּל כָּךְ לִמְצֹא אֶת הָאֲפִיקוֹמָן?</p>
+  </div>
+  <div class="space-y-1" id="q5-options">
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="א"> א. כִּי הוּא רָצָה לְקַבֵּל מַתָּנָה יְקָרָה מִסָּבָא וְסָבְתָא.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ב"> ב. כִּי הוּא רָצָה לְהוֹכִיחַ שֶׁהוּא טוֹב יוֹתֵר מִכָּל שְׁאָר הַיְלָדִים בַּמִּשְׁפָּחָה.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ג"> ג. כִּי הוּא חָשַׁב שֶׁאִם יִמְצָא אֶת הָאֲפִיקוֹמָן, יְבַטְּלוּ אֶת שְׁאָר הַסֵּדֶר.</label>
+    <label class="option-label" onclick="selectOption(this,'q5')"><input type="radio" name="q5" value="ד"> ד. כִּי בְּכָל שָׁנָה מִישֶׁהוּ אַחֵר מוֹצֵא אֶת הָאֲפִיקוֹמָן, וְהַשָּׁנָה הוּא רָצָה סוֹף סוֹף לְהַצְלִיחַ בְּעַצְמוֹ.</label>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" data-q="6" id="q6">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">6</span>
+    <p class="font-bold text-base">מָה פֵּרוּשׁ הַמִּלָּה "<strong>בָּצַע</strong>" בַּמִּשְׁפָּט "אַחַר כָּךְ <strong>בָּצַע</strong> אֶת הַמַּצָּה לִשְׁנַיִם" (שׁוּרָה 10)?</p>
+  </div>
+  <div class="space-y-1" id="q6-options">
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="א"> א. אָכַל</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ב"> ב. חָתַךְ</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ג"> ג. הִגִּישׁ</label>
+    <label class="option-label" onclick="selectOption(this,'q6')"><input type="radio" name="q6" value="ד"> ד. אָפָה</label>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" data-q="7" id="q7">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">7</span>
+    <p class="font-bold text-base">מָה הָיָה הָרֶמֶז שֶׁל סָבָא כְּשֶׁהוּא יָצָא לְהַחְבִּיא אֶת הָאֲפִיקוֹמָן?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="7" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q7')"></textarea>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" data-q="8" id="q8">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">8</span>
+    <p class="font-bold text-base">אֵיפֹה הִטְמִין סָבָא אֶת הָאֲפִיקוֹמָן?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="8" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q8')"></textarea>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" data-q="9" id="q9">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">9</span>
+    <div>
+      <p class="font-bold text-base">בַּטֶּקְסְט נֶאֱמַר: "כְּשֶׁסָּבָא נָתַן אֶת <strong>הָאוֹת</strong>, כֻּלָּם קָמוּ מֵהַכִּיסָאוֹת בִּמְהִירוּת וְהֵחֵלּוּ לְהִתְרוֹצֵץ בְּכָל הַבַּיִת".</p>
+      <p class="text-base mt-1">אֵיזוֹ מִלָּה יְכוֹלָה לְהַחֲלִיף אֶת הַמִּלָּה "<strong>אוֹת</strong>"?</p>
+    </div>
+  </div>
+  <div class="space-y-1" id="q9-options">
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="א"> א. נֵס</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ב"> ב. הַגָּדָה</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ג"> ג. אֲפִיקוֹמָן</label>
+    <label class="option-label" onclick="selectOption(this,'q9')"><input type="radio" name="q9" value="ד"> ד. סִימָן</label>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" data-q="10" id="q10">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">10</span>
+    <p class="font-bold text-base">מַדּוּעַ בָּכָה עֹמֶר כְּשֶׁהָלַךְ עִם סָבָא לִקְנוֹת אֶת הַמַּתָּנָה?</p>
+  </div>
+  <textarea class="answer-textarea" data-q="10" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q10')"></textarea>
+</div>
+
+<!-- Q11 -->
+<div class="q-card" data-q="11" id="q11">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">11</span>
+    <div>
+      <p class="font-bold text-base">בְּשׁוּרָה 27 כָּתוּב: "עָצַרְתִּי אֶת נְשִׁימָתִי וְהִבַּטְתִּי בַּסָּבָא".</p>
+      <p class="text-base mt-1">מָה פֵּרוּשׁ הַבִּיטוּי <strong>'עָצַרְתִּי אֶת נְשִׁימָתִי'</strong>?</p>
+    </div>
+  </div>
+  <div class="space-y-1" id="q11-options">
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="א"> א. הֶחֱזַקְתִּי אֶת הָאֲוִיר בְּתוֹךְ הָרֵאוֹת לְכַמָּה רְגָעִים.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ב"> ב. שָׁרַקְתִּי בְּקוֹל חָזָק כְּדֵי לְהַפְתִּיעַ אֶת סָבָא.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ג"> ג. הִמְתַּנְתִּי בַּחֲשָׁשׁ וּבְהִתְרַגְּשׁוּת לִתְגוּבָתוֹ שֶׁל סָבָא.</label>
+    <label class="option-label" onclick="selectOption(this,'q11')"><input type="radio" name="q11" value="ד"> ד. הֶחְלַטְתִּי לֹא לְדַבֵּר יוֹתֵר עַל זֶה עִם סָבָא.</label>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card" data-q="12" id="q12">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">12</span>
+    <div>
+      <p class="font-bold text-base">בְּשׁוּרָה 27 כָּתוּב: "סָבָא חִיבֵּק אוֹתִי חָזָק וַאֲנִי נָשַׁמְתִּי לִרְוָחָה."</p>
+      <p class="text-base mt-1">מַדּוּעַ נָשַׁם עֹמֶר לִרְוָחָה (נִרְגַּע, הוּקַל לוֹ) כַּאֲשֶׁר סָבָא חִיבֵּק אוֹתוֹ?</p>
+    </div>
+  </div>
+  <textarea class="answer-textarea" data-q="12" style="min-height:100px" placeholder="כתבו את תשובתכם כאן..." oninput="onTextInput(this,'q12')"></textarea>
+</div>
+
+<!-- Q13 – Sequence -->
+<div class="q-card" data-q="13" id="q13">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">13</span>
+    <p class="font-bold text-base">שְׁאֵלַת רֶצֶף – סַדְּרוּ אֶת הָאֵירוּעִים הַבָּאִים לְפִי סֵדֶר הִתְרַחֲשׁוּתָם בַּסִּיפּוּר (1 = קרה ראשון):</p>
+  </div>
+  <div class="space-y-1" id="seqContainer"></div>
+</div>
+
+<!-- Q14 – Cloze -->
+<div class="q-card" data-q="14" id="q14">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge">14</span>
+    <p class="font-bold text-base">הַשְׁלִימוּ אֶת הַקֶּטַע הַבָּא בְּעֶזְרַת הַמִּילִים בְּמַחְסָן הַמִּילִים:</p>
+  </div>
+  <div class="p-3 rounded-xl mb-4 text-center" style="background:var(--em-50); border:2px dashed var(--em-300)">
+    <p class="text-xs font-bold mb-2" style="color:var(--em-700)">מַחְסַן מִילִים:</p>
+    <div id="wordBank"></div>
+  </div>
+  <div class="text-base leading-loose" id="clozeText"></div>
+  <p class="text-xs mt-2" style="color:var(--ink-faint)">💡 טיפ: לִחֲצוּ עַל מִילָה מֵהַמַּחְסָן, וְאָז לִחֲצוּ עַל הַמָּקוֹם הָרֵיק הַמַּתְאִים.</p>
+</div>
+
+<!-- ═══ WRITING TASK (Bonus) ═══ -->
+<div class="q-card" style="border-right:4px solid var(--em-400)">
+  <div class="flex items-start gap-3 mb-3">
+    <span class="q-badge" style="background:var(--em-400)">✍</span>
+    <div>
+      <p class="font-bold text-base">מְשִׂימַת כְּתִיבָה – מִכְתָּב לְעֹמֶר</p>
+      <p class="text-sm mt-1" style="color:var(--ink-light)">כִּתְבוּ מִכְתָּב לְעֹמֶר, הַדְּמוּת הָרָאשִׁית בַּסִּיפּוּר. הַצִיגוּ אֶת עַצְמְכֶם, שַׁתְּפוּ אוֹתוֹ בְּמָה שֶׁלְּמַדְתֶּם עָלָיו, הַבִּיעוּ אֶת דַּעְתְּכֶם עַל הִתְנַהֲגוּתוֹ, וְהַצִיעוּ לוֹ הַמְלָצוֹת.</p>
+    </div>
+  </div>
+  <div class="letter-frame">
+    <div class="text-sm mb-2 font-semibold" style="color:var(--em-600)">מִבְנֶה מוּצָע: 1. פְּנִיָּה לְעֹמֶר &nbsp;→&nbsp; 2. הַצָּגַת עַצְמְכֶם &nbsp;→&nbsp; 3. מָה לְמַדְתֶּם עָלָיו &nbsp;→&nbsp; 4. דַּעְתְּכֶם וְנִמּוּקִים &nbsp;→&nbsp; 5. הַמְלָצוֹת &nbsp;→&nbsp; 6. סִיּוּם וַחֲתִימָה</div>
+    <textarea class="letter-textarea letter-lines" id="letterArea" placeholder="עֹמֶר היקר,&#10;&#10;שמי..." oninput="onLetterInput()"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ACTIONS ═══════════════════════════ -->
+<div class="q-card no-print text-center" style="background: var(--em-50); border:2px solid var(--em-200)">
+  <h3 class="font-bold text-lg mb-4" style="color:var(--em-800)">📤 שְׁמִירָה וּשְׁלִיחָה</h3>
+  <div class="flex flex-wrap justify-center gap-3">
+    <button class="btn-primary" onclick="downloadAnswers()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      הוֹרָדַת דַּף עִם תְּשׁוּבוֹת
+    </button>
+    <button class="btn-secondary" onclick="copyAnswers()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      הַעְתָּקַת תְּשׁוּבוֹת
+    </button>
+    <button class="btn-secondary" onclick="sendToTeacher()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      שְׁלִיחָה לַמּוֹרָה
+    </button>
+  </div>
+  <p class="text-xs mt-3" style="color:var(--ink-faint)">* שְׁלִיחָה לַמּוֹרָה – מוֹרִידָה קוֹבֶץ טֶקְסט עִם כָּל הַתְּשׁוּבוֹת</p>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="text-center mt-8 pb-4">
+  <div style="width:60px;height:2px;background:var(--em-400);margin:0 auto 0.75rem;border-radius:2px"></div>
+  <p class="text-sm font-bold" style="color:var(--ink-light)">אילנית שוורץ – קריאה להבנה</p>
+</footer>
+
+</div><!-- /container -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════ STATE ═══════════
+const totalQuestions = 14;
+const answeredSet = new Set();
+
+// ═══════════ PROGRESS ═══════════
+function updateProgress() {
+  const pct = (answeredSet.size / totalQuestions) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = answeredSet.size + ' / ' + totalQuestions;
+  
+  // Mark answered cards
+  document.querySelectorAll('.q-card[data-q]').forEach(card => {
+    const qn = card.dataset.q;
+    card.classList.toggle('answered', answeredSet.has(qn));
+  });
+}
+
+// ═══════════ RADIO OPTIONS ═══════════
+function selectOption(label, qId) {
+  const card = document.getElementById(qId);
+  card.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+  label.classList.add('selected');
+  label.querySelector('input').checked = true;
+  answeredSet.add(qId.replace('q',''));
+  updateProgress();
+}
+
+// ═══════════ TEXTAREA ═══════════
+function onTextInput(el, qId) {
+  const num = qId.replace('q','');
+  if (el.value.trim().length > 0) {
+    answeredSet.add(num);
+  } else {
+    answeredSet.delete(num);
+  }
+  updateProgress();
+}
+
+// ═══════════ MATCHING (Q2) ═══════════
+function onMatchChange(qId) {
+  const selects = document.querySelectorAll(`select[data-match="${qId}"]`);
+  let filled = 0;
+  selects.forEach(s => { if (s.value) filled++; });
+  if (filled === selects.length) {
+    answeredSet.add('2');
+  } else {
+    answeredSet.delete('2');
+  }
+  updateProgress();
+}
+
+// ═══════════ SEQUENCE (Q13) ═══════════
+const seqEvents = [
+  'עֹמֶר מוֹצֵא אֶת הָאֲפִיקוֹמָן.',
+  'עֹמֶר וְסָבָא יוֹצְאִים לִקְנוֹת אֶת הַמַּתָּנָה.',
+  'עֹמֶר עוֹקֵב אַחֲרֵי סָבָא וּמְגַלֶּה שֶׁהוּא מַחְבִּיא אֶת הָאֲפִיקוֹמָן בְּנַעֲלֵי הַבַּיִת שֶׁל סָבְתָא.',
+  'עֹמֶר מְגַלֶּה לַסָּבָא שֶׁעָקַב אַחֲרָיו וּמִתְרַגֵּשׁ מִתְּגוּבָתוֹ שֶׁל סָבָא.',
+  'סָבָא מַכְרִיז שֶׁהוּא יוֹצֵא לַשֵּׁירוּתִים וּמַדְגִּישׁ שֶׁהוּא רוֹצֶה לָלֶכֶת לְבַד.',
+  'לְאַחַר קְרִיאַת סִיפּוּר יְצִיאַת מִצְרַיִם וּשְׁתִיַּת הַכּוֹס הַשְּׁנִיָּה, הִגִּיעַ זְמַן הַסְתָּרַת הָאֲפִיקוֹמָן.'
+];
+
+function buildSequence() {
+  const container = document.getElementById('seqContainer');
+  // Shuffle for display
+  const shuffled = [...seqEvents].sort(() => Math.random() - 0.5);
+  container.innerHTML = '';
+  shuffled.forEach(text => {
+    const row = document.createElement('div');
+    row.className = 'seq-row';
+    const sel = document.createElement('select');
+    sel.className = 'seq-select';
+    sel.onchange = () => checkSeqFilled();
+    const def = document.createElement('option');
+    def.value = ''; def.textContent = '?';
+    sel.appendChild(def);
+    for (let n = 1; n <= 6; n++) {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      sel.appendChild(o);
+    }
+    const span = document.createElement('span');
+    span.className = 'flex-1';
+    span.textContent = text;
+    row.appendChild(sel);
+    row.appendChild(span);
+    container.appendChild(row);
+  });
+}
+
+function checkSeqFilled() {
+  const selects = document.querySelectorAll('#seqContainer .seq-select');
+  let filled = 0;
+  selects.forEach(s => { if (s.value) filled++; });
+  if (filled === selects.length) {
+    answeredSet.add('13');
+  } else {
+    answeredSet.delete('13');
+  }
+  updateProgress();
+}
+
+// ═══════════ CLOZE (Q14) ═══════════
+const clozeAnswers = {
+  'c1': 'יִמְצָא',
+  'c2': 'רָאָה',
+  'c3': 'הֶחְבִּיא',
+  'c4': 'שָׂמֵחַ',
+  'c5': 'מִרְמָה',
+  'c6': 'הֵצִיק',
+  'c7': 'לֶגוֹ',
+  'c8': 'הִתְוַדָּה'
+};
+const clozeWords = ['רָאָה','מִרְמָה','שָׂמֵחַ','לֶגוֹ','הִתְוַדָּה','יִמְצָא','הֶחְבִּיא','הֵצִיק'];
+let selectedWord = null;
+
+function buildCloze() {
+  const bank = document.getElementById('wordBank');
+  const shuffled = [...clozeWords].sort(() => Math.random() - 0.5);
+  bank.innerHTML = '';
+  shuffled.forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'wb-chip';
+    chip.textContent = w;
+    chip.onclick = () => selectClozeWord(chip, w);
+    bank.appendChild(chip);
+  });
+
+  document.getElementById('clozeText').innerHTML = `
+    עֹמֶר תִּכְנֵן הֵיטֵב אֶת הָאֹפֶן בּוֹ <span class="cloze-blank" data-answer="c1" onclick="fillCloze(this)"></span> אֶת הָאֲפִיקוֹמָן הַשָּׁנָה. כַּאֲשֶׁר סָבָא קָם לָלֶכֶת לַשֵּׁירוּתִים, עֹמֶר עָמַד בַּמִּסְדְּרוֹן וְ<span class="cloze-blank" data-answer="c2" onclick="fillCloze(this)"></span> אֶת סָבָא פּוֹתֵחַ אֶת אֲרוֹן הַנַּעֲלַיִם, וְ<span class="cloze-blank" data-answer="c3" onclick="fillCloze(this)"></span> אֶת הָאֲפִיקוֹמָן בְּתוֹךְ נַעֲלֵי הַבַּיִת שֶׁל סָבְתָא. כַּאֲשֶׁר עֹמֶר מָצָא אֶת הָאֲפִיקוֹמָן, הוּא הָיָה <span class="cloze-blank" data-answer="c4" onclick="fillCloze(this)"></span> מְאוֹד.
+    <br><br>
+    כְּכָל הַנִּרְאֶה, מַעֲשֵׂה הַ<span class="cloze-blank" data-answer="c5" onclick="fillCloze(this)"></span> שֶׁעָשָׂה עֹמֶר <span class="cloze-blank" data-answer="c6" onclick="fillCloze(this)"></span> לוֹ וְלִפְנֵי שֶׁהוּא וְסָבָא נִכְנְסוּ לַחֲנוּת לִקְנוֹת אֶת הַ<span class="cloze-blank" data-answer="c7" onclick="fillCloze(this)"></span>, עֹמֶר <span class="cloze-blank" data-answer="c8" onclick="fillCloze(this)"></span> בִּפְנֵי סָבָא שֶׁעָקַב אַחֲרָיו וְכָךְ גִּילָּה הֵיכָן הָאֲפִיקוֹמָן.
+  `;
+}
+
+function selectClozeWord(chip, word) {
+  if (chip.classList.contains('used')) return;
+  document.querySelectorAll('.wb-chip').forEach(c => c.classList.remove('selected-chip'));
+  chip.classList.add('selected-chip');
+  selectedWord = { chip, word };
+}
+
+function fillCloze(blank) {
+  if (!selectedWord) return;
+  // Return previous word if exists
+  if (blank.dataset.currentWord) {
+    document.querySelectorAll('.wb-chip').forEach(c => {
+      if (c.textContent === blank.dataset.currentWord) c.classList.remove('used');
+    });
+  }
+  blank.textContent = selectedWord.word;
+  blank.dataset.currentWord = selectedWord.word;
+  blank.classList.add('filled');
+  selectedWord.chip.classList.add('used');
+  selectedWord.chip.classList.remove('selected-chip');
+  selectedWord = null;
+  checkClozeFilled();
+}
+
+function checkClozeFilled() {
+  const blanks = document.querySelectorAll('.cloze-blank');
+  let filled = 0;
+  blanks.forEach(b => { if (b.dataset.currentWord) filled++; });
+  if (filled === blanks.length) {
+    answeredSet.add('14');
+  } else {
+    answeredSet.delete('14');
+  }
+  updateProgress();
+}
+
+// ═══════════ NAME ═══════════
+function onNameInput() {
+  const inp = document.getElementById('studentName');
+  inp.classList.remove('error');
+  document.getElementById('nameError').style.display = 'none';
+}
+
+function getStudentName() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) {
+    document.getElementById('studentName').classList.add('error');
+    document.getElementById('nameError').style.display = 'block';
+    document.getElementById('studentName').focus();
+    return null;
+  }
+  return name;
+}
+
+// ═══════════ LETTER ═══════════
+function onLetterInput() {
+  // Not counted in the 14 questions progress
+}
+
+// ═══════════ COLLECT ANSWERS ═══════════
+function collectAnswers() {
+  const answers = {};
+  const name = document.getElementById('studentName').value.trim();
+  answers['שם התלמיד/ה'] = name || '(לא הוזן)';
+
+  // Q1,3,4,5,6,9,11 – radio
+  [1,3,4,5,6,9,11].forEach(n => {
+    const checked = document.querySelector(`input[name="q${n}"]:checked`);
+    answers[`שאלה ${n}`] = checked ? checked.value : '(לא נענתה)';
+  });
+
+  // Q2 – matching
+  const matchSelects = document.querySelectorAll('select[data-match="q2"]');
+  const matchLabels = ['לפני ארבע שנים','לפני שלוש שנים','בפסח שלפניו (שנתיים)','בפסח בשנה שעברה'];
+  let q2Ans = '';
+  matchSelects.forEach((s, i) => {
+    q2Ans += matchLabels[i] + ' ← ' + (s.value || '?') + '\n';
+  });
+  answers['שאלה 2 (התאמה)'] = q2Ans.trim();
+
+  // Q7,8,10,12 – textarea
+  [7,8,10,12].forEach(n => {
+    const ta = document.querySelector(`textarea[data-q="${n}"]`);
+    answers[`שאלה ${n}`] = ta ? (ta.value.trim() || '(לא נענתה)') : '(לא נענתה)';
+  });
+
+  // Q13 – sequence
+  const seqRows = document.querySelectorAll('#seqContainer .seq-row');
+  let q13Ans = '';
+  seqRows.forEach(row => {
+    const sel = row.querySelector('select');
+    const text = row.querySelector('span').textContent;
+    q13Ans += (sel.value || '?') + '. ' + text + '\n';
+  });
+  answers['שאלה 13 (רצף)'] = q13Ans.trim();
+
+  // Q14 – cloze
+  const blanks = document.querySelectorAll('.cloze-blank');
+  let q14Ans = '';
+  blanks.forEach((b, i) => {
+    q14Ans += `(${i+1}) ${b.dataset.currentWord || '____'}  `;
+  });
+  answers['שאלה 14 (השלמה)'] = q14Ans.trim();
+
+  // Letter
+  const letter = document.getElementById('letterArea').value.trim();
+  if (letter) answers['משימת כתיבה – מכתב לעומר'] = letter;
+
+  return answers;
+}
+
+function formatAnswersText(answers) {
+  let text = '══════════════════════════════════════\n';
+  text += '   דף עבודה – "האפיקומן" | קריאה להבנה\n';
+  text += '══════════════════════════════════════\n\n';
+  text += `שם התלמיד/ה: ${answers['שם התלמיד/ה']}\n`;
+  text += `תאריך: ${new Date().toLocaleDateString('he-IL')}\n\n`;
+  text += '──────────────────────────────────────\n\n';
+
+  const keys = Object.keys(answers).filter(k => k !== 'שם התלמיד/ה');
+  keys.forEach(k => {
+    text += `📌 ${k}:\n${answers[k]}\n\n`;
+  });
+
+  text += '──────────────────────────────────────\n';
+  text += 'אילנית שוורץ – קריאה להבנה\n';
+  return text;
+}
+
+// ═══════════ DOWNLOAD ═══════════
+function downloadAnswers() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  const blob = new Blob(['\ufeff' + text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `האפיקומן_תשובות_${name}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 הקובץ הורד בהצלחה!');
+}
+
+// ═══════════ COPY ═══════════
+function copyAnswers() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 התשובות הועתקו ללוח!');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 התשובות הועתקו ללוח!');
+  });
+}
+
+// ═══════════ SEND TO TEACHER ═══════════
+function sendToTeacher() {
+  const name = getStudentName();
+  if (!name) return;
+  const answers = collectAnswers();
+  const text = formatAnswersText(answers);
+  const blob = new Blob(['\ufeff' + text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `שליחה_למורה_האפיקומן_${name}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 הקובץ מוכן לשליחה למורה!');
+}
+
+// ═══════════ TOAST ═══════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════ INIT ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildSequence();
+  buildCloze();
+  updateProgress();
+});
+</script>
+
+</body>
+</html>
