@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מכתב להקדוש ברוך הוא – מצגת הקנייה</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#fdf6e3;--sand2:#f5eedb;--sand3:#ebe4d0;
+  --brown:#78350f;--brown2:#92400e;--brown3:#b45309;
+  --gold:#d97706;--gold-l:#fbbf24;--gold-bg:rgba(217,119,6,.08);
+  --blue:#2563eb;--blue-bg:rgba(37,99,235,.06);
+  --green:#16a34a;--green-bg:rgba(22,163,74,.06);
+  --rose:#e11d48;--rose-bg:rgba(225,29,72,.05);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,.06);
+  --ink:#3d2b1f;--ink2:#6b5744;--ink3:#9a8a78;
+  --card:#fffdf7;--card-border:rgba(120,53,15,.1);
+  --r:16px;--sh:0 4px 20px rgba(120,53,15,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Assistant','Heebo',sans-serif;background:var(--sand);color:var(--ink);line-height:1.85;overflow-x:hidden}
+h1,h2,h3{font-family:'Heebo',sans-serif;line-height:1.3}
+
+/* parchment texture */
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+.slide{min-height:100vh;padding:2.5rem 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;z-index:1}
+.slide.vis{opacity:1;transform:translateY(0)}
+.si{max-width:860px;width:100%;margin:0 auto}
+
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(253,246,227,.94);backdrop-filter:blur(10px);border-top:2px solid var(--sand3);padding:.5rem 1rem;display:flex;align-items:center;justify-content:center;gap:.4rem;z-index:100}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--sand3);border:none;cursor:pointer;transition:all .3s;padding:0}
+.dot.on{background:var(--gold);transform:scale(1.4);box-shadow:0 0 8px rgba(217,119,6,.4)}
+.arr{background:var(--gold);color:white;border:none;border-radius:50%;width:34px;height:34px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:800}
+.arr:hover{background:var(--brown3);transform:scale(1.08)}
+
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:100}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--gold),var(--brown3));transition:width .5s;width:0%}
+
+.card{background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--r);padding:1.5rem 1.75rem;box-shadow:var(--sh)}
+
+/* story parchment */
+.parchment{background:var(--card);border:2px solid var(--sand3);border-radius:var(--r);padding:1.5rem 1.75rem;position:relative;box-shadow:var(--sh);font-size:1.05rem;line-height:2.1;max-height:400px;overflow-y:auto}
+.parchment::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold-l),var(--gold),var(--gold-l));border-radius:var(--r) var(--r) 0 0}
+
+/* highlight spans */
+.hl-vocab{background:rgba(217,119,6,.12);border-bottom:2px solid var(--gold);border-radius:3px;padding:0 3px;transition:all .3s}
+.hl-cause{background:var(--green-bg);border-bottom:2px solid var(--green);border-radius:3px;padding:0 3px;transition:all .3s}
+.hl-char{background:var(--purple-bg);border-bottom:2px solid var(--purple);border-radius:3px;padding:0 3px;transition:all .3s}
+.hl-infer{background:var(--blue-bg);border-bottom:2px solid var(--blue);border-radius:3px;padding:0 3px;transition:all .3s}
+.hl-off{background:transparent!important;border-bottom-color:transparent!important}
+
+.legend-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:20px;font-size:.88rem;font-weight:700;cursor:pointer;border:2px solid;transition:all .25s}
+.legend-btn:hover{transform:scale(1.04)}
+.legend-btn.active{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+
+/* flip */
+.flip{perspective:1000px;cursor:pointer;height:165px}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.fl .flip-in{transform:rotateY(180deg)}
+.flip-f,.flip-b{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.1rem;text-align:center}
+.flip-f{background:var(--card);border:2px solid var(--card-border);box-shadow:var(--sh)}
+.flip-b{background:var(--gold);color:white;transform:rotateY(180deg);font-size:.92rem;line-height:1.5}
+
+/* expandable rule */
+.rule{border-radius:14px;padding:1.1rem 1.4rem;border-right:4px solid;margin-bottom:.65rem;cursor:pointer;transition:all .3s;background:var(--card);box-shadow:var(--sh)}
+.rule:hover{transform:translateX(-3px)}
+.rule .det{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s,opacity .3s}
+.rule.open .det{max-height:400px;opacity:1;margin-top:.6rem}
+.rule .tog{position:absolute;left:.75rem;top:1.1rem;transition:transform .3s;font-size:.9rem}
+.rule.open .tog{transform:rotate(180deg)}
+
+.ex{background:var(--gold-bg);border:1px solid rgba(217,119,6,.15);border-radius:10px;padding:.55rem .9rem;font-size:.93rem;margin-top:.4rem}
+
+/* quiz */
+.pq{display:block;width:100%;text-align:right;padding:.6rem 1rem;border:2px solid var(--card-border);border-radius:12px;background:var(--card);cursor:pointer;font-size:.98rem;font-family:'Assistant',sans-serif;color:var(--ink);transition:all .25s;margin-bottom:.3rem}
+.pq:hover{border-color:var(--gold);background:var(--gold-bg)}
+.pq.right{border-color:var(--green);background:var(--green-bg);animation:pop .4s}
+.pq.wrong{border-color:var(--rose);background:var(--rose-bg);animation:shake .4s}
+.pq:disabled{cursor:default;opacity:.7}
+.fb{padding:.55rem .9rem;border-radius:10px;margin-top:.4rem;font-weight:600;display:none;font-size:.9rem}
+.fb.show{display:block;animation:fadeUp .3s}
+.fb.ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.15)}
+.fb.no{background:var(--rose-bg);color:var(--rose);border:1px solid rgba(225,29,72,.12)}
+
+/* chain */
+.chain-step{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;background:var(--card);border:1.5px solid var(--card-border);border-radius:12px;box-shadow:var(--sh);position:relative}
+.chain-arrow{color:var(--gold);font-size:1.3rem;font-weight:800;text-align:center}
+
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.78rem;font-weight:700}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.float{animation:float 3s ease-in-out infinite}
+
+@media(max-width:640px){.slide{padding:1.5rem .75rem}.card{padding:1.1rem 1.2rem}.parchment{padding:1rem 1.2rem;font-size:.98rem}h1{font-size:1.6rem!important}h2{font-size:1.2rem!important}.flip{height:145px}}
+body{padding-bottom:55px}
+</style>
+</head>
+<body>
+
+<div class="prog"><div class="prog-bar" id="pBar"></div></div>
+
+<!-- ══════ SLIDE 1: OPENING ══════ -->
+<section class="slide vis" data-s="0">
+<div class="si text-center">
+  <div class="text-6xl mb-3 float">✉️</div>
+  <h1 class="text-3xl font-black mb-2" style="color:var(--brown)">מכתב להקדוש ברוך הוא</h1>
+  <p class="text-base mb-1" style="color:var(--ink2)">סיפור עם – מפי יהודי עיראק</p>
+  <p class="text-sm mb-6" style="color:var(--ink3)">כיתה ד | מצגת הקנייה</p>
+  <div class="card inline-block text-right" style="max-width:520px;border-top:3px solid var(--gold)">
+    <p class="font-bold text-base mb-2" style="color:var(--gold)">🎯 מה נלמד היום?</p>
+    <div class="space-y-2 text-sm" style="color:var(--ink2)">
+      <p>📖 נקרא את הסיפור ונבין את העלילה</p>
+      <p>📝 נלמד <strong>אוצר מילים בהקשר</strong> ומילים נרדפות</p>
+      <p>🔍 נתרגל <strong>הסקת מסקנות</strong> – מה לא נכתב במפורש?</p>
+      <p>🔗 נזהה <strong>סיבה ותוצאה</strong> – שרשרת האירועים</p>
+      <p>👥 ננתח <strong>דמויות ותכונותיהן</strong></p>
+      <p>✉️ נכיר את <strong>מבנה המכתב</strong></p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 2: STORY TEXT ══════ -->
+<section class="slide" data-s="1">
+<div class="si">
+  <h2 class="text-xl font-bold mb-3 text-center" style="color:var(--brown)">📖 קוראים את הסיפור</h2>
+  <p class="text-center text-sm mb-2" style="color:var(--ink3)">לחצו על הכפתורים כדי להדגיש סוגים שונים בטקסט:</p>
+  <div class="flex flex-wrap justify-center gap-2 mb-3">
+    <button onclick="togHL('vocab')" class="legend-btn" id="btn-vocab" style="background:var(--gold-bg);color:var(--brown3);border-color:var(--gold)">📝 אוצר מילים</button>
+    <button onclick="togHL('cause')" class="legend-btn" id="btn-cause" style="background:var(--green-bg);color:var(--green);border-color:var(--green)">🔗 סיבה ותוצאה</button>
+    <button onclick="togHL('char')" class="legend-btn" id="btn-char" style="background:var(--purple-bg);color:var(--purple);border-color:var(--purple)">👥 דמויות</button>
+    <button onclick="togHL('infer')" class="legend-btn" id="btn-infer" style="background:var(--blue-bg);color:var(--blue);border-color:var(--blue)">🔍 הסקה</button>
+  </div>
+  <div class="parchment" id="storyBox">
+    <p><span class="hl-char hl-off">לאיש עני</span> היתה <span class="hl-vocab hl-off">אשת חיל</span>. בהתקרב הפסח אמר: "חג הפסח מתקרב ובא, ועדיין אין לנו <span class="hl-vocab hl-off">מאומה</span> – לא מצות, לא יין, ולא כוסות."</p>
+    <p class="mt-2"><span class="hl-cause hl-off">פרץ האיש בבכי</span>, אך אשתו, <span class="hl-char hl-off">אשת החיל</span>, הרגיעה אותו ואמרה: "אל תדאג, נכתוב מכתב והכול יסתדר <span class="hl-vocab hl-off">לשביעות רצוננו</span>."</p>
+    <p class="mt-2">שאל האיש <span class="hl-vocab hl-off">בתמיהה</span>: "אל מי נכתוב?" – "אל הקדוש ברוך הוא", השיבה. "מי יביא את המכתב אליו?" – "תחילה הבא ניר ועט," ענתה האישה, "ואחר כך אומר לך איך לשלוח את המכתב."</p>
+    <p class="mt-2">הביא האיש ניר ועט, והתחיל לכתוב את אשר הכתיבה לו אשתו:</p>
+    <p class="mt-2" style="background:var(--sand2);padding:.6rem .8rem;border-radius:8px;border-right:3px solid var(--gold)">
+      "לריבונו של עולם, היושב במרומים, מפלוני אלמוני, הגר בעיר פלונית, בבית מספר זה וזה. אתה יודע את מצבנו. בעוד שבוע חל חג הפסח ואין לנו בביתנו אף <span class="hl-vocab hl-off">פרוטה</span> אחת. רחם נא, ה', על עבדך הדל, ושלח לנו כרצונך לצורכי החג, בעיקר מצות ויין. אשתי מבקשת כי תשלח לה גם בד קטיפה ומשי של נשים. <span class="hl-cause hl-off">ידוע לך כי היא לא ביקרה כל השנים בבית הכנסת, מפני שלא היתה לה <span class="hl-vocab hl-off">כסות</span> מתאימה</span>. בתודה ובשלום..."
+    </p>
+    <p class="mt-2">ציוותה האישה על בעלה לקחת את המכתב אל <span class="hl-infer hl-off">גבעה גבוהה</span> שבסביבה, ולהניחו שם מתחת לאבן: "אלוהים כבר ישלח מלאכו לקחתו משם," אמרה.</p>
+    <p class="mt-2">באותו יום נזדמנו <span class="hl-infer hl-off">במקרה</span>, המלך, וידידו, חכם הקהילה היהודית, ליד הגבעה. והנה נשבה רוח חזקה, עקרה את המכתב ממקומו, ונשאה אותו אל המלך וידידו.</p>
+    <p class="mt-2">ביקש המלך מן החכם לקרוא באזניו את המכתב. פתח החכם את המעטפה, עיין רגע במכתב, <span class="hl-cause hl-off">ופרץ בצחוק</span>. "המכתב הזה אינו מכוון אלי או אליך, כי אם אל... ריבונו של עולם." וקרא את תוכן המכתב בקול רם.</p>
+    <p class="mt-2"><span class="hl-cause hl-off">פרץ גם המלך בצחוק</span> לשמע תוכנו של המכתב, אך ביקש מהחכם: "<span class="hl-infer hl-off">מלא נא את מבוקשם של כותבי המכתב</span>."</p>
+    <p class="mt-2">קנה החכם שק אורז, קמח, ומצות, יין ל"קידוש", וכל צורכי החג, בכלל זה גם בגדים לכל בני המשפחה. נתן את כל אלה בידי שליח, בצירוף מאה דינרים במזומנים.</p>
+    <p class="mt-2">דפק השליח על הדלת, יצאה האישה ושאלה: "מניין נשלחו אלינו כל הדברים האלה?" לא ענה השליח דבר.</p>
+    <p class="mt-2">בבוא האיש העני מעבודתו, אמרה לו אשתו: "ראה, הקדוש ברוך הוא נענה לבקשתנו, וסיפק לנו את כל מבוקשנו." <span class="hl-infer hl-off">ובני הזוג חגגו את החג בשירה ובשמחה גדולה</span>.</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 3: VOCABULARY ══════ -->
+<section class="slide" data-s="2">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--gold)">📝 אוצר מילים בהקשר</h2>
+  <p class="text-center text-sm mb-4" style="color:var(--ink3)">לחצו על כל כרטיסייה כדי לגלות את המשמעות:</p>
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">👩‍👧‍👦</div><div class="font-bold text-sm">אשת חיל</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>אשת חיל</strong><br>אישה חרוצה, בעלת מרץ רב, שמצליחה בכל מעשיה.</div></div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">🚫</div><div class="font-bold text-sm">מאומה</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>מאומה</strong><br>כלום, שום דבר. "אין לנו מאומה" = אין לנו שום דבר.</div></div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">❓</div><div class="font-bold text-sm">תמיהה</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>תמיהה</strong><br>הפתעה, פליאה. כששואלים משהו בהפתעה.</div></div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">🪙</div><div class="font-bold text-sm">פרוטה</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>פרוטה</strong><br>מטבע קטנה מאוד. "אין לנו אף פרוטה" = אין כסף בכלל.</div></div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">👗</div><div class="font-bold text-sm">כסות</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>כסות</strong><br>לבוש, בגד. "לא היתה לה כסות מתאימה" = לא היה לה בגד מתאים.</div></div>
+    </div>
+    <div class="flip" onclick="this.classList.toggle('fl')">
+      <div class="flip-in"><div class="flip-f"><div class="text-xl mb-1">😊</div><div class="font-bold text-sm">לשביעות רצוננו</div><div class="text-xs" style="color:var(--ink3)">לחצו</div></div><div class="flip-b"><strong>לשביעות רצוננו</strong><br>בצורה שנהיה מרוצים ושמחים.</div></div>
+    </div>
+  </div>
+  <div class="card" style="border-right:4px solid var(--gold)">
+    <p class="font-bold text-sm mb-1" style="color:var(--gold)">🔄 מילים נרדפות ל"תמיהה":</p>
+    <p class="text-sm" style="color:var(--ink2)"><strong>הפתעה</strong>, <strong>פליאה</strong>, <strong>תדהמה</strong> – כולן מתארות תחושה של "לא האמנתי!"</p>
+    <p class="text-xs mt-1" style="color:var(--ink3)">שימו לב: "בהלה", "עצב", "שמחה" – <strong>אינן</strong> נרדפות לתמיהה!</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 4: CHARACTERS ══════ -->
+<section class="slide" data-s="3">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--purple)">👥 הדמויות – מי הם ומה תכונותיהם?</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--ink3)">הסיפור מציג לנו דמויות שונות מאוד. בואו נשווה:</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+    <div class="card" style="border-top:4px solid var(--blue)">
+      <div class="text-center mb-2"><span class="text-3xl">👨</span></div>
+      <h3 class="text-center font-bold mb-2" style="color:var(--blue)">האיש העני</h3>
+      <div class="space-y-1 text-sm" style="color:var(--ink2)">
+        <p>▸ <strong>עני</strong> – אין לו מאומה</p>
+        <p>▸ <strong>מיואש</strong> – פורץ בבכי</p>
+        <p>▸ <strong>מסופק</strong> – "אל מי נכתוב?"</p>
+        <p>▸ <strong>ציית</strong> – עושה מה שאשתו אומרת</p>
+      </div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--rose)">
+      <div class="text-center mb-2"><span class="text-3xl">👩</span></div>
+      <h3 class="text-center font-bold mb-2" style="color:var(--rose)">האישה – אשת החיל</h3>
+      <div class="space-y-1 text-sm" style="color:var(--ink2)">
+        <p>▸ <strong>יוזמת</strong> – מציעה פתרון (מכתב)</p>
+        <p>▸ <strong>מאמינה</strong> – בוטחת בה'</p>
+        <p>▸ <strong>מרגיעה</strong> – "אל תדאג"</p>
+        <p>▸ <strong>מעשית</strong> – הכתיבה, ציוותה, ארגנה</p>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="border-right:4px solid var(--purple)">
+    <p class="font-bold text-sm mb-1" style="color:var(--purple)">🤔 שאלה לחשיבה:</p>
+    <p class="text-sm" style="color:var(--ink2)">מדוע לדעתכם הסיפור קורא לאישה "אשת חיל" ולא בשמה? מה זה מלמד אותנו על הערכת הסיפור כלפיה?</p>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 5: CAUSE & EFFECT CHAIN ══════ -->
+<section class="slide" data-s="4">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--green)">🔗 שרשרת סיבה ותוצאה</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--ink3)">כל אירוע בסיפור גורם לאירוע הבא. הנה השרשרת:</p>
+  <div class="space-y-2" style="max-width:600px;margin:0 auto">
+    <div class="chain-step"><span class="tag" style="background:var(--gold);color:white">1</span><span class="text-sm">המשפחה <strong>עניה</strong> – אין כסף לחג הפסח</span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step"><span class="tag" style="background:var(--blue);color:white">2</span><span class="text-sm">האיש <strong>פורץ בבכי</strong> מייאוש</span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step"><span class="tag" style="background:var(--rose);color:white">3</span><span class="text-sm">האישה <strong>מציעה לכתוב מכתב</strong> לה'</span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step"><span class="tag" style="background:var(--purple);color:white">4</span><span class="text-sm">המכתב מונח על <strong>גבעה גבוהה</strong></span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step"><span class="tag" style="background:var(--green);color:white">5</span><span class="text-sm"><strong>רוח חזקה</strong> נושאת את המכתב אל המלך והחכם</span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step"><span class="tag" style="background:var(--brown3);color:white">6</span><span class="text-sm">המלך מבקש מהחכם <strong>למלא את הבקשה</strong></span></div>
+    <div class="chain-arrow text-center">⬇</div>
+    <div class="chain-step" style="border-color:var(--gold);border-width:2px"><span class="tag" style="background:var(--gold-l);color:var(--brown)">7</span><span class="text-sm">המשפחה מקבלת הכול ו<strong>חוגגת בשמחה</strong>! 🎉</span></div>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 6: INFERENCE ══════ -->
+<section class="slide" data-s="5">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--blue)">🔍 הסקת מסקנות</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--ink3)">דברים שלא כתובים במפורש – אבל אפשר להבין מהטקסט:</p>
+  <div class="space-y-3">
+    <div class="rule" style="border-color:var(--blue);position:relative" onclick="this.classList.toggle('open')">
+      <span class="tog">⬇</span>
+      <p class="font-bold text-sm" style="color:var(--blue)">🤔 מי באמת שלח את החבילה למשפחה?</p>
+      <div class="det">
+        <div class="ex"><strong>כתוב:</strong> "הקדוש ברוך הוא נענה לבקשתנו"<br><strong>בפועל:</strong> החכם קנה הכול – בפקודת המלך.<br><strong>מסקנה:</strong> האישה חושבת שה' עזר, אבל בפועל אנשים טובים (המלך והחכם) הם שעזרו. אולי גם זה "יד ה'"?</div>
+      </div>
+    </div>
+    <div class="rule" style="border-color:var(--green);position:relative" onclick="this.classList.toggle('open')">
+      <span class="tog">⬇</span>
+      <p class="font-bold text-sm" style="color:var(--green)">🤔 למה האישה ביקשה להניח את המכתב על גבעה גבוהה?</p>
+      <div class="det">
+        <div class="ex"><strong>כתוב:</strong> "אלוהים כבר ישלח מלאכו לקחתו משם"<br><strong>מסקנה:</strong> מקום גבוה = קרוב לשמים = קרוב לה'. האישה האמינה שכך המכתב יגיע ליעדו.</div>
+      </div>
+    </div>
+    <div class="rule" style="border-color:var(--gold);position:relative" onclick="this.classList.toggle('open')">
+      <span class="tog">⬇</span>
+      <p class="font-bold text-sm" style="color:var(--gold)">🤔 למה החכם פרץ בצחוק כשקרא את המכתב?</p>
+      <div class="det">
+        <div class="ex"><strong>מסקנה:</strong> המכתב נכתב לאלוהים – לא לאדם רגיל. זה מפתיע ומצחיק. אבל למרות הצחוק, גם המלך וגם החכם הזדהו עם המשפחה ועזרו.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 7: LETTER STRUCTURE ══════ -->
+<section class="slide" data-s="6">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--brown3)">✉️ מבנה המכתב</h2>
+  <p class="text-center text-sm mb-5" style="color:var(--ink3)">המכתב בסיפור בנוי לפי מבנה קבוע. הנה החלקים:</p>
+  <div class="space-y-3" style="max-width:600px;margin:0 auto">
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--gold)">
+      <span class="tag" style="background:var(--gold);color:white">1</span>
+      <div><p class="font-bold text-sm">נמען (למי כותבים)</p><p class="text-sm" style="color:var(--ink2)">"לריבונו של עולם, היושב במרומים"</p></div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--blue)">
+      <span class="tag" style="background:var(--blue);color:white">2</span>
+      <div><p class="font-bold text-sm">מוען (מי כותב)</p><p class="text-sm" style="color:var(--ink2)">"מפלוני אלמוני, הגר בעיר פלונית"</p></div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--green)">
+      <span class="tag" style="background:var(--green);color:white">3</span>
+      <div><p class="font-bold text-sm">תיאור המצב</p><p class="text-sm" style="color:var(--ink2)">"אתה יודע את מצבנו... אין לנו בביתנו אף פרוטה"</p></div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--rose)">
+      <span class="tag" style="background:var(--rose);color:white">4</span>
+      <div><p class="font-bold text-sm">בקשה</p><p class="text-sm" style="color:var(--ink2)">"רחם נא, ה'... ושלח לנו... מצות ויין... בד קטיפה ומשי"</p></div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--purple)">
+      <span class="tag" style="background:var(--purple);color:white">5</span>
+      <div><p class="font-bold text-sm">נימוק (למה?)</p><p class="text-sm" style="color:var(--ink2)">"היא לא ביקרה כל השנים בבית הכנסת, מפני שלא היתה לה כסות מתאימה"</p></div>
+    </div>
+    <div class="card flex items-start gap-3" style="border-right:4px solid var(--ink3)">
+      <span class="tag" style="background:var(--ink3);color:white">6</span>
+      <div><p class="font-bold text-sm">סיום</p><p class="text-sm" style="color:var(--ink2)">"בתודה ובשלום..."</p></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 8: QUIZ ══════ -->
+<section class="slide" data-s="7">
+<div class="si">
+  <h2 class="text-xl font-bold mb-2 text-center" style="color:var(--gold)">❓ בדקו את עצמכם</h2>
+
+  <div class="card mb-3" id="z1">
+    <p class="font-bold text-sm mb-2"><span class="tag" style="background:var(--gold);color:white">1</span> מי נחשבת "אשת חיל" בסיפור?</p>
+    <button class="pq" onclick="zz('z1',this,true)">אישה חרוצה ובעלת מרץ רב שמצליחה בכל מעשיה</button>
+    <button class="pq" onclick="zz('z1',this,false)">אישה עצלה שמבקשת עזרה מאחרים</button>
+    <div class="fb" id="z1-ok">✅ נכון! אשת חיל = חרוצה, בעלת מרץ ויוזמה.</div>
+    <div class="fb" id="z1-no">❌ לא. "אשת חיל" = מילת שבח לאישה חרוצה ומצליחה.</div>
+  </div>
+
+  <div class="card mb-3" id="z2">
+    <p class="font-bold text-sm mb-2"><span class="tag" style="background:var(--blue);color:white">2</span> מה פירוש המילה "מאומה"?</p>
+    <button class="pq" onclick="zz('z2',this,false)">הרבה מאוד</button>
+    <button class="pq" onclick="zz('z2',this,true)">כלום, שום דבר</button>
+    <button class="pq" onclick="zz('z2',this,false)">אומה, עם</button>
+    <div class="fb" id="z2-ok">✅ נכון! "אין לנו מאומה" = אין לנו שום דבר.</div>
+    <div class="fb" id="z2-no">❌ נסו שוב. ההקשר: "אין לנו מאומה – לא מצות, לא יין..." מה זה אומר?</div>
+  </div>
+
+  <div class="card mb-3" id="z3">
+    <p class="font-bold text-sm mb-2"><span class="tag" style="background:var(--green);color:white">3</span> מדוע פרץ האיש העני בבכי דווקא לפני פסח?</p>
+    <button class="pq" onclick="zz('z3',this,false)">כי הוא לא אוהב את חג הפסח</button>
+    <button class="pq" onclick="zz('z3',this,true)">כי לקראת החג צריך מצות, יין וכוסות – ולמשפחה אין כסף לכלום</button>
+    <button class="pq" onclick="zz('z3',this,false)">כי אשתו כעסה עליו</button>
+    <div class="fb" id="z3-ok">✅ מצוין! חג הפסח דורש הכנות מיוחדות – והמשפחה לא יכולה להרשות לעצמה.</div>
+    <div class="fb" id="z3-no">❌ חשבו: מה צריך כדי לחגוג פסח? ומה קורה כשאין כסף?</div>
+  </div>
+
+  <div class="card" id="z4">
+    <p class="font-bold text-sm mb-2"><span class="tag" style="background:var(--purple);color:white">4</span> איזו מילה <strong>אינה</strong> נרדפת ל"תמיהה"?</p>
+    <button class="pq" onclick="zz('z4',this,false)">הפתעה</button>
+    <button class="pq" onclick="zz('z4',this,false)">פליאה</button>
+    <button class="pq" onclick="zz('z4',this,true)">בהלה</button>
+    <button class="pq" onclick="zz('z4',this,false)">תדהמה</button>
+    <div class="fb" id="z4-ok">✅ נכון! "בהלה" = פחד, חרדה – לא תמיהה.</div>
+    <div class="fb" id="z4-no">❌ "תמיהה" = הפתעה. חשבו: איזו מילה מתארת פחד ולא הפתעה?</div>
+  </div>
+</div>
+</section>
+
+<!-- ══════ SLIDE 9: SUMMARY ══════ -->
+<section class="slide" data-s="8">
+<div class="si text-center">
+  <div class="text-5xl mb-4 float">🌟</div>
+  <h2 class="text-2xl font-black mb-4" style="color:var(--brown)">סיכום – מה למדנו?</h2>
+  <div class="card text-right mb-5" style="max-width:560px;margin:0 auto;border-top:3px solid var(--gold)">
+    <div class="space-y-3 text-sm">
+      <div class="flex items-start gap-2"><span style="color:var(--gold)">📝</span><div><strong>אוצר מילים</strong> – למדנו מילים כמו אשת חיל, מאומה, תמיהה, פרוטה, כסות, וזיהינו מילים נרדפות.</div></div>
+      <div class="flex items-start gap-2"><span style="color:var(--purple)">👥</span><div><strong>דמויות</strong> – השווינו בין האיש (מיואש) לאישה (יוזמת, מאמינה).</div></div>
+      <div class="flex items-start gap-2"><span style="color:var(--green)">🔗</span><div><strong>סיבה ותוצאה</strong> – עקבנו אחרי שרשרת של 7 אירועים מהעוני עד השמחה.</div></div>
+      <div class="flex items-start gap-2"><span style="color:var(--blue)">🔍</span><div><strong>הסקת מסקנות</strong> – הבנו דברים שלא כתובים: מי באמת שלח? למה הגבעה?</div></div>
+      <div class="flex items-start gap-2"><span style="color:var(--brown3)">✉️</span><div><strong>מבנה מכתב</strong> – זיהינו 6 חלקים: נמען, מוען, מצב, בקשה, נימוק, סיום.</div></div>
+    </div>
+  </div>
+  <div class="card inline-block" style="max-width:400px;background:var(--gold-bg);border:2px solid rgba(217,119,6,.2)">
+    <p class="text-sm font-bold" style="color:var(--brown3)">💬 זכרו: גם כשקוראים סיפור ישן – תמיד אפשר ללמוד ממנו דברים חדשים על השפה ועל החיים!</p>
+  </div>
+  <div class="mt-8">
+    <div style="width:50px;height:2px;background:var(--gold);margin:0 auto .75rem;border-radius:2px"></div>
+    <p class="text-sm font-bold" style="color:var(--ink2)">אילנית שוורץ – קריאה להבנה</p>
+  </div>
+</div>
+</section>
+
+<!-- NAV -->
+<div class="nav"><button class="arr" onclick="go(cur-1)">→</button><div class="flex gap-1 items-center" id="dots"></div><button class="arr" onclick="go(cur+1)">←</button></div>
+
+<script>
+const slides=document.querySelectorAll('.slide'),total=slides.length;let cur=0;
+function buildNav(){const d=document.getElementById('dots');for(let i=0;i<total;i++){const b=document.createElement('button');b.className='dot'+(i===0?' on':'');b.onclick=()=>go(i);d.appendChild(b)}}
+function go(n){if(n<0||n>=total)return;cur=n;slides[n].scrollIntoView({behavior:'smooth',block:'start'});upNav()}
+function upNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));document.getElementById('pBar').style.width=((cur+1)/total*100)+'%'}
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');const i=parseInt(e.target.dataset.s);if(!isNaN(i)){cur=i;upNav()}}})},{threshold:.3});
+slides.forEach(s=>obs.observe(s));buildNav();
+
+// Highlights
+const activeHL=new Set();
+const hlColors={vocab:{bg:'rgba(217,119,6,.12)',border:'#d97706'},cause:{bg:'rgba(22,163,74,.08)',border:'#16a34a'},char:{bg:'rgba(124,58,237,.08)',border:'#7c3aed'},infer:{bg:'rgba(37,99,235,.08)',border:'#2563eb'}};
+function togHL(type){
+  if(activeHL.has(type))activeHL.delete(type);else activeHL.add(type);
+  ['vocab','cause','char','infer'].forEach(t=>{
+    document.querySelectorAll('.hl-'+t).forEach(el=>{
+      if(activeHL.has(t)){el.classList.remove('hl-off');el.style.background=hlColors[t].bg;el.style.borderBottomColor=hlColors[t].border}
+      else{el.classList.add('hl-off');el.style.background='transparent';el.style.borderBottomColor='transparent'}
+    });
+    const btn=document.getElementById('btn-'+t);
+    if(btn){if(activeHL.has(t)){btn.style.fontWeight='800';btn.style.transform='scale(1.06)';btn.style.boxShadow='0 2px 10px rgba(0,0,0,.12)'}else{btn.style.fontWeight='700';btn.style.transform='scale(1)';btn.style.boxShadow='none'}}
+  });
+}
+
+// Quiz
+function zz(id,btn,ok){
+  const c=document.getElementById(id);
+  c.querySelectorAll('.pq').forEach(b=>{b.disabled=true;b.classList.remove('right','wrong')});
+  if(ok){btn.classList.add('right');document.getElementById(id+'-ok').classList.add('show','ok');document.getElementById(id+'-no').classList.remove('show')}
+  else{btn.classList.add('wrong');document.getElementById(id+'-no').classList.add('show','no');document.getElementById(id+'-ok').classList.remove('show');setTimeout(()=>{c.querySelectorAll('.pq').forEach(b=>{b.disabled=false;b.classList.remove('wrong')});document.getElementById(id+'-no').classList.remove('show')},2000)}
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowLeft')go(cur+1);if(e.key==='ArrowUp'||e.key==='ArrowRight')go(cur-1)});
+</script>
+</body>
+</html>

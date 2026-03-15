@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף עבודה – מכתב להקדוש ברוך הוא</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#fdf6e3;--sand2:#f5eedb;--sand3:#ebe4d0;
+  --brown:#78350f;--brown2:#92400e;--brown3:#b45309;
+  --gold:#d97706;--gold-l:#fbbf24;--gold-bg:rgba(217,119,6,.08);
+  --blue:#2563eb;--blue-bg:rgba(37,99,235,.06);
+  --green:#16a34a;--green-bg:rgba(22,163,74,.06);
+  --rose:#e11d48;--rose-bg:rgba(225,29,72,.05);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,.06);
+  --ink:#3d2b1f;--ink2:#6b5744;--ink3:#9a8a78;
+  --card:#fffdf7;--card-border:rgba(120,53,15,.1);
+  --red:#ef4444;--r:16px;--sh:0 4px 20px rgba(120,53,15,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Assistant','Heebo',sans-serif;background:var(--sand);color:var(--ink);line-height:1.85;min-height:100vh}
+h1,h2,h3{font-family:'Heebo',sans-serif;line-height:1.3}
+.wrap{max-width:830px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.prog-wrap{position:sticky;top:0;z-index:50;background:rgba(253,246,227,.92);backdrop-filter:blur(8px);padding:.5rem 0;border-bottom:1px solid var(--sand3)}
+.prog-track{height:7px;background:var(--sand3);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--brown3));border-radius:100px;transition:width .5s;width:0%}
+
+.sec-head{display:flex;align-items:center;gap:10px;padding:.7rem 1.2rem;border-radius:var(--r);margin:1.25rem 0 .75rem;font-weight:800;font-size:1rem}
+
+.qc{background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--r);padding:1.4rem 1.6rem;margin-bottom:1rem;box-shadow:var(--sh);position:relative;transition:border-color .3s}
+.qc.done{border-color:rgba(22,163,74,.3)}
+.qc.done::after{content:'✓';position:absolute;top:.6rem;left:.6rem;width:22px;height:22px;background:var(--green);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}
+
+.qb{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--gold);color:white;font-weight:800;font-size:.85rem;flex-shrink:0}
+
+.opt{display:flex;align-items:flex-start;gap:10px;padding:.6rem 1rem;border:2px solid var(--card-border);border-radius:12px;cursor:pointer;transition:all .25s;background:var(--card);margin-bottom:.35rem;font-size:.98rem;line-height:1.7}
+.opt:hover{border-color:var(--gold);background:var(--gold-bg)}
+.opt input[type="radio"]{accent-color:var(--gold);width:17px;height:17px;margin-top:5px;flex-shrink:0}
+.opt.sel{border-color:var(--gold);background:rgba(217,119,6,.08)}
+
+.atx{width:100%;min-height:70px;border:2px solid var(--card-border);border-radius:12px;padding:.6rem .9rem;font-family:'Assistant',sans-serif;font-size:.98rem;line-height:1.8;resize:vertical;direction:rtl;background:var(--card);color:var(--ink);transition:border-color .3s}
+.atx:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,119,6,.1)}
+.atx::placeholder{color:var(--ink3)}
+
+.mc-item{display:inline-block;padding:4px 14px;border:2px solid var(--card-border);border-radius:20px;cursor:pointer;transition:all .25s;margin:2px;font-size:.93rem;background:var(--card)}
+.mc-item:hover{border-color:var(--gold);background:var(--gold-bg)}
+.mc-item.picked{border-color:var(--gold);background:rgba(217,119,6,.12);font-weight:700;color:var(--brown)}
+
+/* cloze */
+.cloze-gap{display:inline-block;min-width:70px;border-bottom:2.5px dashed var(--gold);text-align:center;padding:1px 5px;margin:0 3px;background:var(--gold-bg);border-radius:4px 4px 0 0;cursor:pointer;font-weight:700;color:var(--brown);transition:all .25s;min-height:24px;line-height:1.5}
+.cloze-gap.filled{border-bottom-style:solid;background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.wb-chip{display:inline-block;padding:4px 12px;background:var(--card);border:2px solid var(--gold);border-radius:20px;cursor:pointer;font-weight:600;font-size:.92rem;transition:all .2s;margin:2px;user-select:none}
+.wb-chip:hover{background:var(--gold-bg);transform:translateY(-1px)}
+.wb-chip.used{opacity:.3;text-decoration:line-through;cursor:default}
+.wb-chip.picked{background:var(--gold);color:white;transform:scale(1.05)}
+
+/* match */
+.match-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+.match-left,.match-right{flex:1;background:var(--card);border:1.5px solid var(--card-border);border-radius:10px;padding:.5rem .7rem;font-size:.9rem;text-align:center}
+.match-circle{width:24px;height:24px;border:2px solid var(--gold);border-radius:50%;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;transition:all .25s;color:transparent}
+.match-circle.connected{background:var(--gold);color:white}
+
+/* seq */
+.seq-row{display:flex;align-items:flex-start;gap:.5rem;padding:.55rem .7rem;background:var(--card);border:1.5px solid var(--card-border);border-radius:12px;margin-bottom:.35rem}
+.seq-sel{width:42px;height:34px;border:2px solid var(--gold);border-radius:8px;text-align:center;font-weight:700;font-size:.95rem;background:var(--gold-bg);color:var(--brown);cursor:pointer;flex-shrink:0}
+.seq-sel:focus{outline:none;border-color:var(--brown3)}
+
+.nm-in{border:2px solid var(--card-border);border-radius:12px;padding:.55rem 1rem;font-family:'Assistant',sans-serif;font-size:1.05rem;width:100%;max-width:300px;direction:rtl;background:var(--card);transition:border-color .3s}
+.nm-in:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,119,6,.1)}
+.nm-in.err{border-color:var(--red)}
+
+.btn1{display:inline-flex;align-items:center;gap:8px;padding:.65rem 1.5rem;background:var(--gold);color:white;border:none;border-radius:12px;font-family:'Heebo',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .25s}
+.btn1:hover{background:var(--brown3);transform:translateY(-1px)}
+.btn2{display:inline-flex;align-items:center;gap:8px;padding:.6rem 1.3rem;background:var(--card);color:var(--brown3);border:2px solid var(--sand3);border-radius:12px;font-family:'Heebo',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .25s}
+.btn2:hover{background:var(--gold-bg);border-color:var(--gold);transform:translateY(-1px)}
+
+.parchment{background:var(--card);border:2px solid var(--sand3);border-radius:var(--r);padding:1.25rem 1.5rem;position:relative;box-shadow:var(--sh);font-size:1.02rem;line-height:2;max-height:350px;overflow-y:auto}
+.parchment::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold-l),var(--gold),var(--gold-l));border-radius:var(--r) var(--r) 0 0}
+
+.helper{font-size:.82rem;color:var(--ink3);margin-top:.3rem}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.78rem;font-weight:700}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brown);color:var(--gold-l);padding:.7rem 1.5rem;border-radius:12px;font-weight:700;box-shadow:0 12px 32px rgba(120,53,15,.2);z-index:999;transition:transform .4s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.letter-frame{background:var(--card);border:2px solid var(--sand3);border-radius:var(--r);padding:1.25rem;position:relative}
+.letter-frame::before{content:'✉️';position:absolute;top:-14px;right:1.5rem;background:var(--sand);padding:0 8px;font-size:1.2rem}
+.letter-ta{width:100%;min-height:180px;border:none;font-family:'Assistant',sans-serif;font-size:1rem;line-height:2;resize:vertical;direction:rtl;color:var(--ink);background:transparent}
+.letter-ta:focus{outline:none}
+.letter-lines{background-image:repeating-linear-gradient(transparent,transparent 31px,var(--sand3) 31px,var(--sand3) 32px);background-position:0 6px}
+
+@media print{.prog-wrap,.no-print{display:none!important}body{background:#fff}.qc{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
+@media(max-width:640px){.wrap{padding:1rem .5rem 3rem}.qc{padding:1rem 1.1rem}h1{font-size:1.5rem!important}}
+</style>
+</head>
+<body>
+
+<div class="prog-wrap"><div class="wrap" style="padding-top:0;padding-bottom:0"><div class="flex items-center gap-3"><div class="prog-track flex-1"><div class="prog-fill" id="pFill"></div></div><span class="text-sm font-bold" style="color:var(--gold)" id="pLbl">0 / 14</span></div></div></div>
+
+<div class="wrap">
+
+<header class="text-center mb-5">
+  <div class="text-4xl mb-2">✉️</div>
+  <h1 class="text-2xl font-black mb-1" style="color:var(--brown)">דף עבודה – "מכתב להקדוש ברוך הוא"</h1>
+  <p class="text-sm" style="color:var(--ink2)">אוצר מילים, הסקת מסקנות, סיבה ותוצאה, דמויות ומבנה מכתב</p>
+  <p class="text-xs mt-1" style="color:var(--ink3)">כיתה ד | סיפור עם מפי יהודי עיראק</p>
+</header>
+
+<div class="qc" style="border-right:3px solid var(--gold)">
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="font-bold" style="color:var(--brown)">👤 שם התלמיד/ה:</label>
+    <input type="text" id="sName" class="nm-in" placeholder="הקלידו..." oninput="onNm()" autocomplete="off">
+  </div>
+  <p class="text-xs mt-1" style="color:var(--red);display:none" id="nmErr">⚠ יש להזין שם</p>
+</div>
+
+<!-- Story excerpt -->
+<div class="qc">
+  <h2 class="text-lg font-bold mb-2 flex items-center gap-2" style="color:var(--brown)">📖 תזכורת – תחילת הסיפור</h2>
+  <div class="parchment" style="max-height:250px">
+    <p>לאיש עני היתה אשת חיל. בהתקרב הפסח אמר: "חג הפסח מתקרב ובא, ועדיין אין לנו מאומה – לא מצות, לא יין, ולא כוסות." פרץ האיש בבכי, אך אשתו, אשת החיל, הרגיעה אותו ואמרה: "אל תדאג, נכתוב מכתב והכול יסתדר לשביעות רצוננו."</p>
+    <p class="mt-1">שאל האיש בתמיהה: "אל מי נכתוב?" – "אל הקדוש ברוך הוא", השיבה...</p>
+  </div>
+  <p class="text-xs mt-1" style="color:var(--ink3)">📌 הטקסט המלא חולק בשיעור</p>
+</div>
+
+<!-- ═══ SECTION A: אוצר מילים ═══ -->
+<div class="sec-head" style="background:var(--gold-bg);color:var(--brown3)">📝 חלק א: אוצר מילים בהקשר</div>
+
+<!-- Q1 -->
+<div class="qc" data-q="1" id="q1">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">1</span>
+    <div><p class="font-bold text-sm">מי נחשבת "אשת חיל"? בחרו את המילה המתאימה מבין המילים המודגשות:</p></div>
+  </div>
+  <p class="text-sm mb-2" style="color:var(--ink2)">אישה <span class="mc-item" onclick="mcP(this,'q1','חרוצה')">חרוצה</span> / <span class="mc-item" onclick="mcP(this,'q1','עצלה')">עצלה</span> ובעלת מרץ <span class="mc-item" onclick="mcP(this,'q1','מועט')">מועט</span> / <span class="mc-item" onclick="mcP(this,'q1','רב')">רב</span> שמצליחה / <span class="mc-item" onclick="mcP(this,'q1','שנכשלת')">שנכשלת</span> / <span class="mc-item" onclick="mcP(this,'q1','שמצליחה')">שמצליחה</span> בכל מעשיה.</p>
+</div>
+
+<!-- Q2 -->
+<div class="qc" data-q="2" id="q2">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">2</span>
+    <p class="font-bold text-sm">היעזרו בהקשר והסבירו את המילה "מאומה":</p>
+  </div>
+  <p class="text-sm mb-2" style="color:var(--ink2);background:var(--sand2);padding:.4rem .7rem;border-radius:8px">"חג הפסח מתקרב ובא, ועדיין אין לנו <strong>מאומה</strong> – לא מצות, לא יין, ולא כוסות."</p>
+  <p class="text-sm mb-1">פירוש המילה "מאומה" הוא:</p>
+  <textarea class="atx" style="min-height:45px" data-q="2" placeholder="כתבו כאן..." oninput="onTxt(this,'2')"></textarea>
+</div>
+
+<!-- Q3 -->
+<div class="qc" data-q="3" id="q3">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">3</span>
+    <p class="font-bold text-sm">"שאל האיש <strong>בתמיהה</strong>: 'אל מי נכתוב?'" — הקיפו 3 מילים <strong>נרדפות</strong> למילה "תמיהה":</p>
+  </div>
+  <div class="flex flex-wrap gap-1">
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">תדהמה</span>
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">בהלה</span>
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">הפתעה</span>
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">עצב</span>
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">שמחה</span>
+    <span class="mc-item" onclick="mcMulti(this,'q3',6)">פליאה</span>
+  </div>
+  <p class="helper">💡 בחרו בדיוק 3 מילים שמשמעותן דומה ל"תמיהה".</p>
+</div>
+
+<!-- ═══ SECTION B: הבנת הנקרא ═══ -->
+<div class="sec-head" style="background:var(--blue-bg);color:var(--blue)">📖 חלק ב: הבנת הנקרא</div>
+
+<!-- Q4 -->
+<div class="qc" data-q="4" id="q4">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">4</span>
+    <p class="font-bold text-sm">מדוע פרץ האיש העני בבכי דווקא לפני פסח?</p>
+  </div>
+  <textarea class="atx" data-q="4" placeholder="כתבו כאן..." oninput="onTxt(this,'4')"></textarea>
+  <p class="helper">💡 חשבו: מה מיוחד בחג הפסח? מה צריכים כדי לחגוג אותו?</p>
+</div>
+
+<!-- Q5 -->
+<div class="qc" data-q="5" id="q5">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">5</span>
+    <div><p class="font-bold text-sm">"אל תדאג, נכתוב מכתב והכול יסתדר <strong>לשביעות רצוננו</strong>."</p><p class="text-sm mt-1">הקיפו את ההסבר הנכון למשפט:</p></div>
+  </div>
+  <label class="opt" onclick="selOpt(this,'q5')"><input type="radio" name="q5" value="א"> א. אשתו הרגיעה אותו והציעה לכתוב מכתב. בעזרת המכתב הם יקבלו יין ומזון ולא יהיו רעבים אלא שבעים.</label>
+  <label class="opt" onclick="selOpt(this,'q5')"><input type="radio" name="q5" value="ב"> ב. אשתו הרגיעה אותו והציעה לכתוב מכתב. בעזרת המכתב המצב שלהם יסתדר, הם יקבלו את מה שיבקשו ויהיו מרוצים ושמחים.</label>
+</div>
+
+<!-- Q6 -->
+<div class="qc" data-q="6" id="q6">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">6</span>
+    <p class="font-bold text-sm">מדוע ביקשה האישה במכתב גם בד קטיפה ומשי? מה הסיבה?</p>
+  </div>
+  <textarea class="atx" data-q="6" placeholder="כתבו כאן..." oninput="onTxt(this,'6')"></textarea>
+  <p class="helper">💡 חפשו בטקסט: מה כתוב על בית הכנסת?</p>
+</div>
+
+<!-- Q7 -->
+<div class="qc" data-q="7" id="q7">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">7</span>
+    <p class="font-bold text-sm">מדוע פרץ החכם בצחוק כשקרא את המכתב?</p>
+  </div>
+  <textarea class="atx" data-q="7" placeholder="כתבו כאן..." oninput="onTxt(this,'7')"></textarea>
+</div>
+
+<!-- ═══ SECTION C: הסקת מסקנות ═══ -->
+<div class="sec-head" style="background:var(--green-bg);color:var(--green)">🔍 חלק ג: הסקת מסקנות</div>
+
+<!-- Q8 -->
+<div class="qc" data-q="8" id="q8">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">8</span>
+    <div><p class="font-bold text-sm">מי באמת שלח את החבילה למשפחה?</p>
+    <p class="text-sm mt-1" style="color:var(--ink2)">האישה אמרה: "הקדוש ברוך הוא נענה לבקשתנו." האם היא צדקה? הסבירו מה <strong>באמת</strong> קרה.</p></div>
+  </div>
+  <textarea class="atx" style="min-height:80px" data-q="8" placeholder="מה כתוב? + מה באמת קרה? = המסקנה שלי..." oninput="onTxt(this,'8')"></textarea>
+</div>
+
+<!-- Q9 -->
+<div class="qc" data-q="9" id="q9">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">9</span>
+    <p class="font-bold text-sm">למה לדעתכם המלך ביקש מהחכם למלא את מבוקשם – למרות שצחק?</p>
+  </div>
+  <textarea class="atx" data-q="9" placeholder="כתבו כאן..." oninput="onTxt(this,'9')"></textarea>
+  <p class="helper">💡 מה זה אומר על המלך? האם הוא רק צחק, או שהיה לו גם רגש אחר?</p>
+</div>
+
+<!-- ═══ SECTION D: סיבה ותוצאה + רצף ═══ -->
+<div class="sec-head" style="background:var(--purple-bg);color:var(--purple)">🔗 חלק ד: סיבה ותוצאה ורצף אירועים</div>
+
+<!-- Q10 – Sequence -->
+<div class="qc" data-q="10" id="q10">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">10</span>
+    <div><p class="font-bold text-sm">סדרו את האירועים לפי סדר התרחשותם בסיפור:</p>
+    <p class="helper">בחרו מספר (1–7) לכל אירוע. 1 = קרה ראשון.</p></div>
+  </div>
+  <div id="seqBox"></div>
+</div>
+
+<!-- Q11 – Matching letter parts -->
+<div class="qc" data-q="11" id="q11">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">11</span>
+    <div><p class="font-bold text-sm">התאימו כל חלק מהמכתב לתוכן שלו:</p>
+    <p class="helper">בכל שורה, בחרו את האות המתאימה.</p></div>
+  </div>
+  <div class="overflow-x-auto">
+    <table style="width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1.5px solid var(--card-border);font-size:.9rem">
+      <thead><tr>
+        <th style="background:var(--gold);color:white;padding:.5rem .6rem;text-align:center;font-weight:700">חלק במכתב</th>
+        <th style="background:var(--gold);color:white;padding:.5rem .6rem;text-align:center;font-weight:700;width:50px">↔</th>
+        <th style="background:var(--gold);color:white;padding:.5rem .6rem;text-align:center;font-weight:700">תוכן</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border)">נמען</td><td style="text-align:center;border-bottom:1px solid var(--card-border)"><select data-match="q11" onchange="chkMatch('11',5)" style="border:2px solid var(--sand3);border-radius:6px;padding:2px 4px;font-size:.85rem;cursor:pointer"><option value="">?</option><option>א</option><option>ב</option><option>ג</option><option>ד</option><option>ה</option></select></td><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border)"><strong>א.</strong> "רחם נא... ושלח לנו מצות ויין"</td></tr>
+        <tr><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border);background:var(--sand2)">מוען</td><td style="text-align:center;border-bottom:1px solid var(--card-border);background:var(--sand2)"><select data-match="q11" onchange="chkMatch('11',5)" style="border:2px solid var(--sand3);border-radius:6px;padding:2px 4px;font-size:.85rem;cursor:pointer"><option value="">?</option><option>א</option><option>ב</option><option>ג</option><option>ד</option><option>ה</option></select></td><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border);background:var(--sand2)"><strong>ב.</strong> "מפלוני אלמוני, הגר בעיר פלונית"</td></tr>
+        <tr><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border)">תיאור מצב</td><td style="text-align:center;border-bottom:1px solid var(--card-border)"><select data-match="q11" onchange="chkMatch('11',5)" style="border:2px solid var(--sand3);border-radius:6px;padding:2px 4px;font-size:.85rem;cursor:pointer"><option value="">?</option><option>א</option><option>ב</option><option>ג</option><option>ד</option><option>ה</option></select></td><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border)"><strong>ג.</strong> "לריבונו של עולם, היושב במרומים"</td></tr>
+        <tr><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border);background:var(--sand2)">בקשה</td><td style="text-align:center;border-bottom:1px solid var(--card-border);background:var(--sand2)"><select data-match="q11" onchange="chkMatch('11',5)" style="border:2px solid var(--sand3);border-radius:6px;padding:2px 4px;font-size:.85rem;cursor:pointer"><option value="">?</option><option>א</option><option>ב</option><option>ג</option><option>ד</option><option>ה</option></select></td><td style="padding:.4rem .6rem;border-bottom:1px solid var(--card-border);background:var(--sand2)"><strong>ד.</strong> "בתודה ובשלום"</td></tr>
+        <tr><td style="padding:.4rem .6rem">סיום</td><td style="text-align:center"><select data-match="q11" onchange="chkMatch('11',5)" style="border:2px solid var(--sand3);border-radius:6px;padding:2px 4px;font-size:.85rem;cursor:pointer"><option value="">?</option><option>א</option><option>ב</option><option>ג</option><option>ד</option><option>ה</option></select></td><td style="padding:.4rem .6rem"><strong>ה.</strong> "אין לנו בביתנו אף פרוטה אחת"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SECTION E: Cloze ═══ -->
+<div class="sec-head" style="background:var(--rose-bg);color:var(--rose)">🧩 חלק ה: השלמת הקטע</div>
+
+<!-- Q12 – Cloze -->
+<div class="qc" data-q="12" id="q12">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">12</span>
+    <div><p class="font-bold text-sm">השלימו את הקטע בעזרת המילים מהמחסן:</p>
+    <p class="helper">לחצו על מילה מהמחסן, ואז לחצו על המקום הריק.</p></div>
+  </div>
+  <div class="p-3 rounded-xl mb-3 text-center" style="background:var(--gold-bg);border:2px dashed var(--sand3)"><div id="wbQ12"></div></div>
+  <div class="text-sm leading-loose" id="clozeQ12"></div>
+</div>
+
+<!-- ═══ SECTION F: כתיבה ═══ -->
+<div class="sec-head" style="background:var(--purple-bg);color:var(--purple)">✍ חלק ו: כתיבה</div>
+
+<!-- Q13 -->
+<div class="qc" data-q="13" id="q13">
+  <div class="flex items-start gap-2 mb-2"><span class="qb">13</span>
+    <p class="font-bold text-sm">דמיינו שאתם האיש העני. כתבו 3–4 משפטים: מה הרגשתם כשהשליח הגיע עם כל החבילות?</p>
+  </div>
+  <textarea class="atx" style="min-height:90px" data-q="13" placeholder="כשפתחתי את הדלת..." oninput="onTxt(this,'13')"></textarea>
+</div>
+
+<!-- Q14 -->
+<div class="qc" data-q="14" id="q14" style="border-right:3px solid var(--purple)">
+  <div class="flex items-start gap-2 mb-2"><span class="qb" style="background:var(--purple)">14</span>
+    <div><p class="font-bold text-sm">כתבו מכתב קצר בעצמכם – למי שתרצו.</p>
+    <p class="text-sm mt-1" style="color:var(--ink2)">השתמשו במבנה המכתב שלמדנו: נמען, מוען, תיאור מצב, בקשה, נימוק, סיום.</p></div>
+  </div>
+  <div class="letter-frame">
+    <textarea class="letter-ta letter-lines" data-q="14" placeholder="ל...,&#10;&#10;אני..." oninput="onTxt(this,'14')"></textarea>
+  </div>
+</div>
+
+<!-- ═══ ACTIONS ═══ -->
+<div class="qc no-print text-center" style="background:var(--gold-bg);border:2px solid var(--sand3)">
+  <h3 class="font-bold text-lg mb-3" style="color:var(--brown)">📤 שמירה ושליחה</h3>
+  <div class="flex flex-wrap justify-center gap-3">
+    <button class="btn1" onclick="dlAns()"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg> הורדת תשובות</button>
+    <button class="btn2" onclick="cpAns()"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> העתקה</button>
+    <button class="btn2" onclick="sendT()"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> שליחה למורה</button>
+  </div>
+</div>
+
+<footer class="text-center mt-8 pb-4">
+  <div style="width:50px;height:2px;background:var(--gold);margin:0 auto .75rem;border-radius:2px"></div>
+  <p class="text-sm font-bold" style="color:var(--ink2)">אילנית שוורץ – קריאה להבנה</p>
+</footer>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOT=14,ans=new Set();
+function upProg(){const p=(ans.size/TOT)*100;document.getElementById('pFill').style.width=p+'%';document.getElementById('pLbl').textContent=ans.size+' / '+TOT;document.querySelectorAll('.qc[data-q]').forEach(c=>c.classList.toggle('done',ans.has(c.dataset.q)))}
+
+// Radio
+function selOpt(l,q){document.getElementById(q).querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));l.classList.add('sel');l.querySelector('input').checked=true;ans.add(q.replace('q',''));upProg()}
+
+// Single MC
+function mcP(el,qId,val){document.getElementById(qId).querySelectorAll('.mc-item').forEach(m=>m.classList.remove('picked'));el.classList.add('picked');ans.add(qId.replace('q',''));upProg()}
+
+// Multi MC
+function mcMulti(el,qId,totalInGroup){
+  el.classList.toggle('picked');
+  const card=document.getElementById(qId);
+  const picked=card.querySelectorAll('.mc-item.picked').length;
+  if(picked>=3)ans.add(qId.replace('q',''));else ans.delete(qId.replace('q',''));
+  upProg();
+}
+
+// Textarea
+function onTxt(el,n){if(el.value.trim().length>0)ans.add(n);else ans.delete(n);upProg()}
+
+// Match
+function chkMatch(qn,needed){
+  const sels=document.querySelectorAll('select[data-match="q'+qn+'"]');
+  let f=0;sels.forEach(s=>{if(s.value)f++});
+  if(f>=needed)ans.add(qn);else ans.delete(qn);upProg();
+}
+
+// Sequence
+const seqEvts=['האיש פורץ בבכי כי אין כסף לפסח','האישה מציעה לכתוב מכתב לה\'','האיש כותב את המכתב ומניח אותו על הגבעה','רוח חזקה נושאת את המכתב אל המלך והחכם','המלך מבקש מהחכם למלא את הבקשה','שליח מביא חבילות למשפחה','המשפחה חוגגת את הפסח בשמחה'];
+function buildSeq(){const b=document.getElementById('seqBox');const sh=[...seqEvts].sort(()=>Math.random()-.5);b.innerHTML='';sh.forEach(t=>{const r=document.createElement('div');r.className='seq-row';const s=document.createElement('select');s.className='seq-sel';s.onchange=()=>chkSeq();const d=document.createElement('option');d.value='';d.textContent='?';s.appendChild(d);for(let n=1;n<=7;n++){const o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o)}const sp=document.createElement('span');sp.className='flex-1 text-sm';sp.textContent=t;r.appendChild(s);r.appendChild(sp);b.appendChild(r)})}
+function chkSeq(){const ss=document.querySelectorAll('#seqBox .seq-sel');let f=0;ss.forEach(s=>{if(s.value)f++});if(f>=7)ans.add('10');else ans.delete('10');upProg()}
+
+// Cloze
+const cWords=['חיל','הפסח','יין','מאומה','בבכי','הרגיעה','מכתב','בתמיהה','ברוך','יביא','ועט','לשלוח'];
+let selW=null;
+function buildCloze(){
+  const bk=document.getElementById('wbQ12');
+  const sh=[...cWords].sort(()=>Math.random()-.5);
+  bk.innerHTML='';
+  sh.forEach(w=>{const s=document.createElement('span');s.className='wb-chip';s.textContent=w;s.onclick=()=>pickW(s,w);bk.appendChild(s)});
+  document.getElementById('clozeQ12').innerHTML=`
+    לאיש עני היתה אשת <span class="cloze-gap" onclick="fillC(this)"></span>. בהתקרב
+    <span class="cloze-gap" onclick="fillC(this)"></span> אמר: "חג הפסח מתקרב ובא, ועדיין
+    אין לנו <span class="cloze-gap" onclick="fillC(this)"></span> – לא מצות, לא <span class="cloze-gap" onclick="fillC(this)"></span>,
+    ולא כוסות." פרץ האיש <span class="cloze-gap" onclick="fillC(this)"></span>, אך אשתו,
+    אשת החיל, <span class="cloze-gap" onclick="fillC(this)"></span> אותו ואמרה: "אל תדאג,
+    נכתוב <span class="cloze-gap" onclick="fillC(this)"></span> והכול יסתדר לשביעות רצוננו."
+    שאל האיש <span class="cloze-gap" onclick="fillC(this)"></span>: "אל מי נכתוב?"
+    "אל הקדוש <span class="cloze-gap" onclick="fillC(this)"></span> הוא", השיבה.
+    "מי <span class="cloze-gap" onclick="fillC(this)"></span> את המכתב אליו?"
+    "תחילה הבא ניר <span class="cloze-gap" onclick="fillC(this)"></span>," ענתה האישה,
+    "ואחר כך אומר לך איך <span class="cloze-gap" onclick="fillC(this)"></span> את המכתב."
+  `;
+}
+function pickW(el,w){if(el.classList.contains('used'))return;document.querySelectorAll('#wbQ12 .wb-chip').forEach(c=>c.classList.remove('picked'));el.classList.add('picked');selW={el,w}}
+function fillC(gap){if(!selW)return;if(gap.dataset.cur){document.querySelectorAll('#wbQ12 .wb-chip').forEach(c=>{if(c.textContent===gap.dataset.cur)c.classList.remove('used')})}gap.textContent=selW.w;gap.dataset.cur=selW.w;gap.classList.add('filled');selW.el.classList.add('used');selW.el.classList.remove('picked');selW=null;chkCloze()}
+function chkCloze(){const g=document.querySelectorAll('#clozeQ12 .cloze-gap');let f=0;g.forEach(x=>{if(x.dataset.cur)f++});if(f>=g.length)ans.add('12');else ans.delete('12');upProg()}
+
+// Name
+function onNm(){document.getElementById('sName').classList.remove('err');document.getElementById('nmErr').style.display='none'}
+function getName(){const n=document.getElementById('sName').value.trim();if(!n){document.getElementById('sName').classList.add('err');document.getElementById('nmErr').style.display='block';document.getElementById('sName').focus();return null}return n}
+
+// Collect
+function collect(){
+  const a={};a['שם']=document.getElementById('sName').value.trim()||'(לא הוזן)';
+  // Q1 mc
+  const q1picks=[];document.querySelectorAll('#q1 .mc-item.picked').forEach(m=>q1picks.push(m.textContent));
+  a['שאלה 1 (אשת חיל)']=q1picks.join(', ')||'(לא נענתה)';
+  // Q2 text
+  const q2=document.querySelector('textarea[data-q="2"]');a['שאלה 2 (מאומה)']=q2?.value.trim()||'(לא נענתה)';
+  // Q3 multi mc
+  const q3picks=[];document.querySelectorAll('#q3 .mc-item.picked').forEach(m=>q3picks.push(m.textContent));
+  a['שאלה 3 (נרדפות לתמיהה)']=q3picks.join(', ')||'(לא נענתה)';
+  // Q4-9 text/radio
+  [4,6,7,8,9,13].forEach(n=>{const ta=document.querySelector('textarea[data-q="'+n+'"]');a['שאלה '+n]=ta?.value.trim()||'(לא נענתה)'});
+  const q5r=document.querySelector('input[name="q5"]:checked');a['שאלה 5 (לשביעות רצוננו)']=q5r?.value||'(לא נענתה)';
+  // Q10 seq
+  let q10='';document.querySelectorAll('#seqBox .seq-row').forEach(r=>{const s=r.querySelector('select');const t=r.querySelector('span').textContent;q10+=(s.value||'?')+'. '+t+'\n'});a['שאלה 10 (רצף)']=q10.trim();
+  // Q11 match
+  let q11='';const labels=['נמען','מוען','תיאור מצב','בקשה','סיום'];document.querySelectorAll('select[data-match="q11"]').forEach((s,i)=>{q11+=labels[i]+' ← '+(s.value||'?')+'\n'});a['שאלה 11 (התאמה)']=q11.trim();
+  // Q12 cloze
+  let q12='';document.querySelectorAll('#clozeQ12 .cloze-gap').forEach((g,i)=>{q12+=(i+1)+'. '+(g.dataset.cur||'____')+'  '});a['שאלה 12 (השלמה)']=q12.trim();
+  // Q14
+  const q14=document.querySelector('textarea[data-q="14"]');a['שאלה 14 (מכתב)']=q14?.value.trim()||'(לא נענתה)';
+  return a;
+}
+function fmt(a){let t='══════════════════════════════════════\n   מכתב להקדוש ברוך הוא – דף עבודה\n══════════════════════════════════════\n\n';t+='שם: '+a['שם']+'\nתאריך: '+new Date().toLocaleDateString('he-IL')+'\n\n──────────────────────────────────────\n\n';Object.keys(a).filter(k=>k!=='שם').forEach(k=>{t+='📌 '+k+':\n'+a[k]+'\n\n'});t+='──────────────────────────────────────\nאילנית שוורץ – קריאה להבנה\n';return t}
+function dlAns(){const n=getName();if(!n)return;const t=fmt(collect());const b=new Blob(['\ufeff'+t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='מכתב_להקבה_תשובות_'+n+'.txt';a.click();URL.revokeObjectURL(u);showToast('📥 הורד!')}
+function cpAns(){const n=getName();if(!n)return;const t=fmt(collect());navigator.clipboard.writeText(t).then(()=>showToast('📋 הועתק!')).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 הועתק!')})}
+function sendT(){const n=getName();if(!n)return;const t=fmt(collect());const b=new Blob(['\ufeff'+t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='שליחה_למורה_מכתב_להקבה_'+n+'.txt';a.click();URL.revokeObjectURL(u);showToast('📤 מוכן!')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+document.addEventListener('DOMContentLoaded',()=>{buildSeq();buildCloze();upProg()});
+</script>
+</body>
+</html>
