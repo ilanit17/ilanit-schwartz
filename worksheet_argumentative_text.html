@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף עבודה - מבנה טקסט טיעוני | כיתה ה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Assistant', 'Heebo', sans-serif; background: #f0fdf4; color: #1e293b; font-size: 20px; line-height: 1.8; }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(8px); } 40% { transform: translateX(-8px); } 60% { transform: translateX(5px); } 80% { transform: translateX(-3px); } }
+        @keyframes confetti { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(-80px) rotate(360deg); opacity: 0; } }
+        @keyframes rainbowBorder { 0% { border-color: #22c55e; } 25% { border-color: #3b82f6; } 50% { border-color: #f59e0b; } 75% { border-color: #ef4444; } 100% { border-color: #22c55e; } }
+        .animate-in { animation: fadeUp 0.5s ease both; }
+        .pop-in { animation: popIn 0.4s ease both; }
+        .shake { animation: shake 0.4s ease; }
+        .confetti-burst::after { content: '🎉'; position: absolute; top: -10px; right: 50%; animation: confetti 0.8s ease forwards; font-size: 2rem; }
+        .rainbow-border { animation: rainbowBorder 3s linear infinite; }
+
+        /* Drag and drop */
+        .drag-item { cursor: grab; user-select: none; transition: all 0.2s; }
+        .drag-item:active { cursor: grabbing; transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .drag-item.dragging { opacity: 0.5; }
+        .drop-zone { min-height: 56px; transition: all 0.3s; }
+        .drop-zone.drag-over { background: #dcfce7 !important; border-color: #22c55e !important; transform: scale(1.02); }
+        .drop-zone.filled { border-style: solid !important; }
+        .drop-zone.correct-drop { background: #dcfce7 !important; border-color: #22c55e !important; }
+        .drop-zone.wrong-drop { background: #fee2e2 !important; border-color: #ef4444 !important; }
+
+        /* Quiz options */
+        .q-option { cursor: pointer; transition: all 0.25s; position: relative; }
+        .q-option:hover { transform: translateX(-3px); box-shadow: 0 4px 15px rgba(34,197,94,0.12); }
+        .q-option.selected { border-color: #22c55e; background: #f0fdf4; }
+        .q-option.correct { background: #dcfce7 !important; border-color: #16a34a !important; }
+        .q-option.correct::after { content: '✅'; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.3rem; }
+        .q-option.wrong { background: #fee2e2 !important; border-color: #ef4444 !important; }
+        .q-option.wrong::after { content: '❌'; position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.3rem; }
+        .q-option.locked { pointer-events: none; }
+
+        /* Highlighter */
+        .text-highlightable span.sentence { cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: background 0.3s; }
+        .text-highlightable span.sentence:hover { background: #e2e8f0; }
+        .text-highlightable span.sentence.hl-fact { background: linear-gradient(120deg, #bbf7d0 0%, #86efac 100%); }
+        .text-highlightable span.sentence.hl-opinion { background: linear-gradient(120deg, #fde68a 0%, #fbbf24 100%); }
+
+        /* Open answer */
+        .open-answer { border: 2px solid #e2e8f0; border-radius: 1rem; padding: 12px 16px; width: 100%; font-family: inherit; font-size: 18px; line-height: 1.6; resize: none; transition: border-color 0.3s; outline: none; }
+        .open-answer:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+
+        /* Progress bar */
+        .progress-fill { transition: width 0.6s ease; }
+
+        /* Print */
+        @media print {
+            body { background: white; font-size: 16px; }
+            .no-print { display: none !important; }
+            .print-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="bg-white border-b-2 border-green-200 sticky top-0 z-20 no-print">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center text-white text-lg">📝</div>
+            <div>
+                <h1 class="text-base font-extrabold text-green-900 leading-tight">דף עבודה &middot; מבנה טקסט טיעוני</h1>
+                <p class="text-xs text-green-600">כיתה ה &middot; הבנת הנקרא ולשון</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="text-xs font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full" id="progressLabel">0/10</div>
+            <button onclick="window.print()" class="px-3 py-1.5 border border-green-200 rounded-lg text-xs font-bold text-green-700 hover:bg-green-50 transition-all">🖨️ הדפסה</button>
+        </div>
+    </div>
+    <div class="h-1.5 bg-green-100">
+        <div class="progress-fill h-full bg-green-500 rounded-l-full" id="progressBar" style="width:0%"></div>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="max-w-3xl mx-auto px-4 py-8 space-y-10">
+
+    <!-- ===== TEXT AREA ===== -->
+    <section class="animate-in">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 md:p-8 shadow-lg shadow-green-100/40">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl">📖</span>
+                <h2 class="text-xl font-extrabold text-green-900">קראו את הטקסט בעיון:</h2>
+            </div>
+            <div class="bg-green-50/50 rounded-2xl p-5 md:p-6 border border-green-100 text-lg leading-loose text-slate-800" id="mainText">
+                <p class="text-xl font-bold text-green-900 mb-4">האם צריך לאפשר לילדים לגדל חיות מחמד?</p>
+                <p class="mb-3">רבים מהילדים בישראל חולמים לגדל חיית מחמד, אך הורים רבים מתנגדים לכך. לדעתי, לכל ילד מגיע לגדל חיית מחמד, וזה אפילו חשוב להתפתחות שלו.</p>
+                <p class="mb-3">ראשית, טיפול בחיית מחמד מלמד אחריות. כשילד צריך להאכיל, לנקות ולטפל בחיה - הוא לומד לדאוג למישהו אחר. מחקר מאוניברסיטת חיפה מ-2022 מצא שילדים שגידלו חיות מחמד הראו רמות אחריות גבוהות יותר ב-35% בהשוואה לילדים אחרים.</p>
+                <p class="mb-3">שנית, חיות מחמד תורמות לבריאות הנפשית. ילדים שמרגישים עצובים או לחוצים מוצאים נחמה ורוגע כשהם מלטפים את הכלב או החתול שלהם. אני חושב שאין תחליף לחיבוק של חיית מחמד אחרי יום קשה.</p>
+                <p class="mb-3">שלישית, חיות מחמד עוזרות ליצור קשרים חברתיים. ילדים שמטיילים עם הכלב שלהם בפארק פוגשים ילדים אחרים, מדברים ומשחקים יחד. בסקר שנערך ב-2023, 68% מהילדים שמגדלים כלבים אמרו שהכירו חברים חדשים בזכות הכלב.</p>
+                <p>לסיכום, גידול חיית מחמד מלמד אחריות, תורם לבריאות הנפש ומסייע ביצירת חברויות. הגיע הזמן שהורים יתנו לילדים את ההזדמנות הזו!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Q1: MULTIPLE CHOICE - Main Claim ===== -->
+    <section class="animate-in" style="animation-delay:0.1s" id="section-q1">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">1</span>
+                <div>
+                    <p class="font-extrabold text-green-900 text-lg">מהי הטענה המרכזית של הכותב?</p>
+                </div>
+            </div>
+            <div class="space-y-3" id="q1-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q1', this)">ילדים לא מקבלים מספיק חיות מחמד בישראל</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q1', this)">לכל ילד מגיע לגדל חיית מחמד כי זה חשוב להתפתחות שלו</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q1', this)">הורים צריכים לגדל חיות מחמד בעצמם</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q1', this)">כלבים הם חיות המחמד הכי טובות</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q1-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q2: MULTIPLE CHOICE - Fact vs Opinion ===== -->
+    <section class="animate-in" style="animation-delay:0.15s" id="section-q2">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">2</span>
+                <p class="font-extrabold text-green-900 text-lg">איזה מהמשפטים הבאים הוא <span class="text-amber-600">דעה</span> (ולא עובדה)?</p>
+            </div>
+            <div class="space-y-3" id="q2-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q2', this)">מחקר מ-2022 מצא שילדים שגידלו חיות הראו אחריות גבוהה ב-35%</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q2', this)">68% מהילדים שמגדלים כלבים אמרו שהכירו חברים חדשים</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q2', this)">אני חושב שאין תחליף לחיבוק של חיית מחמד אחרי יום קשה</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q2', this)">ילדים שמטיילים עם הכלב בפארק פוגשים ילדים אחרים</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q2-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q3: MULTIPLE CHOICE - How many reasons ===== -->
+    <section class="animate-in" style="animation-delay:0.2s" id="section-q3">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">3</span>
+                <p class="font-extrabold text-green-900 text-lg">כמה נימוקים הביא הכותב כדי לתמוך בטענתו?</p>
+            </div>
+            <div class="space-y-3" id="q3-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q3', this)">שניים</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q3', this)">שלושה</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q3', this)">ארבעה</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q3', this)">אחד</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q3-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q4: DRAG & DROP - Match Structure ===== -->
+    <section class="animate-in" style="animation-delay:0.25s" id="section-q4">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">4</span>
+                <div>
+                    <p class="font-extrabold text-green-900 text-lg">התאימו כל חלק בטקסט לתפקידו</p>
+                    <p class="text-sm text-slate-500 mt-1">גררו כל תווית למקום הנכון (או לחצו על התווית ואז על המקום)</p>
+                </div>
+            </div>
+
+            <!-- Drag items -->
+            <div class="flex flex-wrap gap-2 mb-6 justify-center" id="drag-bank">
+                <div class="drag-item bg-indigo-100 border-2 border-indigo-300 text-indigo-800 px-4 py-2 rounded-xl font-bold text-sm" draggable="true" data-value="claim" onclick="selectDrag(this)">🎯 טענה מרכזית</div>
+                <div class="drag-item bg-rose-100 border-2 border-rose-300 text-rose-800 px-4 py-2 rounded-xl font-bold text-sm" draggable="true" data-value="reason1" onclick="selectDrag(this)">📋 נימוק ראשון</div>
+                <div class="drag-item bg-rose-100 border-2 border-rose-300 text-rose-800 px-4 py-2 rounded-xl font-bold text-sm" draggable="true" data-value="reason2" onclick="selectDrag(this)">📋 נימוק שני</div>
+                <div class="drag-item bg-rose-100 border-2 border-rose-300 text-rose-800 px-4 py-2 rounded-xl font-bold text-sm" draggable="true" data-value="reason3" onclick="selectDrag(this)">📋 נימוק שלישי</div>
+                <div class="drag-item bg-green-100 border-2 border-green-300 text-green-800 px-4 py-2 rounded-xl font-bold text-sm" draggable="true" data-value="summary" onclick="selectDrag(this)">🔚 סיכום</div>
+            </div>
+
+            <!-- Drop zones -->
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <div class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-3 w-40 shrink-0 text-center text-sm text-slate-400" data-accept="claim" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="handleDropClick(this)">שחררו כאן</div>
+                    <p class="text-sm text-slate-600 pt-2">"לכל ילד מגיע לגדל חיית מחמד, וזה חשוב להתפתחות שלו"</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-3 w-40 shrink-0 text-center text-sm text-slate-400" data-accept="reason1" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="handleDropClick(this)">שחררו כאן</div>
+                    <p class="text-sm text-slate-600 pt-2">"טיפול בחיית מחמד מלמד אחריות"</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-3 w-40 shrink-0 text-center text-sm text-slate-400" data-accept="reason2" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="handleDropClick(this)">שחררו כאן</div>
+                    <p class="text-sm text-slate-600 pt-2">"חיות מחמד תורמות לבריאות הנפשית"</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-3 w-40 shrink-0 text-center text-sm text-slate-400" data-accept="reason3" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="handleDropClick(this)">שחררו כאן</div>
+                    <p class="text-sm text-slate-600 pt-2">"חיות מחמד עוזרות ליצור קשרים חברתיים"</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="drop-zone border-2 border-dashed border-slate-300 rounded-xl p-3 w-40 shrink-0 text-center text-sm text-slate-400" data-accept="summary" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="handleDropClick(this)">שחררו כאן</div>
+                    <p class="text-sm text-slate-600 pt-2">"גידול חיית מחמד מלמד אחריות, תורם לבריאות ומסייע ביצירת חברויות"</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button onclick="checkDragDrop()" class="px-6 py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all shadow-md shadow-green-600/20">בדקו תשובות</button>
+            </div>
+            <div class="mt-3 hidden text-sm font-bold p-3 rounded-xl" id="q4-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q5: HIGHLIGHT - Facts vs Opinions ===== -->
+    <section class="animate-in" style="animation-delay:0.3s" id="section-q5">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-3">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">5</span>
+                <div>
+                    <p class="font-extrabold text-green-900 text-lg">סמנו: עובדה או דעה?</p>
+                    <p class="text-sm text-slate-500 mt-1">לחצו על כל משפט כדי לסמן אותו</p>
+                </div>
+            </div>
+            <div class="flex gap-3 mb-4 flex-wrap">
+                <button onclick="setHighlightMode('fact')" id="hl-fact-btn" class="px-4 py-2 rounded-xl text-sm font-bold border-2 border-green-400 bg-green-50 text-green-700 transition-all">✅ עובדה</button>
+                <button onclick="setHighlightMode('opinion')" id="hl-opinion-btn" class="px-4 py-2 rounded-xl text-sm font-bold border-2 border-amber-400 bg-amber-50 text-amber-700 transition-all">💭 דעה</button>
+            </div>
+            <div class="text-highlightable bg-slate-50 rounded-2xl p-5 border border-slate-200 text-base leading-loose space-y-3" id="highlight-area">
+                <span class="sentence block p-2 rounded-lg" data-type="fact" onclick="toggleHighlight(this)">מחקר מאוניברסיטת חיפה מ-2022 מצא שילדים שגידלו חיות מחמד הראו רמות אחריות גבוהות יותר ב-35%.</span>
+                <span class="sentence block p-2 rounded-lg" data-type="opinion" onclick="toggleHighlight(this)">אני חושב שאין תחליף לחיבוק של חיית מחמד אחרי יום קשה.</span>
+                <span class="sentence block p-2 rounded-lg" data-type="fact" onclick="toggleHighlight(this)">בסקר שנערך ב-2023, 68% מהילדים שמגדלים כלבים אמרו שהכירו חברים חדשים בזכות הכלב.</span>
+                <span class="sentence block p-2 rounded-lg" data-type="opinion" onclick="toggleHighlight(this)">לדעתי, לכל ילד מגיע לגדל חיית מחמד.</span>
+                <span class="sentence block p-2 rounded-lg" data-type="fact" onclick="toggleHighlight(this)">ילדים שמטיילים עם הכלב שלהם בפארק פוגשים ילדים אחרים.</span>
+                <span class="sentence block p-2 rounded-lg" data-type="opinion" onclick="toggleHighlight(this)">הגיע הזמן שהורים יתנו לילדים את ההזדמנות הזו!</span>
+            </div>
+            <div class="mt-4">
+                <button onclick="checkHighlights()" class="px-6 py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all shadow-md shadow-green-600/20">בדקו תשובות</button>
+            </div>
+            <div class="mt-3 hidden text-sm font-bold p-3 rounded-xl" id="q5-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q6: MC - Writer's purpose ===== -->
+    <section class="animate-in" style="animation-delay:0.35s" id="section-q6">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">6</span>
+                <p class="font-extrabold text-green-900 text-lg">מה מטרת הכותב בטקסט הזה?</p>
+            </div>
+            <div class="space-y-3" id="q6-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q6', this)">לספר סיפור מצחיק על חיות מחמד</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q6', this)">לשכנע את הקוראים שכדאי לתת לילדים לגדל חיות מחמד</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q6', this)">לתת מידע מדעי על חיות</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q6', this)">להסביר איך מטפלים בכלב</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q6-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q7: MC - Signal words ===== -->
+    <section class="animate-in" style="animation-delay:0.4s" id="section-q7">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">7</span>
+                <p class="font-extrabold text-green-900 text-lg">אילו מילות קישור עוזרות לנו לזהות את הנימוקים בטקסט?</p>
+            </div>
+            <div class="space-y-3" id="q7-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q7', this)">ראשית, שנית, שלישית</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q7', this)">אתמול, היום, מחר</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q7', this)">פעם, תמיד, לעולם לא</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q7-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q8: MC - Which is a fact ===== -->
+    <section class="animate-in" style="animation-delay:0.45s" id="section-q8">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">8</span>
+                <p class="font-extrabold text-green-900 text-lg">איזה מהמשפטים הבאים הוא <span class="text-green-600">עובדה</span>?</p>
+            </div>
+            <div class="space-y-3" id="q8-options">
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q8', this)">חתולים הם חיות המחמד הכי חמודות</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q8', this)">לדעתי, כל בית צריך כלב</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="true" onclick="handleMC('q8', this)">בישראל יש כ-500,000 כלבים רשומים</div>
+                <div class="q-option border-2 border-slate-200 rounded-2xl p-4 text-base" data-correct="false" onclick="handleMC('q8', this)">עדיף לגדל כלב מאשר חתול</div>
+            </div>
+            <div class="mt-4 hidden text-sm font-bold p-3 rounded-xl" id="q8-feedback"></div>
+        </div>
+    </section>
+
+    <!-- ===== Q9: OPEN - List the reasons ===== -->
+    <section class="animate-in" style="animation-delay:0.5s" id="section-q9">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">9</span>
+                <div>
+                    <p class="font-extrabold text-green-900 text-lg">רשמו את שלושת הנימוקים שהכותב הביא, במילים שלכם</p>
+                    <p class="text-sm text-slate-500">נסו לנסח כל נימוק במשפט קצר אחד</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div class="flex items-start gap-2">
+                    <span class="text-sm font-bold text-green-600 mt-3 shrink-0">1.</span>
+                    <textarea class="open-answer" rows="2" placeholder="הנימוק הראשון..." oninput="checkOpen()"></textarea>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-sm font-bold text-green-600 mt-3 shrink-0">2.</span>
+                    <textarea class="open-answer" rows="2" placeholder="הנימוק השני..." oninput="checkOpen()"></textarea>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-sm font-bold text-green-600 mt-3 shrink-0">3.</span>
+                    <textarea class="open-answer" rows="2" placeholder="הנימוק השלישי..." oninput="checkOpen()"></textarea>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-xl hidden" id="q9-model">
+                <p class="text-sm font-bold text-indigo-800 mb-2">💡 תשובה לדוגמה:</p>
+                <ol class="text-sm text-indigo-700 list-decimal list-inside space-y-1">
+                    <li>טיפול בחיה מלמד את הילד להיות אחראי</li>
+                    <li>חיות מחמד עוזרות לילדים להרגיש טוב ורגוע</li>
+                    <li>בזכות חיות מחמד ילדים מכירים חברים חדשים</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Q10: OPEN - Write your own claim ===== -->
+    <section class="animate-in" style="animation-delay:0.55s" id="section-q10">
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm">
+            <div class="flex items-start gap-3 mb-5">
+                <span class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-black shrink-0">10</span>
+                <div>
+                    <p class="font-extrabold text-green-900 text-lg">אתגר! כתבו טענה משלכם ונימוק אחד שתומך בה</p>
+                    <p class="text-sm text-slate-500">בחרו נושא שמעניין אתכם וכתבו משפט טענה + סיבה אחת</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-sm font-bold text-green-700 block mb-1">🎯 הטענה שלי:</label>
+                    <textarea class="open-answer" rows="2" placeholder="למשל: לדעתי, צריך להאריך את ההפסקה הגדולה בבית הספר..." oninput="checkOpen()"></textarea>
+                </div>
+                <div>
+                    <label class="text-sm font-bold text-green-700 block mb-1">📋 הנימוק שלי:</label>
+                    <textarea class="open-answer" rows="2" placeholder="כי..." oninput="checkOpen()"></textarea>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SUBMIT BUTTON ===== -->
+    <section class="text-center pb-8 no-print">
+        <button onclick="showFinalScore()" id="submitBtn" class="px-10 py-4 bg-green-600 text-white rounded-2xl font-extrabold text-lg hover:bg-green-700 transition-all shadow-xl shadow-green-600/25 hover:shadow-2xl hover:scale-105">
+            סיימתי! בדקו אותי 🎯
+        </button>
+    </section>
+
+    <!-- ===== FINAL RESULT ===== -->
+    <section class="hidden pb-16" id="finalResult">
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl border-2 border-green-300 p-8 text-center shadow-xl relative overflow-hidden">
+            <div class="absolute top-4 right-4 text-6xl opacity-10">🏆</div>
+            <div class="text-6xl mb-4 pop-in" id="resultEmoji">🌟</div>
+            <p class="text-4xl font-extrabold text-green-900 mb-2" id="finalScoreText"></p>
+            <p class="text-xl text-green-700 mb-6" id="finalMessage"></p>
+            <div class="w-full max-w-xs mx-auto bg-green-200 rounded-full h-4 mb-6 overflow-hidden">
+                <div class="h-full bg-green-600 rounded-full progress-fill" id="finalBar" style="width:0%"></div>
+            </div>
+            <button onclick="location.reload()" class="px-6 py-3 bg-white border-2 border-green-300 text-green-700 rounded-xl font-bold hover:bg-green-50 transition-all">🔄 נסו שוב</button>
+        </div>
+    </section>
+
+</main>
+
+<script>
+// ===== STATE =====
+var totalQ = 10;
+var answered = {};
+var score = 0;
+var mcFeedback = {
+    q1: { correct: '🎯 נכון מאוד! הכותב טוען שלכל ילד מגיע חיית מחמד כי זה חשוב להתפתחות.', wrong: 'לא בדיוק. חזרו לפסקה הראשונה — שם הכותב מציג את דעתו.' },
+    q2: { correct: '💭 בדיוק! המילים "אני חושב" מסגירות שזו דעה אישית ולא עובדה.', wrong: 'שימו לב למילים "אני חושב" — הן סימן שזו דעה!' },
+    q3: { correct: '📋 מצוין! שלושה נימוקים: אחריות, בריאות נפשית, וקשרים חברתיים.', wrong: 'חפשו את המילים "ראשית", "שנית", "שלישית" — כל אחת מתחילה נימוק.' },
+    q6: { correct: '🎯 נכון! זהו טקסט שכנוע — הכותב רוצה שנסכים שילדים צריכים חיות מחמד.', wrong: 'שימו לב: הכותב מביא טענה ונימוקים כדי לשכנע אותנו.' },
+    q7: { correct: '✅ בדיוק! "ראשית", "שנית", "שלישית" הן מילות קישור שמסמנות נימוקים.', wrong: 'חפשו בטקסט מילים שמסדרות את הנימוקים לפי סדר.' },
+    q8: { correct: '✅ נכון! זה נתון שניתן לבדוק ולהוכיח — לכן זו עובדה.', wrong: 'עובדה = משהו שניתן להוכיח בנתונים. חפשו את המשפט עם מספרים.' }
+};
+
+// ===== PROGRESS =====
+function updateProgress() {
+    var count = Object.keys(answered).length;
+    document.getElementById('progressLabel').textContent = count + '/' + totalQ;
+    document.getElementById('progressBar').style.width = (count / totalQ * 100) + '%';
+}
+
+// ===== MULTIPLE CHOICE =====
+function handleMC(qId, el) {
+    if (answered[qId]) return;
+    answered[qId] = true;
+
+    var isCorrect = el.getAttribute('data-correct') === 'true';
+    var options = document.querySelectorAll('#' + qId + '-options .q-option');
+    options.forEach(function(opt) { opt.classList.add('locked'); });
+
+    if (isCorrect) {
+        el.classList.add('correct');
+        score++;
+    } else {
+        el.classList.add('wrong');
+        el.classList.add('shake');
+        // Show correct
+        options.forEach(function(opt) {
+            if (opt.getAttribute('data-correct') === 'true') opt.classList.add('correct');
+        });
+    }
+
+    // Show feedback
+    var fb = document.getElementById(qId + '-feedback');
+    if (fb && mcFeedback[qId]) {
+        fb.textContent = isCorrect ? mcFeedback[qId].correct : mcFeedback[qId].wrong;
+        fb.className = 'mt-4 text-sm font-bold p-3 rounded-xl ' + (isCorrect ? 'bg-green-50 text-green-800' : 'bg-amber-50 text-amber-800');
+    }
+
+    updateProgress();
+}
+
+// ===== DRAG & DROP =====
+var selectedDragItem = null;
+
+// Desktop drag
+document.querySelectorAll('.drag-item').forEach(function(item) {
+    item.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', item.getAttribute('data-value'));
+        item.classList.add('dragging');
+        selectedDragItem = null;
+    });
+    item.addEventListener('dragend', function() {
+        item.classList.remove('dragging');
+    });
+});
+
+function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+
+function handleDrop(e) {
+    e.preventDefault();
+    var zone = e.currentTarget;
+    zone.classList.remove('drag-over');
+    var val = e.dataTransfer.getData('text/plain');
+    placeInZone(zone, val);
+}
+
+// Touch / click fallback
+function selectDrag(el) {
+    // Deselect previous
+    document.querySelectorAll('.drag-item').forEach(function(d) { d.style.outline = ''; });
+    selectedDragItem = el;
+    el.style.outline = '3px solid #22c55e';
+}
+
+function handleDropClick(zone) {
+    if (!selectedDragItem) return;
+    var val = selectedDragItem.getAttribute('data-value');
+    placeInZone(zone, val);
+    selectedDragItem.style.outline = '';
+    selectedDragItem = null;
+}
+
+function placeInZone(zone, val) {
+    // Find the drag item
+    var item = document.querySelector('.drag-item[data-value="' + val + '"]');
+    if (!item) return;
+    zone.textContent = item.textContent;
+    zone.setAttribute('data-placed', val);
+    zone.classList.add('filled');
+    zone.style.borderStyle = 'solid';
+    item.style.display = 'none';
+
+    if (!answered['q4']) {
+        answered['q4'] = true;
+        updateProgress();
+    }
+}
+
+function checkDragDrop() {
+    var zones = document.querySelectorAll('.drop-zone');
+    var allCorrect = true;
+    zones.forEach(function(z) {
+        var accept = z.getAttribute('data-accept');
+        var placed = z.getAttribute('data-placed');
+        if (placed === accept) {
+            z.classList.add('correct-drop');
+        } else {
+            z.classList.add('wrong-drop');
+            allCorrect = false;
+        }
+    });
+
+    var fb = document.getElementById('q4-feedback');
+    if (allCorrect) {
+        fb.textContent = '🎉 מצוין! זיהיתם נכון את כל חלקי הטקסט הטיעוני!';
+        fb.className = 'mt-3 text-sm font-bold p-3 rounded-xl bg-green-50 text-green-800';
+        score++;
+    } else {
+        fb.textContent = '🔄 לא הכל נכון. שימו לב: הטענה בהתחלה, הנימוקים באמצע, הסיכום בסוף.';
+        fb.className = 'mt-3 text-sm font-bold p-3 rounded-xl bg-amber-50 text-amber-800';
+    }
+
+    answered['q4'] = true;
+    updateProgress();
+}
+
+// ===== HIGHLIGHT =====
+var hlMode = 'fact';
+
+function setHighlightMode(mode) {
+    hlMode = mode;
+    document.getElementById('hl-fact-btn').style.opacity = mode === 'fact' ? '1' : '0.5';
+    document.getElementById('hl-opinion-btn').style.opacity = mode === 'opinion' ? '1' : '0.5';
+    document.getElementById('hl-fact-btn').style.transform = mode === 'fact' ? 'scale(1.05)' : 'scale(1)';
+    document.getElementById('hl-opinion-btn').style.transform = mode === 'opinion' ? 'scale(1.05)' : 'scale(1)';
+}
+
+function toggleHighlight(el) {
+    // Remove previous highlights from this element
+    el.classList.remove('hl-fact', 'hl-opinion');
+    el.classList.add('hl-' + hlMode);
+    el.setAttribute('data-user-choice', hlMode);
+
+    if (!answered['q5']) {
+        answered['q5'] = true;
+        updateProgress();
+    }
+}
+
+function checkHighlights() {
+    var sentences = document.querySelectorAll('#highlight-area .sentence');
+    var correct = 0;
+    var total = sentences.length;
+
+    sentences.forEach(function(s) {
+        var expected = s.getAttribute('data-type');
+        var chosen = s.getAttribute('data-user-choice') || '';
+        s.classList.remove('hl-fact', 'hl-opinion');
+
+        if (chosen === expected) {
+            s.classList.add(expected === 'fact' ? 'hl-fact' : 'hl-opinion');
+            s.style.border = '2px solid #22c55e';
+            correct++;
+        } else if (chosen) {
+            s.style.border = '2px solid #ef4444';
+            // Show correct
+            setTimeout(function() {
+                s.classList.add(expected === 'fact' ? 'hl-fact' : 'hl-opinion');
+                s.style.border = '2px dashed #94a3b8';
+            }, 1500);
+        } else {
+            s.style.border = '2px dashed #94a3b8';
+        }
+    });
+
+    var fb = document.getElementById('q5-feedback');
+    if (correct === total) {
+        fb.textContent = '🌟 מושלם! זיהיתם נכון את כל העובדות והדעות!';
+        fb.className = 'mt-3 text-sm font-bold p-3 rounded-xl bg-green-50 text-green-800';
+        score++;
+    } else if (correct >= total / 2) {
+        fb.textContent = '👏 טוב! ' + correct + ' מתוך ' + total + ' נכונים. שימו לב: עובדה = ניתן להוכיח, דעה = עמדה אישית.';
+        fb.className = 'mt-3 text-sm font-bold p-3 rounded-xl bg-amber-50 text-amber-800';
+    } else {
+        fb.textContent = '🔍 נסו שוב. זכרו: עובדה כוללת מספרים או נתונים. דעה כוללת "לדעתי", "אני חושב".';
+        fb.className = 'mt-3 text-sm font-bold p-3 rounded-xl bg-amber-50 text-amber-800';
+    }
+
+    answered['q5'] = true;
+    updateProgress();
+}
+
+// ===== OPEN QUESTIONS =====
+function checkOpen() {
+    var allAreas = document.querySelectorAll('.open-answer');
+    var q9Filled = 0;
+    var q10Filled = 0;
+
+    // Q9: first 3 textareas
+    for (var i = 0; i < 3; i++) {
+        if (allAreas[i] && allAreas[i].value.trim().length > 5) q9Filled++;
+    }
+    // Q10: last 2 textareas
+    for (var j = 3; j < 5; j++) {
+        if (allAreas[j] && allAreas[j].value.trim().length > 5) q10Filled++;
+    }
+
+    if (q9Filled >= 2 && !answered['q9']) {
+        answered['q9'] = true;
+        document.getElementById('q9-model').classList.remove('hidden');
+        score++;
+        updateProgress();
+    }
+    if (q10Filled >= 2 && !answered['q10']) {
+        answered['q10'] = true;
+        score++;
+        updateProgress();
+    }
+}
+
+// ===== FINAL SCORE =====
+function showFinalScore() {
+    // Auto-submit unanswered
+    if (!answered['q9']) { answered['q9'] = true; document.getElementById('q9-model').classList.remove('hidden'); }
+    if (!answered['q10']) { answered['q10'] = true; }
+    updateProgress();
+
+    var pct = Math.round((score / totalQ) * 100);
+
+    var emoji, msg;
+    if (pct >= 90) { emoji = '🏆'; msg = 'מדהים! את/ה בלש טקסטים מקצועי!'; }
+    else if (pct >= 70) { emoji = '🌟'; msg = 'כל הכבוד! שליטה מצוינת בחומר!'; }
+    else if (pct >= 50) { emoji = '💪'; msg = 'עבודה טובה! כדאי לחזור על הנושאים שטעיתם בהם.'; }
+    else { emoji = '📖'; msg = 'לא נורא! חזרו לטקסט, קראו שוב ונסו בפעם הבאה.'; }
+
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('finalScoreText').textContent = pct + '% - ' + score + ' מתוך ' + totalQ;
+    document.getElementById('finalMessage').textContent = msg;
+
+    var resultDiv = document.getElementById('finalResult');
+    resultDiv.classList.remove('hidden');
+
+    document.getElementById('submitBtn').style.display = 'none';
+
+    setTimeout(function() {
+        document.getElementById('finalBar').style.width = pct + '%';
+    }, 300);
+
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Init highlight mode
+setHighlightMode('fact');
+</script>
+
+</body>
+</html>

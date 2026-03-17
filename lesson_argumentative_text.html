@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מבנה טקסט טיעוני - כיתה ה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-50: #f0fdf4; --green-100: #dcfce7; --green-200: #bbf7d0;
+            --green-400: #4ade80; --green-500: #22c55e; --green-600: #16a34a;
+            --green-700: #15803d; --green-800: #166534; --green-900: #14532d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Assistant', 'Heebo', sans-serif; background: #f0fdf4; color: #1e293b; font-size: 20px; line-height: 1.8; overflow-x: hidden; }
+
+        /* Slide system */
+        .slide { display: none; min-height: 100vh; padding: 2rem 1rem; animation: fadeSlide 0.5s ease; }
+        .slide.active { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Stagger entrance */
+        .stagger > * { opacity: 0; animation: staggerIn 0.6s ease forwards; }
+        .stagger > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger > *:nth-child(5) { animation-delay: 0.5s; }
+        .stagger > *:nth-child(6) { animation-delay: 0.6s; }
+        @keyframes staggerIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Magic mode highlights */
+        .highlight-fact { background: linear-gradient(120deg, #bbf7d0 0%, #86efac 100%); border-radius: 6px; padding: 2px 6px; transition: all 0.4s ease; }
+        .highlight-opinion { background: linear-gradient(120deg, #fde68a 0%, #fbbf24 100%); border-radius: 6px; padding: 2px 6px; transition: all 0.4s ease; }
+        .highlight-claim { background: linear-gradient(120deg, #c7d2fe 0%, #a5b4fc 100%); border-radius: 6px; padding: 2px 6px; font-weight: 700; transition: all 0.4s ease; }
+        .highlight-reason { background: linear-gradient(120deg, #fecaca 0%, #fca5a5 100%); border-radius: 6px; padding: 2px 6px; transition: all 0.4s ease; }
+
+        .magic-inactive .highlight-fact,
+        .magic-inactive .highlight-opinion,
+        .magic-inactive .highlight-claim,
+        .magic-inactive .highlight-reason { background: transparent; padding: 0; }
+
+        /* Cards */
+        .flip-card { perspective: 1000px; cursor: pointer; }
+        .flip-inner { transition: transform 0.6s; transform-style: preserve-3d; position: relative; }
+        .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back { backface-visibility: hidden; position: absolute; inset: 0; border-radius: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
+        .flip-back { transform: rotateY(180deg); }
+
+        /* Quiz */
+        .quiz-option { transition: all 0.3s ease; cursor: pointer; }
+        .quiz-option:hover { transform: translateX(-4px); box-shadow: 0 4px 20px rgba(34,197,94,0.15); }
+        .quiz-option.correct { background: #dcfce7 !important; border-color: #22c55e !important; }
+        .quiz-option.wrong { background: #fee2e2 !important; border-color: #ef4444 !important; animation: shake 0.4s ease; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
+
+        .quiz-option.correct::after { content: '✅'; position: absolute; left: 1rem; font-size: 1.5rem; }
+        .quiz-option.wrong::after { content: '❌'; position: absolute; left: 1rem; font-size: 1.5rem; }
+
+        /* Floating shapes */
+        .float-shape { position: absolute; border-radius: 50%; opacity: 0.07; animation: floatAround 12s ease-in-out infinite; }
+        @keyframes floatAround { 0%,100% { transform: translate(0,0) rotate(0deg); } 33% { transform: translate(20px,-30px) rotate(120deg); } 66% { transform: translate(-15px,15px) rotate(240deg); } }
+
+        /* Nav */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; backdrop-filter: blur(12px); }
+        .nav-dot { width: 12px; height: 12px; border-radius: 50%; transition: all 0.3s; }
+        .nav-dot.active { width: 32px; border-radius: 6px; }
+
+        /* Pulse */
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); } 100% { box-shadow: 0 0 0 20px rgba(34,197,94,0); } }
+        .pulse-btn:hover { animation: pulse-ring 1.5s infinite; }
+
+        /* Tooltip */
+        .tooltip-container { position: relative; }
+        .tooltip-box { display: none; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: #166534; color: white; padding: 8px 16px; border-radius: 12px; font-size: 14px; white-space: nowrap; z-index: 20; }
+        .tooltip-container:hover .tooltip-box { display: block; }
+
+        /* Chart container */
+        .chart-wrapper { max-width: 500px; margin: 0 auto; }
+
+        @media (max-width: 768px) {
+            body { font-size: 18px; }
+            .slide { padding: 1rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION BAR ===== -->
+<div class="nav-bar bg-white/80 border-t border-green-100 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+        <button onclick="prevSlide()" id="prevBtn" class="px-4 py-2 rounded-xl bg-green-100 text-green-700 font-bold text-sm hover:bg-green-200 transition-all disabled:opacity-30" disabled>→ הקודם</button>
+        <div class="flex items-center gap-2" id="navDots"></div>
+        <button onclick="nextSlide()" id="nextBtn" class="px-4 py-2 rounded-xl bg-green-600 text-white font-bold text-sm hover:bg-green-700 transition-all shadow-lg shadow-green-600/20">הבא ←</button>
+    </div>
+</div>
+
+<!-- ===== SLIDE 1: OPENING ===== -->
+<div class="slide active" id="slide-0">
+    <div class="max-w-3xl w-full mx-auto stagger relative pt-8 pb-24">
+        <div class="float-shape bg-green-500 w-40 h-40 top-10 right-10"></div>
+        <div class="float-shape bg-emerald-400 w-24 h-24 bottom-20 left-10" style="animation-delay:-4s"></div>
+
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold mb-6">
+                <span>📚</span> שיעור בהבנת הנקרא &middot; כיתה ה
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-green-900 leading-tight mb-4">
+                מבנה טקסט טיעוני
+            </h1>
+            <p class="text-xl text-green-700 max-w-lg mx-auto leading-relaxed">
+                איך מזהים טענה, נימוק, עובדה ודעה?
+                <br>היום נהפוך לבלשים של טקסטים!
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-8 shadow-lg shadow-green-100/50 text-center">
+            <div class="text-3xl mb-3">🎯</div>
+            <h3 class="text-lg font-extrabold text-green-800 mb-2">מה נלמד היום?</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-right">
+                <div class="flex items-start gap-3 bg-green-50 p-4 rounded-2xl">
+                    <span class="text-2xl">🔍</span>
+                    <div>
+                        <p class="font-bold text-green-800">עובדה מול דעה</p>
+                        <p class="text-sm text-green-600">נלמד להבחין בין משפט שניתן להוכיח לבין משפט שמביע עמדה אישית</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-green-50 p-4 rounded-2xl">
+                    <span class="text-2xl">🏗️</span>
+                    <div>
+                        <p class="font-bold text-green-800">מבנה טקסט טיעוני</p>
+                        <p class="text-sm text-green-600">נגלה את החלקים שמרכיבים טקסט שמנסה לשכנע אותנו</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 2: WHAT IS AN ARGUMENTATIVE TEXT ===== -->
+<div class="slide" id="slide-1">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🤔 מהו טקסט טיעוני?</h2>
+        <p class="text-center text-green-600 mb-8">טקסט שמטרתו לשכנע את הקורא בעמדה מסוימת</p>
+
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-8 shadow-lg mb-8">
+            <p class="text-lg leading-loose text-slate-700">
+                כשמישהו רוצה לשכנע אותנו במשהו, הוא כותב <strong class="text-green-700">טקסט טיעוני</strong>.
+                בטקסט כזה הכותב מציג <strong class="text-green-700">עמדה</strong> (מה הוא חושב),
+                ומביא <strong class="text-green-700">נימוקים</strong> (סיבות) כדי שנסכים איתו.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 text-center">
+            <div class="bg-white rounded-2xl border border-green-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="text-4xl mb-3">📰</div>
+                <p class="font-bold text-green-800">מאמר דעה בעיתון</p>
+                <p class="text-sm text-slate-500 mt-1">"לדעתי, צריך להאריך את ההפסקה"</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-green-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="text-4xl mb-3">📝</div>
+                <p class="font-bold text-green-800">מכתב שכנוע</p>
+                <p class="text-sm text-slate-500 mt-1">"אני פונה אליכם בבקשה לשנות..."</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-green-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="text-4xl mb-3">🗣️</div>
+                <p class="font-bold text-green-800">נאום</p>
+                <p class="text-sm text-slate-500 mt-1">"אני משוכנע שזה הדבר הנכון..."</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 3: FACT VS OPINION ===== -->
+<div class="slide" id="slide-2">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🔍 עובדה מול דעה</h2>
+        <p class="text-center text-green-600 mb-8">איך מבחינים ביניהם?</p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl border-2 border-green-300 p-6">
+                <div class="bg-green-600 text-white rounded-2xl px-4 py-2 inline-block font-extrabold text-sm mb-4">✅ עובדה</div>
+                <p class="text-lg font-bold text-green-900 mb-3">משפט שניתן להוכיח אם הוא נכון או לא</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-green-500 mt-1">●</span>
+                        <span>מדינת ישראל הוקמה בשנת 1948</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-green-500 mt-1">●</span>
+                        <span>המים רותחים בטמפרטורה של 100 מעלות</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-green-500 mt-1">●</span>
+                        <span>בשבוע יש שבעה ימים</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-3xl border-2 border-amber-300 p-6">
+                <div class="bg-amber-500 text-white rounded-2xl px-4 py-2 inline-block font-extrabold text-sm mb-4">💭 דעה</div>
+                <p class="text-lg font-bold text-amber-900 mb-3">משפט שמביע רגש, עמדה או העדפה אישית</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-amber-500 mt-1">●</span>
+                        <span>החורף הוא העונה הכי יפה</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-amber-500 mt-1">●</span>
+                        <span>לדעתי, כדורגל הוא הספורט המעניין ביותר</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-white/70 p-3 rounded-xl text-base">
+                        <span class="text-amber-500 mt-1">●</span>
+                        <span>עדיף לקרוא ספר מאשר לצפות בטלוויזיה</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-green-100 p-5 text-center shadow-sm">
+            <p class="font-bold text-green-800">💡 טיפ:</p>
+            <p class="text-slate-600">מילים כמו <strong>"לדעתי"</strong>, <strong>"נראה לי"</strong>, <strong>"הכי טוב"</strong>, <strong>"עדיף"</strong> - הן רמז שזו דעה!</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 4: STRUCTURE BUILDING BLOCKS ===== -->
+<div class="slide" id="slide-3">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🏗️ אבני הבניין של טקסט טיעוני</h2>
+        <p class="text-center text-green-600 mb-8">לחצו על כל קלף כדי לגלות הסבר</p>
+
+        <div class="grid md:grid-cols-2 gap-5">
+            <!-- Card 1: Claim -->
+            <div class="flip-card h-48" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner w-full h-full">
+                    <div class="flip-front bg-gradient-to-br from-indigo-100 to-indigo-200 border-2 border-indigo-300 text-center">
+                        <div class="text-4xl mb-2">🎯</div>
+                        <p class="text-xl font-extrabold text-indigo-900">טענה</p>
+                        <p class="text-xs text-indigo-500 mt-2">👆 לחצו לגילוי</p>
+                    </div>
+                    <div class="flip-back bg-indigo-600 text-white text-center">
+                        <p class="text-lg font-bold mb-2">הטענה = מה הכותב חושב</p>
+                        <p class="text-sm opacity-90">המשפט המרכזי שהכותב רוצה לשכנע אותנו בו. בדרך כלל מופיעה בתחילת הטקסט או בסופו.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Reasons -->
+            <div class="flip-card h-48" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner w-full h-full">
+                    <div class="flip-front bg-gradient-to-br from-rose-100 to-rose-200 border-2 border-rose-300 text-center">
+                        <div class="text-4xl mb-2">📋</div>
+                        <p class="text-xl font-extrabold text-rose-900">נימוקים</p>
+                        <p class="text-xs text-rose-500 mt-2">👆 לחצו לגילוי</p>
+                    </div>
+                    <div class="flip-back bg-rose-600 text-white text-center">
+                        <p class="text-lg font-bold mb-2">נימוקים = למה?</p>
+                        <p class="text-sm opacity-90">הסיבות שהכותב מביא כדי לתמוך בטענה שלו. ככל שיש יותר נימוקים טובים, הטקסט משכנע יותר!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Examples -->
+            <div class="flip-card h-48" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner w-full h-full">
+                    <div class="flip-front bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 text-center">
+                        <div class="text-4xl mb-2">💡</div>
+                        <p class="text-xl font-extrabold text-amber-900">דוגמאות</p>
+                        <p class="text-xs text-amber-500 mt-2">👆 לחצו לגילוי</p>
+                    </div>
+                    <div class="flip-back bg-amber-600 text-white text-center">
+                        <p class="text-lg font-bold mb-2">דוגמאות = הוכחות</p>
+                        <p class="text-sm opacity-90">עובדות, סיפורים או נתונים שהכותב מביא כדי לחזק את הנימוקים שלו.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Summary -->
+            <div class="flip-card h-48" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner w-full h-full">
+                    <div class="flip-front bg-gradient-to-br from-green-100 to-emerald-200 border-2 border-green-300 text-center">
+                        <div class="text-4xl mb-2">🔚</div>
+                        <p class="text-xl font-extrabold text-green-900">סיכום / קריאה לפעולה</p>
+                        <p class="text-xs text-green-500 mt-2">👆 לחצו לגילוי</p>
+                    </div>
+                    <div class="flip-back bg-green-600 text-white text-center">
+                        <p class="text-lg font-bold mb-2">הסיום = חיזוק הטענה</p>
+                        <p class="text-sm opacity-90">הכותב חוזר על הטענה שלו, לפעמים עם קריאה לקורא לפעול: "בואו נשנה!", "הגיע הזמן ש..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 5: FLOWCHART ===== -->
+<div class="slide" id="slide-4">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">📊 המבנה בתרשים</h2>
+        <p class="text-center text-green-600 mb-8">כך נראה טקסט טיעוני מהתחלה לסוף</p>
+
+        <div class="flex flex-col items-center gap-4">
+            <div class="bg-indigo-100 border-2 border-indigo-400 rounded-2xl px-8 py-4 font-extrabold text-indigo-900 text-lg text-center shadow-md w-full max-w-md">
+                🎯 פתיחה + טענה מרכזית
+            </div>
+            <div class="text-3xl text-green-400">⬇️</div>
+            <div class="bg-rose-100 border-2 border-rose-400 rounded-2xl px-8 py-4 font-extrabold text-rose-900 text-lg text-center shadow-md w-full max-w-md">
+                📋 נימוק ראשון + דוגמה
+            </div>
+            <div class="text-3xl text-green-400">⬇️</div>
+            <div class="bg-rose-100 border-2 border-rose-400 rounded-2xl px-8 py-4 font-extrabold text-rose-900 text-lg text-center shadow-md w-full max-w-md">
+                📋 נימוק שני + דוגמה
+            </div>
+            <div class="text-3xl text-green-400">⬇️</div>
+            <div class="bg-rose-100 border-2 border-rose-400 rounded-2xl px-8 py-4 font-extrabold text-rose-900 text-lg text-center shadow-md w-full max-w-md">
+                📋 נימוק שלישי + דוגמה
+            </div>
+            <div class="text-3xl text-green-400">⬇️</div>
+            <div class="bg-green-100 border-2 border-green-400 rounded-2xl px-8 py-4 font-extrabold text-green-900 text-lg text-center shadow-md w-full max-w-md">
+                🔚 סיכום + חיזוק הטענה
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 6: INTERACTIVE TEXT (MAGIC MODE) ===== -->
+<div class="slide" id="slide-5">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">📖 קריאה אינטראקטיבית</h2>
+        <p class="text-center text-green-600 mb-4">קראו את הטקסט, ואז הפעילו את מצב הזכוכית המגדלת!</p>
+
+        <div class="flex justify-center mb-6 gap-3 flex-wrap">
+            <button onclick="toggleMagic()" id="magicBtn" class="pulse-btn px-6 py-3 bg-green-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-green-600/30 hover:bg-green-700 transition-all flex items-center gap-2">
+                🔍 הפעל זכוכית מגדלת
+            </button>
+            <div id="legend" class="hidden flex flex-wrap gap-2 items-center">
+                <span class="highlight-claim px-3 py-1 text-xs font-bold">טענה</span>
+                <span class="highlight-reason px-3 py-1 text-xs font-bold">נימוק</span>
+                <span class="highlight-fact px-3 py-1 text-xs font-bold">עובדה</span>
+                <span class="highlight-opinion px-3 py-1 text-xs font-bold">דעה</span>
+            </div>
+        </div>
+
+        <div id="textContainer" class="magic-inactive bg-white rounded-3xl border-2 border-green-200 p-8 shadow-lg text-lg leading-loose text-slate-800">
+            <p class="mb-6 text-xl font-bold text-green-900">האם צריך להגביל את השימוש בטלפונים חכמים בקרב ילדים?</p>
+
+            <p class="mb-4">
+                <span class="highlight-claim">לדעתי, יש להגביל את השימוש בטלפונים חכמים בקרב ילדים עד גיל 12.</span>
+                ישנן סיבות רבות לכך, ואציג כמה מהן.
+            </p>
+
+            <p class="mb-4">
+                <span class="highlight-reason">ראשית, שימוש ממושך במסכים פוגע בבריאות הילדים.</span>
+                <span class="highlight-fact">לפי מחקר שנערך באוניברסיטת תל אביב בשנת 2023, ילדים שמשתמשים במסך יותר משלוש שעות ביום סובלים מבעיות שינה ב-40% יותר מילדים אחרים.</span>
+                <span class="highlight-opinion">נראה לי שזה מספר מדאיג מאוד.</span>
+            </p>
+
+            <p class="mb-4">
+                <span class="highlight-reason">שנית, הטלפון מפריע ללמידה ולריכוז.</span>
+                <span class="highlight-fact">במדינות כמו צרפת וגרמניה כבר נאסר השימוש בטלפונים בבתי הספר.</span>
+                כשהטלפון מונח ליד הילד, קשה לו להתמקד במשימה.
+            </p>
+
+            <p class="mb-4">
+                <span class="highlight-reason">לבסוף, ילדים צריכים לשחק בחוץ ולפתח קשרים חברתיים פנים אל פנים.</span>
+                <span class="highlight-opinion">אני מאמין שילדות ללא מסכים היא ילדות מאושרת יותר.</span>
+            </p>
+
+            <p>
+                <span class="highlight-claim">לסיכום, חשוב שהורים יגבילו את השימוש בטלפונים חכמים לילדיהם.</span>
+                הגיע הזמן להחזיר את הילדים לחצר, לספרים ולמשחק!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 7: TEXT ANALYSIS ===== -->
+<div class="slide" id="slide-6">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🔬 ניתוח הטקסט</h2>
+        <p class="text-center text-green-600 mb-8">מה גילינו בעזרת הזכוכית המגדלת?</p>
+
+        <div class="space-y-4">
+            <div class="bg-gradient-to-l from-indigo-50 to-white border-r-4 border-indigo-500 rounded-2xl p-5">
+                <p class="font-extrabold text-indigo-800 mb-1">🎯 הטענה המרכזית:</p>
+                <p class="text-slate-700">"יש להגביל את השימוש בטלפונים חכמים בקרב ילדים עד גיל 12"</p>
+            </div>
+            <div class="bg-gradient-to-l from-rose-50 to-white border-r-4 border-rose-500 rounded-2xl p-5">
+                <p class="font-extrabold text-rose-800 mb-1">📋 הנימוקים:</p>
+                <ol class="text-slate-700 list-decimal list-inside space-y-1">
+                    <li>שימוש ממושך במסכים פוגע בבריאות</li>
+                    <li>הטלפון מפריע ללמידה ולריכוז</li>
+                    <li>ילדים צריכים לשחק בחוץ ולפתח קשרים חברתיים</li>
+                </ol>
+            </div>
+            <div class="bg-gradient-to-l from-green-50 to-white border-r-4 border-green-500 rounded-2xl p-5">
+                <p class="font-extrabold text-green-800 mb-1">✅ עובדות שמחזקות:</p>
+                <ul class="text-slate-700 space-y-1">
+                    <li>• מחקר מ-2023 על בעיות שינה (40%)</li>
+                    <li>• צרפת וגרמניה אסרו טלפונים בבתי ספר</li>
+                </ul>
+            </div>
+            <div class="bg-gradient-to-l from-amber-50 to-white border-r-4 border-amber-500 rounded-2xl p-5">
+                <p class="font-extrabold text-amber-800 mb-1">💭 דעות הכותב:</p>
+                <ul class="text-slate-700 space-y-1">
+                    <li>• "נראה לי שזה מספר מדאיג מאוד"</li>
+                    <li>• "אני מאמין שילדות ללא מסכים היא ילדות מאושרת יותר"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 8: CHART ===== -->
+<div class="slide" id="slide-7">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">📊 המחשה ויזואלית</h2>
+        <p class="text-center text-green-600 mb-8">כמה מכל סוג נמצא בטקסט?</p>
+
+        <div class="chart-wrapper bg-white rounded-3xl border-2 border-green-200 p-6 shadow-lg">
+            <canvas id="textChart"></canvas>
+        </div>
+
+        <div class="mt-8 bg-green-50 rounded-2xl p-5 border border-green-200 text-center">
+            <p class="font-bold text-green-800">🧐 שימו לב:</p>
+            <p class="text-slate-600">הכותב השתמש ב-3 נימוקים ו-2 עובדות כדי לחזק את הטענה שלו. ככל שיש יותר עובדות, הטקסט נשמע משכנע יותר!</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 9: SKILL STEPS ===== -->
+<div class="slide" id="slide-8">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🗺️ כרטיס ניווט</h2>
+        <p class="text-center text-green-600 mb-8">4 צעדים לניתוח טקסט טיעוני</p>
+
+        <div class="space-y-4">
+            <div class="tooltip-container bg-white rounded-2xl border-2 border-green-200 p-6 hover:border-green-400 hover:shadow-lg transition-all cursor-default">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl font-black shrink-0 shadow-lg">1</div>
+                    <div>
+                        <p class="font-extrabold text-green-900 text-lg">מצאו את הטענה</p>
+                        <p class="text-slate-500">מהו המשפט שבו הכותב אומר מה דעתו?</p>
+                    </div>
+                </div>
+                <div class="tooltip-box">בדרך כלל בפסקה הראשונה או האחרונה!</div>
+            </div>
+
+            <div class="tooltip-container bg-white rounded-2xl border-2 border-green-200 p-6 hover:border-green-400 hover:shadow-lg transition-all cursor-default">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl font-black shrink-0 shadow-lg">2</div>
+                    <div>
+                        <p class="font-extrabold text-green-900 text-lg">זהו את הנימוקים</p>
+                        <p class="text-slate-500">חפשו מילים כמו "ראשית", "שנית", "בנוסף", "לבסוף"</p>
+                    </div>
+                </div>
+                <div class="tooltip-box">כל נימוק הוא סיבה שתומכת בטענה</div>
+            </div>
+
+            <div class="tooltip-container bg-white rounded-2xl border-2 border-green-200 p-6 hover:border-green-400 hover:shadow-lg transition-all cursor-default">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl font-black shrink-0 shadow-lg">3</div>
+                    <div>
+                        <p class="font-extrabold text-green-900 text-lg">הבחינו בין עובדות לדעות</p>
+                        <p class="text-slate-500">האם המשפט ניתן להוכחה? אם כן - עובדה. אם לא - דעה.</p>
+                    </div>
+                </div>
+                <div class="tooltip-box">חפשו: "לדעתי", "נראה לי", "אני חושב"</div>
+            </div>
+
+            <div class="tooltip-container bg-white rounded-2xl border-2 border-green-200 p-6 hover:border-green-400 hover:shadow-lg transition-all cursor-default">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl font-black shrink-0 shadow-lg">4</div>
+                    <div>
+                        <p class="font-extrabold text-green-900 text-lg">זהו את עמדת הכותב</p>
+                        <p class="text-slate-500">מה הכותב רוצה שנעשה? לחשוב? לשנות? לפעול?</p>
+                    </div>
+                </div>
+                <div class="tooltip-box">בדקו: האם הכותב בעד או נגד?</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 10: QUIZ ===== -->
+<div class="slide" id="slide-9">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <h2 class="text-3xl font-extrabold text-green-900 mb-2 text-center">🧠 בדקו את עצמכם!</h2>
+        <p class="text-center text-green-600 mb-8">ענו על השאלות לפי הטקסט שקראתם</p>
+
+        <div class="space-y-8" id="quizArea">
+            <!-- Q1 -->
+            <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm" id="q1">
+                <p class="font-extrabold text-green-900 text-lg mb-4">1. מהי הטענה המרכזית בטקסט?</p>
+                <div class="space-y-3">
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q1')">ילדים לא צריכים ללמוד על טלפונים</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, true, 'q1')">יש להגביל שימוש בטלפונים חכמים לילדים עד גיל 12</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q1')">טלפונים חכמים הם המצאה רעה</div>
+                </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm" id="q2">
+                <p class="font-extrabold text-green-900 text-lg mb-4">2. איזה מהמשפטים הבאים הוא עובדה?</p>
+                <div class="space-y-3">
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q2')">ילדות ללא מסכים היא ילדות מאושרת יותר</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q2')">נראה לי שזה מספר מדאיג מאוד</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, true, 'q2')">בצרפת ובגרמניה נאסר השימוש בטלפונים בבתי הספר</div>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm" id="q3">
+                <p class="font-extrabold text-green-900 text-lg mb-4">3. כמה נימוקים הביא הכותב?</p>
+                <div class="space-y-3">
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q3')">שניים</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, true, 'q3')">שלושה</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q3')">ארבעה</div>
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="bg-white rounded-3xl border-2 border-green-200 p-6 shadow-sm" id="q4">
+                <p class="font-extrabold text-green-900 text-lg mb-4">4. מהי עמדת הכותב?</p>
+                <div class="space-y-3">
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q4')">הכותב בעד שימוש חופשי בטלפונים</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, true, 'q4')">הכותב סבור שצריך להגביל את השימוש בטלפונים</div>
+                    <div class="quiz-option relative border-2 border-slate-200 rounded-2xl p-4 text-base" onclick="checkAnswer(this, false, 'q4')">הכותב לא מביע דעה ברורה</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quizResult" class="hidden mt-8 bg-green-50 rounded-3xl border-2 border-green-300 p-8 text-center">
+            <div class="text-5xl mb-4">🌟</div>
+            <p class="text-2xl font-extrabold text-green-900" id="resultText"></p>
+            <p class="text-green-600 mt-2" id="resultSub"></p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SLIDE 11: SUMMARY ===== -->
+<div class="slide" id="slide-10">
+    <div class="max-w-3xl w-full mx-auto stagger pt-8 pb-24">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-4xl font-extrabold text-green-900 mb-4">סיכום השיעור</h2>
+            <p class="text-xl text-green-600">עכשיו אתם בלשים אמיתיים של טקסטים!</p>
+        </div>
+
+        <div class="bg-white rounded-3xl border-2 border-green-200 p-8 shadow-lg mb-8">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-green-50 rounded-2xl p-5 text-center">
+                    <div class="text-3xl mb-2">🔍</div>
+                    <p class="font-bold text-green-800">עובדה</p>
+                    <p class="text-sm text-green-600">ניתן להוכיח</p>
+                </div>
+                <div class="bg-amber-50 rounded-2xl p-5 text-center">
+                    <div class="text-3xl mb-2">💭</div>
+                    <p class="font-bold text-amber-800">דעה</p>
+                    <p class="text-sm text-amber-600">עמדה אישית</p>
+                </div>
+                <div class="bg-indigo-50 rounded-2xl p-5 text-center">
+                    <div class="text-3xl mb-2">🎯</div>
+                    <p class="font-bold text-indigo-800">טענה</p>
+                    <p class="text-sm text-indigo-600">מה הכותב חושב</p>
+                </div>
+                <div class="bg-rose-50 rounded-2xl p-5 text-center">
+                    <div class="text-3xl mb-2">📋</div>
+                    <p class="font-bold text-rose-800">נימוקים</p>
+                    <p class="text-sm text-rose-600">למה הוא חושב כך</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl p-8 text-center text-white shadow-xl">
+            <p class="text-xl font-bold mb-2">כל הכבוד! 🎉</p>
+            <p class="text-lg opacity-90">בפעם הבאה שתקראו טקסט שמנסה לשכנע אותכם — תוכלו לזהות בדיוק איך הוא בנוי ולהחליט בעצמכם אם הטענות שלו משכנעות!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== SLIDE NAVIGATION =====
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+
+function showSlide(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[n].classList.add('active');
+    currentSlide = n;
+    document.getElementById('prevBtn').disabled = n === 0;
+    document.getElementById('nextBtn').disabled = n === totalSlides - 1;
+    updateDots();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Init chart on slide 7
+    if (n === 7 && !window.chartCreated) createChart();
+}
+
+function nextSlide() { if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1); }
+function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+// Keyboard nav
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') nextSlide();
+    if (e.key === 'ArrowRight') prevSlide();
+});
+
+// Nav dots
+function updateDots() {
+    const container = document.getElementById('navDots');
+    container.innerHTML = '';
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'nav-dot ' + (i === currentSlide ? 'bg-green-600 active' : 'bg-green-200 hover:bg-green-300');
+        dot.onclick = function() { showSlide(i); };
+        container.appendChild(dot);
+    }
+}
+updateDots();
+
+// ===== MAGIC MODE =====
+let magicOn = false;
+function toggleMagic() {
+    magicOn = !magicOn;
+    const container = document.getElementById('textContainer');
+    const btn = document.getElementById('magicBtn');
+    const legend = document.getElementById('legend');
+
+    if (magicOn) {
+        container.classList.remove('magic-inactive');
+        btn.innerHTML = '🔍 כבה זכוכית מגדלת';
+        btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+        btn.classList.add('bg-slate-600', 'hover:bg-slate-700');
+        legend.classList.remove('hidden');
+    } else {
+        container.classList.add('magic-inactive');
+        btn.innerHTML = '🔍 הפעל זכוכית מגדלת';
+        btn.classList.remove('bg-slate-600', 'hover:bg-slate-700');
+        btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        legend.classList.add('hidden');
+    }
+}
+
+// ===== CHART =====
+window.chartCreated = false;
+function createChart() {
+    const ctx = document.getElementById('textChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['טענות', 'נימוקים', 'עובדות', 'דעות'],
+            datasets: [{
+                label: 'כמות בטקסט',
+                data: [2, 3, 2, 2],
+                backgroundColor: ['rgba(99,102,241,0.7)', 'rgba(244,63,94,0.7)', 'rgba(34,197,94,0.7)', 'rgba(245,158,11,0.7)'],
+                borderColor: ['rgb(99,102,241)', 'rgb(244,63,94)', 'rgb(34,197,94)', 'rgb(245,158,11)'],
+                borderWidth: 2,
+                borderRadius: 12,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'רכיבי הטקסט הטיעוני', font: { size: 18, family: 'Assistant', weight: 'bold' }, color: '#14532d' }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Assistant', size: 14 } } },
+                x: { ticks: { font: { family: 'Assistant', size: 14, weight: 'bold' } } }
+            }
+        }
+    });
+    window.chartCreated = true;
+}
+
+// ===== QUIZ =====
+let score = 0;
+let answered = 0;
+const totalQuestions = 4;
+
+function checkAnswer(el, isCorrect, qId) {
+    const parent = document.getElementById(qId);
+    if (parent.dataset.answered) return;
+    parent.dataset.answered = 'true';
+
+    const options = parent.querySelectorAll('.quiz-option');
+    options.forEach(function(opt) { opt.style.pointerEvents = 'none'; });
+
+    if (isCorrect) {
+        el.classList.add('correct');
+        score++;
+    } else {
+        el.classList.add('wrong');
+        // Show correct
+        options.forEach(function(opt) {
+            if (opt.onclick.toString().includes('true')) { opt.classList.add('correct'); }
+        });
+    }
+
+    answered++;
+    if (answered === totalQuestions) {
+        setTimeout(showResult, 800);
+    }
+}
+
+function showResult() {
+    var resultDiv = document.getElementById('quizResult');
+    var resultText = document.getElementById('resultText');
+    var resultSub = document.getElementById('resultSub');
+    resultDiv.classList.remove('hidden');
+
+    var pct = Math.round((score / totalQuestions) * 100);
+    if (pct === 100) {
+        resultText.textContent = 'מושלם! ' + pct + '% תשובות נכונות!';
+        resultSub.textContent = 'את/ה בלש טקסטים מקצועי! 🕵️';
+    } else if (pct >= 75) {
+        resultText.textContent = 'כל הכבוד! ' + pct + '% תשובות נכונות!';
+        resultSub.textContent = 'ממש קרוב למושלם, המשיכו כך! 💪';
+    } else if (pct >= 50) {
+        resultText.textContent = 'לא רע! ' + pct + '% תשובות נכונות';
+        resultSub.textContent = 'כדאי לחזור לשקפים הקודמים ולנסות שוב 📖';
+    } else {
+        resultText.textContent = pct + '% תשובות נכונות';
+        resultSub.textContent = 'לא נורא! חזרו לטקסט, קראו שוב ונסו בפעם הבאה 🌱';
+    }
+
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
