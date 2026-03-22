@@ -188,7 +188,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
           <input type="radio" name="blessingType" value="long">
           <div class="rc-label">
             <div class="rc-title">📝 מפורטת ועמוקה</div>
-            <div class="rc-sub">40–55 מילים · 4–5 משפטים</div>
+            <div class="rc-sub">45–60 מילים · 4–5 משפטים</div>
           </div>
         </label>
       </div>
@@ -707,35 +707,26 @@ function buildDescPrompt(d){
     L.push("");
     L.push("⚠️ חובה: עד 15 מילים. 2-3 משפטים. פסקה רציפה. ללא חתימה. ללא מרכאות חיצוניות.");
   } else {
-    L.push("⚠️ חובה לכתוב פסקה מלאה ועמוקה. מינימום 45 מילים — לא פחות מזה בשום אופן.");
+    L.push("🔴 הגבלת אורך קשיחה: בין 45 ל-60 מילים בלבד — לא יותר מ-60 בשום פנים ואופן.");
+    L.push("ספור את המילים לפני שאתה מסיים. אם הגעת ל-60 מילים — עצור מיד.");
     L.push("");
-    L.push("מבנה חובה — 5 משפטים מלאים:");
+    L.push("מבנה — 4 משפטים בלבד:");
     L.push("");
-    L.push("משפט 1 — פתיחה אישית וחמה:");
-    L.push("   פתח בדיוק במילים: \"" + address + "\" ואז משפט ראשון שמזכיר את שמ" + (iF?"ה":"ו") + " ואת הנוכחות המיוחדת שלהם.");
+    L.push("משפט 1 — פתיחה (10-12 מילים):");
+    L.push("   פתח ב: \"" + address + "\" + משפט קצר על הנוכחות המיוחדת.");
     L.push("");
-    L.push("משפט 2 — דימוי לפרח (זה המשפט המרכזי, כתוב אותו בהרחבה):");
-    L.push("   'כמו " + fHe + " ש" + verb1 + " לקראת האביב ו" + verb2 + " את כל מה שסביב" + (iF?"ה":"ו") + ", כך " + pronoun + "...'");
-    L.push("   — שלב לפחות 2 תכונות: " + (traitsStr||"תכונות אישיות") + ".");
+    L.push("משפט 2 — דימוי לפרח (15-18 מילים):");
+    L.push("   'כמו " + fHe + " ש" + verb1 + ", כך " + pronoun + "...' — שלב 1-2 תכונות מ: " + (traitsStr||"תכונות") + ".");
     L.push("");
-    if(hobbiesStr){
-      L.push("משפט 3 — תחביב/תשוקה:");
-      L.push("   כתוב משפט מלא ועשיר על: " + hobbiesStr + " — לא רק ציון אלא תיאור של מה שזה אומר על האופי.");
-      L.push("");
-    }
-    if(bgStr){
-      L.push("משפט " + (hobbiesStr?"4":"3") + " — פרט אישי:");
-      L.push("   שלב בחום ובטבעיות: " + bgStr + " — כחלק אורגני מהמשפט.");
-      L.push("");
-    }
-    L.push("משפט " + (hobbiesStr&&bgStr?"5":hobbiesStr||bgStr?"4":"3") + " — השפעה על הסביבה:");
-    L.push("   משפט על מה " + pronoun + " " + verb3 + " לעולם סביב" + (iF?"ה":"ו") + " — לא גנרי.");
+    L.push("משפט 3 — עולם אישי (10-15 מילים):");
+    if(hobbiesStr) L.push("   " + hobbiesStr + (bgStr?" ו/או "+bgStr:"") + " — משפט אחד קצר.");
+    else if(bgStr) L.push("   " + bgStr + " — משפט אחד קצר.");
+    else L.push("   משפט על מה " + pronoun + " " + verb3 + " לסביבה.");
     L.push("");
-    L.push("משפט " + (hobbiesStr&&bgStr?"6":hobbiesStr||bgStr?"5":"4") + " — סיום אביבי:");
-    L.push("   ברכה עמוקה ומחממת לב שמחברת בין הילד/ה לאביב — לא 'חג שמח' בלבד.");
+    L.push("משפט 4 — סיום (8-12 מילים):");
+    L.push("   ברכה אביבית חמה — קצרה ומדויקת.");
     L.push("");
-    L.push("⛔ אסור לכתוב פחות מ-45 מילים. ספור את המילים לפני שאתה מסיים.");
-    L.push("סגנון: חם, אישי, ספרותי אך נגיש. כמו מבוגר אוהב שמכיר את הילד" + (iF?"ה":"") + " היטב.");
+    L.push("🔴 עצור בדיוק ב-60 מילים. קצר = דיוק גבוה יותר בתמונה.");
     L.push("פסקה רציפה. ללא כותרת. ללא חתימה. ללא מרכאות חיצוניות.");
   }
   L.push("");
@@ -862,7 +853,7 @@ async function generate(){
   let para="";
   try{
     $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
-    const maxTok=d.blessingType==="short"?80:500;
+    const maxTok=d.blessingType==="short"?80:220;
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -914,8 +905,8 @@ function updateWordCount(){
   const warn=$("wordWarning");
   if(!wc) return;
   const isShort=radio("blessingType")==="short";
-  const limit=isShort?15:55;
-  const softLimit=isShort?12:45;
+  const limit=isShort?15:60;
+  const softLimit=isShort?12:50;
   wc.textContent=words+" מילים";
   if(words===0){
     wc.style.background="#f0f5ea"; wc.style.color="var(--green-dark)";
@@ -944,7 +935,7 @@ function updateBlessingHint(){
     hint.innerHTML="⚡ <strong>קצרה:</strong> 2–3 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה";
   } else {
     hint.style.background="#fff3cd"; hint.style.borderColor="#f0c040"; hint.style.color="#7a5500";
-    hint.innerHTML="📝 <strong>מפורטת:</strong> 4–5 משפטים, 40–55 מילים — ברכה עמוקה ואישית";
+    hint.innerHTML="📝 <strong>מפורטת:</strong> 4–5 משפטים, 45–60 מילים — ברכה עמוקה ואישית";
   }
   updateWordCount();
 }
@@ -1012,7 +1003,7 @@ async function regenDesc(){
   $("descOutput").style.display="none";
   $("descDot").style.background="#f0c878";
   $("descStatus").textContent="כותב מחדש...";
-  const maxTok=_lastData.blessingType==="short"?80:500;
+  const maxTok=_lastData.blessingType==="short"?80:220;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",headers:{"Content-Type":"application/json"},
