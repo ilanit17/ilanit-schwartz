@@ -262,7 +262,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <label class="chip"><input type="checkbox" value="חרוצה"><span class="chip-label" data-f="📚 חרוצה" data-m="📚 חרוץ">📚 חרוצה</span></label>
       <label class="chip"><input type="checkbox" value="מצחיקה"><span class="chip-label" data-f="😂 מצחיקה" data-m="😂 מצחיק">😂 מצחיקה</span></label>
       <label class="chip"><input type="checkbox" value="עדינה"><span class="chip-label" data-f="🌸 עדינה" data-m="🌸 עדין">🌸 עדינה</span></label>
-      <label class="chip"><input type="checkbox" value="חולמנית"><span class="chip-label" data-f="✨ חלומנית" data-m="✨ חלומן">✨ חלומנית</span></label>
+      <label class="chip"><input type="checkbox" value="חלומנית"><span class="chip-label" data-f="✨ חלומנית" data-m="✨ חלומן">✨ חלומנית</span></label>
       <label class="chip"><input type="checkbox" value="ספורטיבית"><span class="chip-label" data-f="🏃 ספורטיבית" data-m="🏃 ספורטיבי">🏃 ספורטיבית</span></label>
       <label class="chip"><input type="checkbox" value="אוהבת טבע"><span class="chip-label" data-f="🌿 אוהבת טבע" data-m="🌿 אוהב טבע">🌿 אוהבת טבע</span></label>
       <label class="chip"><input type="checkbox" value="בעלת ביטחון עצמי"><span class="chip-label" data-f="👑 בעלת ביטחון" data-m="👑 בעל ביטחון">👑 ביטחון עצמי</span></label>
@@ -290,7 +290,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <label class="chip"><input type="checkbox" value="ריקוד"><span class="chip-label">💃 ריקוד</span></label>
       <label class="chip"><input type="checkbox" value="כדורגל"><span class="chip-label">⚽ כדורגל</span></label>
       <label class="chip"><input type="checkbox" value="שחייה"><span class="chip-label">🏊 שחייה</span></label>
-      <label class="chip"><input type="checkbox" value="התעמלות"><span class="chip-label">🤸 גימנסטיקה</span></label>
+      <label class="chip"><input type="checkbox" value="גימנסטיקה"><span class="chip-label">🤸 גימנסטיקה</span></label>
       <label class="chip"><input type="checkbox" value="קריאת ספרים"><span class="chip-label">📖 קריאה</span></label>
       <label class="chip"><input type="checkbox" value="בישול ואפייה"><span class="chip-label">🍪 בישול</span></label>
       <label class="chip"><input type="checkbox" value="גינון ופרחים"><span class="chip-label">🌱 גינון</span></label>
@@ -550,7 +550,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
         ⚠️ <strong>הפסקה ארוכה מדי.</strong> ננו בננה מדויק יותר עד 25 מילים — מומלץ לקצר.
       </div>
       <div id="editReminder" style="display:none;margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,#f0f8ea,#e8f4e0);border:1.5px solid #a8d080;border-radius:10px;font-size:13px;color:#3a6020;line-height:1.6">
-        ✏️ <strong>לפני שמעתיקים את הפרומפט —</strong> קראו את הפסקה וודאי שהיא מדויקת, אישית ומשקפת נכון את הילד/ה. ניתן לערוך ישירות בתיבה למעלה.
+        ✏️ <strong>לפני שמעתיקים את הפרומפט —</strong> קראי את הפסקה וודאי שהיא מדויקת, אישית ומשקפת נכון את הילד/ה. ניתן לערוך ישירות בתיבה למעלה.
       </div>
     </div>
     <div class="out-actions">
@@ -707,16 +707,36 @@ function buildDescPrompt(d){
     L.push("");
     L.push("⚠️ חובה: עד 15 מילים. 2-3 משפטים. פסקה רציפה. ללא חתימה. ללא מרכאות חיצוניות.");
   } else {
-    L.push("מבנה הברכה — מלאה ועמוקה (40–55 מילים):");
-    L.push("1. פתח בפנייה: \"" + address + "\" ומשפט ראשון חם ואישי.");
-    L.push("2. דימוי לפרח: 'כמו " + fHe + " ש" + verb1 + " לקראת האביב, כך " + pronoun + " " + verb2 + "...' — שלב תכונה מרכזית.");
-    if(hobbiesStr) L.push("3. משפט על תחביב/תשוקה (" + hobbiesStr + ") — מה זה אומר על האופי שלהם.");
-    if(bgStr)      L.push((hobbiesStr?"3ב":"3") + ". שלב בטבעיות פרט אישי אחד מהרשימה (" + bgStr + ") — כחלק ממשפט, לא כרשימה.");
-    L.push((hobbiesStr||bgStr?"4":"3") + ". משפט על ההשפעה על הסביבה — מה " + pronoun + " " + verb3 + " לעולם.");
-    L.push((hobbiesStr||bgStr?"5":"4") + ". סיום: ברכה אביבית עמוקה ומחממת לב — לא קלישאתית.");
+    L.push("⚠️ חובה לכתוב פסקה מלאה ועמוקה. מינימום 45 מילים — לא פחות מזה בשום אופן.");
     L.push("");
-    L.push("סגנון: חם ואישי, לא מתנשא, לא קלישאתי. כתוב כמו מבוגר אוהב שמכיר את הילד" + (iF?"ה":"") + " היטב.");
-    L.push("אורך: 40–55 מילים. פסקה רציפה. ללא כותרת. ללא חתימה. ללא מרכאות חיצוניות.");
+    L.push("מבנה חובה — 5 משפטים מלאים:");
+    L.push("");
+    L.push("משפט 1 — פתיחה אישית וחמה:");
+    L.push("   פתח בדיוק במילים: \"" + address + "\" ואז משפט ראשון שמזכיר את שמ" + (iF?"ה":"ו") + " ואת הנוכחות המיוחדת שלהם.");
+    L.push("");
+    L.push("משפט 2 — דימוי לפרח (זה המשפט המרכזי, כתוב אותו בהרחבה):");
+    L.push("   'כמו " + fHe + " ש" + verb1 + " לקראת האביב ו" + verb2 + " את כל מה שסביב" + (iF?"ה":"ו") + ", כך " + pronoun + "...'");
+    L.push("   — שלב לפחות 2 תכונות: " + (traitsStr||"תכונות אישיות") + ".");
+    L.push("");
+    if(hobbiesStr){
+      L.push("משפט 3 — תחביב/תשוקה:");
+      L.push("   כתוב משפט מלא ועשיר על: " + hobbiesStr + " — לא רק ציון אלא תיאור של מה שזה אומר על האופי.");
+      L.push("");
+    }
+    if(bgStr){
+      L.push("משפט " + (hobbiesStr?"4":"3") + " — פרט אישי:");
+      L.push("   שלב בחום ובטבעיות: " + bgStr + " — כחלק אורגני מהמשפט.");
+      L.push("");
+    }
+    L.push("משפט " + (hobbiesStr&&bgStr?"5":hobbiesStr||bgStr?"4":"3") + " — השפעה על הסביבה:");
+    L.push("   משפט על מה " + pronoun + " " + verb3 + " לעולם סביב" + (iF?"ה":"ו") + " — לא גנרי.");
+    L.push("");
+    L.push("משפט " + (hobbiesStr&&bgStr?"6":hobbiesStr||bgStr?"5":"4") + " — סיום אביבי:");
+    L.push("   ברכה עמוקה ומחממת לב שמחברת בין הילד/ה לאביב — לא 'חג שמח' בלבד.");
+    L.push("");
+    L.push("⛔ אסור לכתוב פחות מ-45 מילים. ספור את המילים לפני שאתה מסיים.");
+    L.push("סגנון: חם, אישי, ספרותי אך נגיש. כמו מבוגר אוהב שמכיר את הילד" + (iF?"ה":"") + " היטב.");
+    L.push("פסקה רציפה. ללא כותרת. ללא חתימה. ללא מרכאות חיצוניות.");
   }
   L.push("");
   L.push("כתוב כעת את הפסקה — רק הפסקה עצמה, ללא הקדמה:");
@@ -842,7 +862,7 @@ async function generate(){
   let para="";
   try{
     $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
-    const maxTok=d.blessingType==="short"?80:300;
+    const maxTok=d.blessingType==="short"?80:500;
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -992,7 +1012,7 @@ async function regenDesc(){
   $("descOutput").style.display="none";
   $("descDot").style.background="#f0c878";
   $("descStatus").textContent="כותב מחדש...";
-  const maxTok=_lastData.blessingType==="short"?80:300;
+  const maxTok=_lastData.blessingType==="short"?80:500;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",headers:{"Content-Type":"application/json"},
@@ -1052,4 +1072,4 @@ updateTitleVis(); updateCounts(); applyGender(radio("gender")); updateBlessingHi
 </footer>
 
 </body>
-  </html>
+</html>
