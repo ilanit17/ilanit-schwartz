@@ -1,42 +1,1078 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחולל ברכות לאביב אילנית שוורץ</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>מחולל פרומפט לתמונת אביב — ננו בננה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Noto+Serif+Hebrew:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fdf8f0;--surface:#fff;--surface-2:#faf5eb;--border:#e8d9c0;--border-soft:#f0e5d0;--text:#2a2318;--text-2:#6b5d4e;--text-3:#9c8878;--green:#5a7a3a;--green-l:#e8f2de;--green-d:#3d5628;--amber:#c47c2a;--amber-l:#fdf0d8;--amber-m:#f0c878;--r-sm:10px;--r:16px;--r-lg:24px;--sh-sm:0 2px 8px rgba(60,40,10,.07);--sh:0 8px 24px rgba(60,40,10,.10);--sh-lg:0 16px 48px rgba(60,40,10,.13)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo','Arial Hebrew',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,#3d5628 0%,#5a7a3a 40%,#7a9a58 100%);padding:26px 34px 22px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='50'/%3E%3Ccircle cx='60' cy='60' r='35'/%3E%3Cline x1='10' y1='60' x2='110' y2='60'/%3E%3Cline x1='60' y1='10' x2='60' y2='110'/%3E%3C/g%3E%3C/svg%3E") repeat;pointer-events:none}
+.header-inner{max-width:1340px;margin:0 auto;position:relative}
+.badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 12px;font-size:12px;color:rgba(255,255,255,.9);margin-bottom:8px}
+.header h1{font-family:'Noto Serif Hebrew',serif;font-size:clamp(22px,3.2vw,40px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:5px}
+.header p{font-size:14px;color:rgba(255,255,255,.72);max-width:680px;line-height:1.55}
+.main{max-width:1340px;margin:0 auto;padding:20px 20px 48px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.card-head{display:flex;align-items:center;gap:11px;padding:13px 18px 11px;border-bottom:1px solid var(--border-soft);background:var(--surface-2)}
+.card-num{width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.card-title{font-family:'Noto Serif Hebrew',serif;font-size:16px;font-weight:700}
+.card-hint{font-size:11.5px;color:var(--text-3);margin-top:1px}
+.card-body{padding:16px 18px}
+.field+.field{margin-top:13px}
+.field-label{display:block;font-weight:700;font-size:12.5px;color:var(--text-2);margin-bottom:5px}
+input[type=text],textarea,select{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;background:#fffdfa;color:var(--text);font-family:'Heebo','Arial Hebrew',sans-serif;font-size:13.5px;outline:none;transition:.15s}
+textarea{min-height:68px;resize:vertical}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(90,122,58,.12)}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b5d4e' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 11px center;padding-left:30px;appearance:none}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.chip-label{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:999px;background:var(--surface-2);border:1.5px solid var(--border);color:var(--text-2);cursor:pointer;user-select:none;font-size:12.5px;font-weight:500;transition:.15s}
+.chip-label:hover{border-color:var(--green);background:var(--green-l);color:var(--green-d);transform:translateY(-1px);box-shadow:var(--sh-sm)}
+.chip input:checked+.chip-label{background:var(--green);border-color:var(--green-d);color:#fff;box-shadow:0 3px 10px rgba(90,122,58,.25);transform:translateY(-1px)}
+.chips-amber .chip input:checked+.chip-label{background:var(--amber);border-color:#a06020;color:#fff}
+.chips-amber .chip-label:hover{border-color:var(--amber);background:var(--amber-l);color:#7a4c18}
+.radio-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.radio-card{position:relative}
+.radio-card input{position:absolute;opacity:0;pointer-events:none}
+.rc-label{display:block;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface-2);cursor:pointer;transition:.15s}
+.rc-title{font-weight:700;font-size:12.5px;color:var(--text)}
+.rc-sub{font-size:11px;color:var(--text-3);margin-top:1px}
+.radio-card input:checked+.rc-label{border-color:var(--green);background:var(--green-l)}
+.radio-card input:checked+.rc-label .rc-title{color:var(--green-d)}
+.rc-label:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:var(--sh-sm)}
+hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
+.count-badge{display:inline-flex;align-items:center;background:var(--green-l);color:var(--green-d);border:1px solid #c0d8a0;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700}
+.btn{border:none;border-radius:var(--r-sm);padding:10px 16px;font-family:'Heebo','Arial Hebrew',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;box-shadow:0 5px 14px rgba(90,122,58,.26);flex:1;justify-content:center;font-size:14.5px;padding:13px 18px}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-secondary{background:var(--surface);color:var(--text-2);border:1.5px solid var(--border)}
+.btn-copy{background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber-m)}
+.btn-copy:hover{background:var(--amber);color:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;background:var(--surface-2);border-top:1px solid var(--border-soft)}
+.out-panel,.desc-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);overflow:hidden}
+.out-panel{position:sticky;top:18px}
+.desc-panel{margin-top:16px}
+.out-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;background:linear-gradient(135deg,#3d5628,#5a7a3a)}
+.out-head h2{font-family:'Noto Serif Hebrew',serif;font-size:17px;color:#fff}
+.out-head p{font-size:11px;color:rgba(255,255,255,.68);margin-top:2px}
+.out-status{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:999px;padding:3px 10px;font-size:11.5px;color:rgba(255,255,255,.85);white-space:nowrap;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
+.out-body{padding:14px 16px}
+.prompt-box{
+  background: linear-gradient(160deg, #fffdf7 0%, #fdf8ee 100%);
+  border: none;
+  border-radius: 18px;
+  padding: 20px 18px;
+  min-height: 250px;
+  max-height: 380px; /* תוספת: גובה מקסימלי */
+  overflow-y: auto;  /* תוספת: פס גלילה פנימי */
+  white-space: pre-wrap;
+  font-family: 'Heebo','Arial Hebrew',sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text);
+  direction: ltr;
+  text-align: left;
+  box-shadow: 0 2px 0 #e8d9b0, 0 4px 16px rgba(140,110,50,0.08), inset 0 0 0 1px rgba(200,170,90,0.18);
+  position: relative;
+}
+.prompt-ph{color:var(--text-3);font-style:italic;font-size:13.5px;line-height:1.7;direction:rtl;text-align:right}
+.blessing-box{background:linear-gradient(135deg,#fffbef,#fff5d8);border:1.5px solid var(--amber-m);border-radius:var(--r);padding:12px 15px;margin-top:12px}
+.blessing-label{font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.blessing-big{font-family:'Noto Serif Hebrew',serif;font-size:19px;font-weight:700;color:#5a3a10;text-align:center;line-height:1.4}
+.signer-input{width:100%;margin-top:6px;border:1.5px dashed #d4a850;border-radius:8px;background:rgba(255,255,255,.6);padding:5px 11px;text-align:center;font-family:'Heebo','Arial Hebrew',sans-serif;font-size:14px;color:#7a5520;outline:none;transition:.15s}
+.signer-input:focus{border-color:var(--green)}
+.tip-box{background:#f0f5ea;border-right:3px solid var(--green);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:8px 12px;margin-top:12px;font-size:12px;color:var(--green-d);line-height:1.6}
+.out-actions{padding:11px 16px 14px;display:flex;gap:8px;align-items:center}
+.copy-fb{display:none;align-items:center;gap:4px;font-size:12.5px;color:var(--green);font-weight:600}
+.copy-fb.show{display:flex}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1.4s linear infinite;display:inline-block}
+.loading-box{display:none;text-align:center;padding:28px 0;color:var(--text-3)}
+.loading-msg{font-size:13px;font-weight:600;color:var(--green-d);margin-top:10px}
+.loading-sub{font-size:11.5px;color:var(--text-3);margin-top:5px}
+.desc-textarea{
+  width:100%;
+  min-height:170px;
+  background:
+    repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      #e8dfc8 39px,
+      #e8dfc8 40px
+    ),
+    linear-gradient(180deg, #fffef7 0%, #fdf9f0 100%);
+  border: 1px solid #ddd0b0;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family:'Noto Serif Hebrew','Arial Hebrew',serif;
+  font-size:15.5px;
+  line-height:2.5;
+  color:#2a2010;
+  direction:rtl;
+  text-align:right;
+  resize:vertical;
+  outline:none;
+  transition:.15s;
+  box-shadow: 2px 3px 12px rgba(140,110,50,0.08);
+  letter-spacing:0.01em;
+}
+.desc-textarea:focus{
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(90,122,58,.10), 2px 3px 12px rgba(140,110,50,0.08);
+}
+@media(max-width:1000px){.main{grid-template-columns:1fr}.out-panel,.desc-panel{position:static}}
+@media(max-width:640px){.header{padding:18px}.main{padding:12px 12px 40px}.grid-2{grid-template-columns:1fr}.actions{padding:11px 13px}}
+</style>
 </head>
 <body>
-    <h1>מחולל ברכות לאביב אילנית שוורץ</h1>
-    <p>Welcome to the blessing generator for spring. Please provide your details below:</p>
-    <form>
-        <label for="blessingType">Select Blessing Type:</label>
-        <select id="blessingType">
-            <option value="short">Short Blessing</option>
-            <option value="deep">Deep Blessing</option>
-        </select>
-        <br>
-        <label for="blessingContent">Blessing Content:</label>
-        <textarea id="blessingContent" rows="5" cols="33" placeholder="Write your blessing here..."></textarea>
-        <br>
-        <button type="submit">Generate Blessing</button>
-    </form>
-    <script>
-        const buildDescPrompt = (blessingType) => {
-            const shortLimit = 15;
-            const deepLimit = 60; // Updated from 55 to 60
-            if (blessingType === "short") {
-                return `Your blessing should not exceed ${shortLimit} words.`;
-            } else if (blessingType === "deep") {
-                return `Your blessing should not exceed ${deepLimit} words.`; // Updated warning text
-            }
-        };
 
-        document.querySelector('form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const blessingType = document.getElementById('blessingType').value;
-            const blessingContent = document.getElementById('blessingContent').value;
-            alert(buildDescPrompt(blessingType));
-        });
-    </script>
+<header class="header">
+  <div class="header-inner">
+    <div class="badge">🌸 ננו בננה · אביב ופסח תשפ״ו</div>
+    <h1>מחולל פרומפט לתמונת אביב אישית</h1>
+    <p>בוחרים פרטים בלחיצה → AI כותב פסקת ברכה → הפסקה מוטמעת verbatim בפרומפט שלם — מוכן לננו בננה</p>
+    <div style="margin-top:12px; display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:999px; padding:5px 14px; font-size:13px; color:rgba(255,255,255,0.9);">
+      ✍️ <strong>אילנית שוורץ</strong> &nbsp;|&nbsp; קהילת "קריאה להבנה"
+    </div>
+  </div>
+</header>
+
+<div class="main">
+<div class="form-col">
+
+<!-- CARD: photo + blessing type -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num" style="background:var(--amber)">✦</div>
+    <div><div class="card-title">הגדרות בסיסיות</div><div class="card-hint">האם יש תמונה? ואיזה סוג ברכה?</div></div>
+  </div>
+  <div class="card-body">
+
+    <div class="field">
+      <label class="field-label">📷 האם יש תמונת פנים של הילד/ה?</label>
+      <div class="chip-group" id="hasPhotoGroup">
+        <label class="chip">
+          <input type="radio" name="hasPhoto" value="yes" checked>
+          <span class="chip-label">✅ כן — אעלה תמונה לננו בננה</span>
+        </label>
+        <label class="chip">
+          <input type="radio" name="hasPhoto" value="no">
+          <span class="chip-label">🖼️ לא — צור פוסטר ללא פנים</span>
+        </label>
+      </div>
+      <div id="noPhotoHint" style="display:none;margin-top:8px;padding:8px 12px;background:#f0f5ea;border-radius:9px;font-size:12px;color:var(--green-dark)">
+        💡 הפרומפט יותאם לפוסטר אביבי עם אלמנטים המייצגים את הילד/ה — ללא דמות מרכזית של אדם.
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <div class="field">
+      <label class="field-label">✍️ סוג הברכה</label>
+      <div class="radio-cards" id="blessingTypeGroup" style="grid-template-columns:1fr 1fr">
+        <label class="radio-card">
+          <input type="radio" name="blessingType" value="short" checked>
+          <div class="rc-label">
+            <div class="rc-title">⚡ קצרה ומדויקת</div>
+            <div class="rc-sub">עד 15 מילים · דיוק מקסימלי</div>
+          </div>
+        </label>
+        <label class="radio-card">
+          <input type="radio" name="blessingType" value="long">
+          <div class="rc-label">
+            <div class="rc-title">📝 מפורטת ועמוקה</div>
+            <div class="rc-sub">עד כ-50 מילים · 3-4 משפטים</div>
+          </div>
+        </label>
+      </div>
+      <div id="blessingTypeHint" style="margin-top:8px;padding:8px 12px;border-radius:9px;font-size:12px;
+        background:#e8f5e3;color:#2a6020;border:1px solid #c0ddb0">
+        ⚡ <strong>קצרה:</strong> 1–2 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CARD 0 — basics -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">0</div>
+    <div><div class="card-title">פרטי הדמות הבסיסיים</div><div class="card-hint">מין, כיתה ושם לפנייה אישית</div></div>
+  </div>
+  <div class="card-body">
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label">לשון הטופס</label>
+        <div class="chip-group" id="genderGroup">
+          <label class="chip"><input type="radio" name="gender" value="f" checked><span class="chip-label">👧 נקבה</span></label>
+          <label class="chip"><input type="radio" name="gender" value="m"><span class="chip-label">👦 זכר</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">🎒 כיתה</label>
+        <div class="chip-group">
+          <label class="chip"><input type="radio" name="grade" value="א" checked><span class="chip-label">א'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ב"><span class="chip-label">ב'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ג"><span class="chip-label">ג'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ד"><span class="chip-label">ד'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ה"><span class="chip-label">ה'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ו"><span class="chip-label">ו'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ז"><span class="chip-label">ז'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ח"><span class="chip-label">ח'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="ט"><span class="chip-label">ט'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="י"><span class="chip-label">י'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="יא"><span class="chip-label">יא'</span></label>
+          <label class="chip"><input type="radio" name="grade" value="יב"><span class="chip-label">יב'</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="studentName">שם הילד/ה (לפנייה אישית בפסקה)</label>
+      <input id="studentName" type="text"
+        placeholder="למשל: תמר, נועם, יוסי — ישמש בפסקת הברכה"
+        data-pf="למשל: תמר, נועה, מיכל"
+        data-pm="למשל: יוסי, אדם, נועם"/>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 1 — strengths -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">1</div>
+    <div><div class="card-title">💪 חוזקות ותכונות</div><div class="card-hint">בחרי עד 4 — אפשר גם בחופשי</div></div>
+  </div>
+  <div class="card-body">
+    <div class="chip-group" id="traitsGroup">
+      <label class="chip"><input type="checkbox" value="יצירתית"><span class="chip-label" data-f="🎨 יצירתית" data-m="🎨 יצירתי">🎨 יצירתית</span></label>
+      <label class="chip"><input type="checkbox" value="סקרנית"><span class="chip-label" data-f="🔍 סקרנית" data-m="🔍 סקרן">🔍 סקרנית</span></label>
+      <label class="chip"><input type="checkbox" value="שמחת חיים"><span class="chip-label">😄 שמחת חיים</span></label>
+      <label class="chip"><input type="checkbox" value="אמיצה"><span class="chip-label" data-f="🦁 אמיצה" data-m="🦁 אמיץ">🦁 אמיצה</span></label>
+      <label class="chip"><input type="checkbox" value="אמפתית"><span class="chip-label" data-f="💛 אמפתית" data-m="💛 אמפתי">💛 אמפתית</span></label>
+      <label class="chip"><input type="checkbox" value="חברותית"><span class="chip-label" data-f="🤗 חברותית" data-m="🤗 חברותי">🤗 חברותית</span></label>
+      <label class="chip"><input type="checkbox" value="מנהיגה"><span class="chip-label" data-f="⭐ מנהיגה" data-m="⭐ מנהיג">⭐ מנהיגה</span></label>
+      <label class="chip"><input type="checkbox" value="חרוצה"><span class="chip-label" data-f="📚 חרוצה" data-m="📚 חרוץ">📚 חרוצה</span></label>
+      <label class="chip"><input type="checkbox" value="מצחיקה"><span class="chip-label" data-f="😂 מצחיקה" data-m="😂 מצחיק">😂 מצחיקה</span></label>
+      <label class="chip"><input type="checkbox" value="עדינה"><span class="chip-label" data-f="🌸 עדינה" data-m="🌸 עדין">🌸 עדינה</span></label>
+      <label class="chip"><input type="checkbox" value="חלומנית"><span class="chip-label" data-f="✨ חלומנית" data-m="✨ חלומן">✨ חלומנית</span></label>
+      <label class="chip"><input type="checkbox" value="ספורטיבית"><span class="chip-label" data-f="🏃 ספורטיבית" data-m="🏃 ספורטיבי">🏃 ספורטיבית</span></label>
+      <label class="chip"><input type="checkbox" value="אוהבת טבע"><span class="chip-label" data-f="🌿 אוהבת טבע" data-m="🌿 אוהב טבע">🌿 אוהבת טבע</span></label>
+      <label class="chip"><input type="checkbox" value="בעלת ביטחון עצמי"><span class="chip-label" data-f="👑 בעלת ביטחון" data-m="👑 בעל ביטחון">👑 ביטחון עצמי</span></label>
+      <label class="chip"><input type="checkbox" value="רגישה לאחרים"><span class="chip-label" data-f="🌷 רגישה לאחרים" data-m="🌷 רגיש לאחרים">🌷 רגישה לאחרים</span></label>
+      <label class="chip"><input type="checkbox" value="מסורה ואחראית"><span class="chip-label" data-f="🎯 אחראית" data-m="🎯 אחראי">🎯 אחראית</span></label>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label class="field-label">✏️ תכונות נוספות</label>
+      <input id="traitsFree" type="text" placeholder="למשל: אוהבת לעזור, מדויקת, נוהגת בעדינות…"/>
+    </div>
+    <div id="traitsCount" style="margin-top:7px;font-size:11.5px;color:var(--text-3)"></div>
+  </div>
+</div>
+
+<!-- CARD 2 — hobbies -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">2</div>
+    <div><div class="card-title">🎯 תחביבים ועיסוקים</div><div class="card-hint">יופיעו כסמלים קטנים ברקע</div></div>
+  </div>
+  <div class="card-body">
+    <div class="chip-group" id="hobbiesGroup">
+      <label class="chip"><input type="checkbox" value="ציור ואמנות"><span class="chip-label">🎨 ציור</span></label>
+      <label class="chip"><input type="checkbox" value="מוזיקה ושירה"><span class="chip-label">🎵 מוזיקה</span></label>
+      <label class="chip"><input type="checkbox" value="ריקוד"><span class="chip-label">💃 ריקוד</span></label>
+      <label class="chip"><input type="checkbox" value="כדורגל"><span class="chip-label">⚽ כדורגל</span></label>
+      <label class="chip"><input type="checkbox" value="שחייה"><span class="chip-label">🏊 שחייה</span></label>
+      <label class="chip"><input type="checkbox" value="גימנסטיקה"><span class="chip-label">🤸 גימנסטיקה</span></label>
+      <label class="chip"><input type="checkbox" value="קריאת ספרים"><span class="chip-label">📖 קריאה</span></label>
+      <label class="chip"><input type="checkbox" value="בישול ואפייה"><span class="chip-label">🍪 בישול</span></label>
+      <label class="chip"><input type="checkbox" value="גינון ופרחים"><span class="chip-label">🌱 גינון</span></label>
+      <label class="chip"><input type="checkbox" value="משחקי מחשב"><span class="chip-label">🎮 גיימינג</span></label>
+      <label class="chip"><input type="checkbox" value="שחמט"><span class="chip-label">♟️ שחמט</span></label>
+      <label class="chip"><input type="checkbox" value="יצירה ידנית"><span class="chip-label">✂️ יצירה ידנית</span></label>
+      <label class="chip"><input type="checkbox" value="צילום"><span class="chip-label">📷 צילום</span></label>
+      <label class="chip"><input type="checkbox" value="בעלי חיים"><span class="chip-label">🐾 בעלי חיים</span></label>
+      <label class="chip"><input type="checkbox" value="לגו ובנייה"><span class="chip-label">🧱 לגו</span></label>
+      <label class="chip"><input type="checkbox" value="קסמים"><span class="chip-label">🪄 קסמים</span></label>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label class="field-label">✏️ תחביבים נוספים</label>
+      <input id="hobbiesFree" type="text" placeholder="למשל: כלי ים, סריגה, מדע, אסטרונומיה…"/>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 3 — world -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">3</div>
+    <div><div class="card-title">🌍 עולם אישי ברקע</div><div class="card-hint">חיות, חפצים, אנשים — פריטים קטנים בתמונה</div></div>
+  </div>
+  <div class="card-body">
+    <label class="field-label" style="margin-bottom:7px">🐾 חיות אהובות</label>
+    <div class="chip-group" id="animalsGroup">
+      <label class="chip"><input type="checkbox" value="a fluffy cat"><span class="chip-label">🐱 חתול</span></label>
+      <label class="chip"><input type="checkbox" value="a playful dog"><span class="chip-label">🐶 כלב</span></label>
+      <label class="chip"><input type="checkbox" value="a rabbit"><span class="chip-label">🐰 ארנב</span></label>
+      <label class="chip"><input type="checkbox" value="a hamster"><span class="chip-label">🐹 אוגר</span></label>
+      <label class="chip"><input type="checkbox" value="colorful fish in a bowl"><span class="chip-label">🐟 דגים</span></label>
+      <label class="chip"><input type="checkbox" value="a parrot"><span class="chip-label">🦜 תוכי</span></label>
+      <label class="chip"><input type="checkbox" value="a horse"><span class="chip-label">🐴 סוס</span></label>
+      <label class="chip"><input type="checkbox" value="a small squirrel"><span class="chip-label">🐿️ סנאי</span></label>
+    </div>
+    <hr class="div"/>
+    <label class="field-label" style="margin-bottom:7px">✨ חפצים ואלמנטים מייצגים</label>
+    <div class="chip-group" id="objectsGroup">
+      <label class="chip"><input type="checkbox" value="colorful pencils and art supplies"><span class="chip-label">✏️ עפרונות ציור</span></label>
+      <label class="chip"><input type="checkbox" value="a school backpack with books"><span class="chip-label">🎒 תיק בית ספר</span></label>
+      <label class="chip"><input type="checkbox" value="a musical instrument"><span class="chip-label">🎸 כלי נגינה</span></label>
+      <label class="chip"><input type="checkbox" value="a bicycle"><span class="chip-label">🚲 אופניים</span></label>
+      <label class="chip"><input type="checkbox" value="a small garden or flower pot"><span class="chip-label">🪴 גינה קטנה</span></label>
+      <label class="chip"><input type="checkbox" value="a favorite storybook"><span class="chip-label">📗 ספר אהוב</span></label>
+      <label class="chip"><input type="checkbox" value="siblings playing nearby"><span class="chip-label">👶 אחים/אחיות</span></label>
+      <label class="chip"><input type="checkbox" value="a best friend standing nearby"><span class="chip-label">👯 חבר/ה הכי טוב</span></label>
+      <label class="chip"><input type="checkbox" value="a rainbow in the sky"><span class="chip-label">🌈 קשת בשמיים</span></label>
+      <label class="chip"><input type="checkbox" value="a sports ball"><span class="chip-label">⚽ כדור ספורט</span></label>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label class="field-label">✏️ פרטים אישיים נוספים</label>
+      <input id="extrasFree" type="text" placeholder="למשל: גר ליד הים, אוהב לגו, יש לו אח תאום…"/>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 4 — spring -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">4</div>
+    <div><div class="card-title">🌸 סמל האביב ואלמנטים</div><div class="card-hint">פרח + עד 4 אלמנטים אביביים</div></div>
+  </div>
+  <div class="card-body">
+    <label class="field-label" style="margin-bottom:7px">הפרח המאפיין</label>
+    <div class="chip-group" id="flowerGroup" style="margin-bottom:12px">
+      <label class="chip"><input type="radio" name="flower" value="anemone" checked><span class="chip-label">🌺 כלנית</span></label>
+      <label class="chip"><input type="radio" name="flower" value="buttercup"><span class="chip-label">🌼 נורית</span></label>
+      <label class="chip"><input type="radio" name="flower" value="daisy"><span class="chip-label">🌸 חרצית</span></label>
+      <label class="chip"><input type="radio" name="flower" value="almond blossom"><span class="chip-label">🤍 שקדיה</span></label>
+      <label class="chip"><input type="radio" name="flower" value="tulip"><span class="chip-label">🌷 צבעוני</span></label>
+      <label class="chip"><input type="radio" name="flower" value="wildflowers"><span class="chip-label">🌿 פרחי בר</span></label>
+      <label class="chip"><input type="radio" name="flower" value="sunflower"><span class="chip-label">🌻 חמנייה</span></label>
+    </div>
+    <hr class="div"/>
+    <label class="field-label" style="margin-bottom:7px">🌿 אלמנטים אביביים</label>
+    <div class="chip-group" id="elementsGroup">
+      <label class="chip"><input type="checkbox" value="soft spring breeze"><span class="chip-label">🍃 רוח אביבית</span></label>
+      <label class="chip"><input type="checkbox" value="floating flower petals"><span class="chip-label">🌸 עלי כותרת</span></label>
+      <label class="chip"><input type="checkbox" value="warm morning sunlight"><span class="chip-label">☀️ אור שמש</span></label>
+      <label class="chip"><input type="checkbox" value="blooming cherry blossom branches"><span class="chip-label">🌿 ענפים פורחים</span></label>
+      <label class="chip"><input type="checkbox" value="colorful butterflies"><span class="chip-label">🦋 פרפרים</span></label>
+      <label class="chip"><input type="checkbox" value="birds flying in the sky"><span class="chip-label">🐦 ציפורים</span></label>
+      <label class="chip"><input type="checkbox" value="a soft rainbow in the background"><span class="chip-label">🌈 קשת</span></label>
+      <label class="chip"><input type="checkbox" value="lush green grass field with wildflowers"><span class="chip-label">🌱 שדה פרחים</span></label>
+      <label class="chip"><input type="checkbox" value="a winding path through flowers"><span class="chip-label">🛤️ שביל פרחוני</span></label>
+    </div>
+    <div id="elementsCount" style="margin-top:7px;font-size:11.5px;color:var(--text-3)"></div>
+  </div>
+</div>
+
+<!-- CARD 5 — title + style -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">5</div>
+    <div><div class="card-title">🖼️ כותרת, סגנון ואווירה</div><div class="card-hint">עיצוב התמונה</div></div>
+  </div>
+  <div class="card-body">
+    <div class="field">
+      <label class="field-label" for="titlePreset">כותרת פואטית בתמונה</label>
+      <select id="titlePreset">
+        <option value="">ללא כותרת</option>
+        <optgroup label="🧒 לתלמידים">
+          <option value="האביב מחכה לך בחוץ">האביב מחכה לך בחוץ 🌿</option>
+          <option value="כל יום אביב חדש">כל יום אביב חדש ☀️</option>
+          <option value="האביב בא גם בשבילך">האביב בא גם בשבילך 🦋</option>
+          <option value="כך פורחת ומתפתחת" data-vf="כך פורחת ומתפתחת" data-vm="כך פורח ומתפתח">כך פורח/ת ומתפתח/ת 🌱</option>
+          <option value="את הפרח המיוחד שלנו" data-vf="את הפרח המיוחד שלנו" data-vm="אתה הפרח המיוחד שלנו">את/ה הפרח המיוחד שלנו 🌺</option>
+          <option value="האביב שלי — הצבעים שלי">האביב שלי — הצבעים שלי 🎨</option>
+          <option value="האביב פורח בתוכך" data-vf="האביב פורח בתוכך" data-vm="האביב פורח בתוכך">האביב פורח בתוכך 🌸</option>
+        </optgroup>
+        <optgroup label="🌿 פואטי — לכולם">
+          <option value="האביב נולד בכל צעד שלך">האביב נולד בכל צעד שלך</option>
+          <option value="האביב גלום בך">האביב גלום בך</option>
+          <option value="כך משתקף בך האביב">כך משתקף בך האביב</option>
+          <option value="האביב מתחיל בך">האביב מתחיל בך</option>
+          <option value="כך את אביב בעולם" data-vf="כך את אביב בעולם" data-vm="כך אתה אביב בעולם">כך את/ה אביב בעולם</option>
+          <option value="את מביאה איתך את האביב" data-vf="את מביאה איתך את האביב" data-vm="אתה מביא איתך את האביב">את/ה מביא/ה איתך את האביב</option>
+        </optgroup>
+        <option value="custom">✏️ כתיבה מותאמת אישית</option>
+      </select>
+      <div id="customTitleWrap" style="display:none">
+        <input id="titleText" type="text"
+          placeholder="כתבי/כתוב כאן את הכותרת"
+          data-pf="כתבי כאן את הכותרת המותאמת"
+          data-pm="כתוב כאן את הכותרת המותאמת"
+          style="margin-top:7px"/>
+      </div>
+    </div>
+    <div class="field" id="titlePosField" style="display:none">
+      <label class="field-label">📍 מיקום הכותרת</label>
+      <div class="chip-group">
+        <label class="chip"><input type="radio" name="titlePos" value="prominently at the very top of the image, centered, above the portrait" checked><span class="chip-label">⬆️ ראש התמונה — מרכז</span></label>
+        <label class="chip"><input type="radio" name="titlePos" value="elegantly in the upper area of the image"><span class="chip-label">↗️ פינה עליונה</span></label>
+        <label class="chip"><input type="radio" name="titlePos" value="in a decorative ribbon just above the bottom banner"><span class="chip-label">🎀 גלילה מעל הבאנר</span></label>
+      </div>
+    </div>
+    <div class="field" id="titleFontField" style="display:none">
+      <label class="field-label">🖋️ סגנון גופן הכותרת</label>
+      <div class="chip-group">
+        <label class="chip"><input type="radio" name="titleFont" value="soft rounded bubbly Hebrew lettering, friendly and warm" checked><span class="chip-label">🫧 עגול ומתוק</span></label>
+        <label class="chip"><input type="radio" name="titleFont" value="playful hand-lettered colorful Hebrew"><span class="chip-label">✍️ כתב יד שובב</span></label>
+        <label class="chip"><input type="radio" name="titleFont" value="bold rounded Hebrew, strong and cheerful"><span class="chip-label">💪 מודגש עגלגל</span></label>
+        <label class="chip"><input type="radio" name="titleFont" value="elegant serif Hebrew calligraphy, refined and graceful"><span class="chip-label">✒️ קליגרפי אלגנטי</span></label>
+        <label class="chip"><input type="radio" name="titleFont" value="golden embossed Hebrew letters with floral ornaments"><span class="chip-label">✨ זהב ועיטורים</span></label>
+      </div>
+    </div>
+    <hr class="div"/>
+    <div class="field">
+      <label class="field-label" for="style">סגנון איור</label>
+      <select id="style">
+        <optgroup label="🌸 רך ואביבי">
+          <option value="PASTEL_DREAMY">🌸 פסטל חלומי — קלאסי ועדין</option>
+          <option value="WATERCOLOR_SOFT">💧 צבעי מים — שקוף ונושם</option>
+          <option value="COTTAGE_CORE">🌼 קוטג'-קור — חם וכפרי</option>
+        </optgroup>
+        <optgroup label="✨ מסוגנן ואיכותי">
+          <option value="PIXAR_3D">✨ תלת-מימד פיקסר — בהיר ומחייך</option>
+          <option value="GHIBLI">🍃 סגנון ג'יבלי — קסום ופורח</option>
+          <option value="IMPRESSIONIST">🖼️ אימפרסיוניזם — כמו מונה</option>
+        </optgroup>
+        <optgroup label="🌺 מיוחד">
+          <option value="STICKER_ART">🎀 סטיקר ארט אביבי — שמח ועליז</option>
+          <option value="ANIME_SHOJO">🌸 אנימה שוג'ו — עדין ורומנטי</option>
+          <option value="BOTANICAL_VINTAGE">📜 בוטאני וינטג'</option>
+        </optgroup>
+      </select>
+    </div>
+    <hr class="div"/>
+    <div class="field">
+      <label class="field-label">אווירה כללית</label>
+      <div class="radio-cards chips-amber">
+        <label class="radio-card"><input type="radio" name="mood" value="soft, bright, spring, pastel, uplifting" checked><div class="rc-label"><div class="rc-title" data-f="🌤️ רכה ומוארת" data-m="🌤️ רך ומואר">🌤️ רכה ומוארת</div><div class="rc-sub">פסטל, אביבי</div></div></label>
+        <label class="radio-card"><input type="radio" name="mood" value="joyful, festive, blooming, optimistic, colorful"><div class="rc-label"><div class="rc-title" data-f="🎊 שמחה וצבעונית" data-m="🎊 שמח וצבעוני">🎊 שמחה וצבעונית</div><div class="rc-sub">חגיגי, שמח</div></div></label>
+        <label class="radio-card"><input type="radio" name="mood" value="playful, whimsical, magical, children's book illustration"><div class="rc-label"><div class="rc-title">🧚 קסום ודמיוני</div><div class="rc-sub">ספר ילדים</div></div></label>
+        <label class="radio-card"><input type="radio" name="mood" value="warm, cozy, safe, encouraging, loving"><div class="rc-label"><div class="rc-title">🤗 חמים ומעודד</div><div class="rc-sub">מחבק, אוהב</div></div></label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARD 6 — signer -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num">6</div>
+    <div><div class="card-title">✉️ חתימה ושם המברך/ת</div><div class="card-hint">יופיע מתחת ל״חג אביב שמח״ בתמונה</div></div>
+  </div>
+  <div class="card-body">
+    <div class="field">
+      <label class="field-label" for="signerName">שם השולח/ת</label>
+      <input id="signerName" type="text"
+        value=""
+        placeholder="שמך / שם הכיתה / שם בית הספר"
+        style="text-align:right"/>
+      <div style="font-size:11px;color:var(--text-3);margin-top:5px">
+        אפשר לכתוב שם אחד, כמה שמות, או תיאור — למשל: ״כיתה ד׳2, בית ספר השקמה״
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="card" style="overflow:hidden">
+  <div class="actions">
+    <button class="btn btn-primary" id="generateBtn">✨ צור פסקה + פרומפט שלם</button>
+    <button class="btn btn-secondary" id="clearBtn" type="button">🗑️ נקה</button>
+  </div>
+</div>
+
+</div><!-- /form-col -->
+
+<!-- OUTPUT COL -->
+<div class="output-col">
+
+  <!-- פסקת הברכה — ראשונה ונגישה -->
+  <div class="desc-panel" style="position:sticky;top:18px">
+    <div class="out-head">
+      <div><h2>✍️ שלב א׳ — פסקת הברכה</h2><p>נכתבת ע״י AI · ערכי לפי הצורך · מתעדכנת בפרומפט אוטומטית</p></div>
+      <div class="out-status"><div class="status-dot" id="descDot" style="background:#ccc"></div><span id="descStatus">ממתין</span></div>
+    </div>
+    <div class="out-body">
+      <div class="loading-box" id="descLoading">
+        <div class="spin" style="font-size:24px">🌸</div>
+        <div class="loading-msg">כותב/ת פסקה אישית...</div>
+      </div>
+      <textarea class="desc-textarea" id="descOutput"
+        placeholder="הפסקה תופיע כאן לאחר הלחיצה.&#10;ערכי ישירות — הפרומפט יתעדכן אוטומטית."></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+        <div style="font-size:11px;color:var(--text-3)">💡 כל עריכה מתעדכנת אוטומטית בפרומפט השלם למטה</div>
+        <div id="wordCount" style="font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:#f0f5ea;color:var(--green-dark)">0 מילים</div>
+      </div>
+      <div id="wordWarning" style="display:none;margin-top:6px;padding:7px 11px;background:#fff3cd;border:1px solid #f0c040;border-radius:8px;font-size:12px;color:#7a5500">
+        ⚠️ <strong>הפסקה ארוכה מדי.</strong> ננו בננה מדויק יותר עד 60 מילים — מומלץ לקצר.
+      </div>
+      <div id="editReminder" style="display:none;margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,#f0f8ea,#e8f4e0);border:1.5px solid #a8d080;border-radius:10px;font-size:13px;color:#3a6020;line-height:1.6">
+        ✏️ <strong>בדקי וערכי לפי הצורך</strong> — ואז גללי למטה לפרומפט השלם והעתיקי.
+      </div>
+    </div>
+    <div class="out-actions">
+      <button class="btn btn-copy" id="copyDescBtn" style="flex:1;justify-content:center">📋 העתק פסקה בלבד</button>
+      <button class="btn btn-secondary" id="regenDescBtn">🔄 כתוב מחדש</button>
+      <span class="copy-fb" id="copyDescFb">✅ הועתק!</span>
+    </div>
+  </div>
+
+  <!-- פרומפט שלם — למטה -->
+  <div class="out-panel" style="margin-top:16px;position:static">
+    <div class="out-head">
+      <div><h2>🚀 שלב ב׳ — הפרומפט השלם</h2><p>פסקת הברכה מוטמעת verbatim — מוכן לננו בננה</p></div>
+      <div class="out-status"><div class="status-dot" id="statusDot"></div><span id="statusText">ממתין</span></div>
+    </div>
+    <div class="out-body">
+      <div class="loading-box" id="mainLoading">
+        <div class="spin" style="font-size:30px">🌸</div>
+        <div class="loading-msg" id="loadingMsg">שלב 1: כותב/ת פסקת ברכה אישית...</div>
+        <div class="loading-sub">לאחר מכן הפסקה מוטמעת בפרומפט השלם</div>
+      </div>
+      <div class="prompt-box" id="output">
+        <span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.<br><br>
+① AI כותב פסקת ברכה (למעלה) — ערכי לפי הצורך<br>
+② הפסקה מוטמעת verbatim בפרומפט המלא (כאן)</span>
+      </div>
+      <div class="tip-box">✏️ <strong>לאחר עריכת הפסקה למעלה</strong> — העתיקי את הפרומפט השלם ← הדביקי בננו בננה ← העלי תמונה ← Generate.</div>
+    </div>
+    <div class="out-actions">
+      <button class="btn btn-copy" id="copyBtn" style="flex:1;justify-content:center">📋 העתק פרומפט שלם</button>
+      <span class="copy-fb" id="copyFb">✅ הועתק!</span>
+    </div>
+  </div>
+
+</div><!-- /output-col -->
+</div><!-- /main -->
+
+<script>
+(function(){
+"use strict";
+
+// ⚠️ כדי שהאפליקציה תעבוד מחוץ לסביבה הזו (כמו בגיטהאב או במחשב שלך),
+// את חייבת ליצור מפתח API חינמי של Gemini בכתובת:
+// https://aistudio.google.com/app/apikey
+// ולהדביק אותו בין המרכאות כאן למטה:
+const MY_OWN_API_KEY = "AIzaSyCfyzzlb-C1PVEvyfHm-5Gzu0EM4B0uBLE"; 
+
+const environmentKey = typeof __app_id !== 'undefined' ? "" : "";
+const apiKey = environmentKey || MY_OWN_API_KEY;
+
+const $=id=>document.getElementById(id);
+const $$=sel=>Array.from(document.querySelectorAll(sel));
+function radio(n){const e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:"";}
+function checks(id){return $$('#'+id+' input[type="checkbox"]:checked').map(e=>e.value);}
+function isFemale(){return radio("gender")!=="m";}
+
+const FLOWER_HE={anemone:"כלנית",buttercup:"נורית",daisy:"חרצית","almond blossom":"שקדיה",tulip:"צבעוני",wildflowers:"פרחי בר",sunflower:"חמנייה"};
+
+const STYLE_MAP={
+  PASTEL_DREAMY:   "dreamy pastel illustration — soft cream and blush tones, delicate petal-like brushstrokes, gentle hazy glow, delicate linework, chalky matte texture, like a hand-painted greeting card",
+  WATERCOLOR_SOFT: "transparent watercolor illustration — loose wet-on-wet washes, soft bleeding edges at color boundaries, visible paper grain texture, translucent layered pigments, muted spring palette of sage, blush and sky",
+  COTTAGE_CORE:    "romantic cottage-core hand-painted illustration — warm golden afternoon light, thick impasto-style paint texture, earthy cream and moss greens, decorative floral wreaths, folk-art charm with naive proportions",
+  PIXAR_3D:        "stylized 3D CGI render — smooth subsurface skin shading, soft volumetric spring lighting, vibrant saturated pastel palette, clean crisp edges, Pixar-Disney quality character design, polished and cheerful",
+  GHIBLI:          "Studio Ghibli inspired illustration — lush painterly meadow backgrounds, warm nostalgic golden light, expressive soft linework with flowing contours, delicate botanical details, muted greens and warm ochres",
+  IMPRESSIONIST:   "digital impressionist painting — short visible dabs of oil-like color, dappled spring light with glowing halos, blurred soft edges, Monet garden palette of lilac, gold and green, loose gestural strokes",
+  STICKER_ART:     "bold kawaii sticker art — thick black outlines, vibrant flat pastel fills, no gradients, cheerful chibi proportions, clean white highlights, playful spring energy, like a die-cut vinyl sticker",
+  ANIME_SHOJO:     "soft shojo anime illustration — fine delicate linework, luminous skin with soft blush, cherry-blossom sparkle effects, pastel color palette with glowing light overlays, dreamy romantic atmosphere",
+  BOTANICAL_VINTAGE:"vintage botanical engraving illustration — detailed hand-etched linework, warm sepia-cream paper tone, sage green and dusty rose palette, scientific illustration precision with decorative flourishes"
+};
+
+/* title visibility */
+function updateTitleVis(){
+  const v=$("titlePreset").value;
+  $("customTitleWrap").style.display=v==="custom"?"block":"none";
+  const s=v?"block":"none";
+  $("titlePosField").style.display=s;
+  $("titleFontField").style.display=s;
+}
+
+/* gender */
+function applyGender(g){
+  const iF=g!=="m";
+  $$('[data-f][data-m]').forEach(el=>{
+    if(el.tagName==="OPTION") return;
+    el.textContent=iF?el.getAttribute("data-f"):el.getAttribute("data-m");
+  });
+  $$('[data-pf][data-pm]').forEach(el=>{
+    el.placeholder=iF?el.getAttribute("data-pf"):el.getAttribute("data-pm");
+  });
+  $$('#titlePreset option[data-vf]').forEach(opt=>{
+    const was=opt.selected;
+    opt.value=iF?opt.getAttribute("data-vf"):opt.getAttribute("data-vm");
+    if(was) opt.selected=true;
+  });
+}
+
+/* counts */
+function updateCounts(){
+  const tc=checks("traitsGroup");
+  $("traitsCount").innerHTML=tc.length?'<span class="count-badge">'+tc.length+'</span> תכונות נבחרו'+(tc.length>4?' — <span style="color:#c85a4a">מומלץ עד 4</span>':''):"";
+  const ec=checks("elementsGroup");
+  $("elementsCount").innerHTML=ec.length?'<span class="count-badge">'+ec.length+'</span> אלמנטים נבחרו'+(ec.length>4?' — <span style="color:#c85a4a">מומלץ עד 4</span>':''):"";
+}
+
+/* form data */
+function getFormData(){
+  const iF=isFemale();
+  const name=$("studentName").value.trim();
+  const grade=radio("grade")||"א";
+  const traitChips=checks("traitsGroup");
+  const traitFree=$("traitsFree").value.trim();
+  const hobbyChips=checks("hobbiesGroup");
+  const hobbyFree=$("hobbiesFree").value.trim();
+  const animals=checks("animalsGroup");
+  const objects=checks("objectsGroup");
+  const extraFree=$("extrasFree").value.trim();
+  const flower=radio("flower")||"anemone";
+  const elements=checks("elementsGroup");
+  const titlePreset=$("titlePreset").value;
+  const titleTxt=titlePreset==="custom"?$("titleText").value.trim():titlePreset;
+  const titlePos=radio("titlePos")||"prominently at the very top of the image, centered, above the portrait";
+  const titleFont=radio("titleFont")||"soft rounded bubbly Hebrew lettering, friendly and warm";
+  const style=$("style").value;
+  const mood=radio("mood")||"soft, bright, spring, pastel, uplifting";
+  const signer=$("signerName").value.trim();
+  const hasPhoto=radio("hasPhoto")!=="no"; // default yes
+  const blessingType=radio("blessingType")||"short";
+
+  const allTraits=[...traitChips,...(traitFree?traitFree.split(/[,،]/).map(t=>t.trim()).filter(Boolean):[])];
+  const allHobbies=[...hobbyChips,...(hobbyFree?hobbyFree.split(/[,،]/).map(t=>t.trim()).filter(Boolean):[])];
+  const allBg=[...animals,...objects,...(extraFree?[extraFree]:[])];
+
+  return{iF,name,grade,allTraits,allHobbies,allBg,flower,elements,titleTxt,titlePos,titleFont,style,mood,signer,hasPhoto,blessingType};
+}
+
+/* build description prompt */
+function buildDescPrompt(d){
+  const fHe=FLOWER_HE[d.flower]||"פרח אביבי";
+  const isShort=d.blessingType==="short";
+  const iF=d.iF;
+
+  // Gender-explicit forms for the AI
+  const gWord    = iF ? "נקבה"   : "זכר";
+  const pronoun  = iF ? "את"     : "אתה";
+  const possess  = iF ? "שלך"    : "שלך";  // same
+  const verb1    = iF ? "פורחת"  : "פורח";
+  const verb2    = iF ? "מאירה"  : "מאיר";
+  const verb3    = iF ? "מביאה"  : "מביא";
+  const verb4    = iF ? "ממשיכי" : "המשך";
+  const adj1     = iF ? "יקרה"   : "יקר";
+  const adj2     = iF ? "מיוחדת" : "מיוחד";
+  const adj3     = iF ? "אהובה"  : "אהוב";
+
+  // address: "תמר אהובה," NOT "תמר האהובה,"
+  const address  = d.name
+    ? d.name + " " + adj3 + ","
+    : (iF ? "יקירתנו," : "יקירנו,");
+
+  const gradeHe  = d.grade ? "כיתה " + d.grade : "";
+  const traitsStr  = d.allTraits.length  ? d.allTraits.slice(0, isShort?2:4).join(", ")  : "";
+  const hobbiesStr = d.allHobbies.length ? d.allHobbies.slice(0, isShort?1:3).join(", ") : "";
+  const bgStr      = d.allBg.length      ? d.allBg.slice(0, isShort?1:3).join(", ")      : "";
+
+  const L = [];
+
+  L.push("אתה מומחה לכתיבת ברכות. עליך לכתוב פסקת ברכה אביבית אישית, חמה ומרגשת בעברית לתלמיד" + (iF?"ה":"") + " " + (gradeHe||"") + ".");
+  L.push("");
+  L.push("⚠️ כללי דקדוק חובה — אין לחרוג מהם:");
+  L.push("• המין הדקדוקי של הדמות: " + gWord + ".");
+  L.push("• הפנייה היא ל" + (iF?"נקבה":"זכר") + " יחיד" + (iF?"ה":"") + " — " + pronoun + ".");
+  L.push("• כל הפעלים, התארים והפניות חייבים להיות ב" + (iF?"נקבה":"זכר") + " יחיד" + (iF?"ה":"") + " (למשל: " + verb1 + ", " + verb2 + ", " + verb3 + ").");
+  L.push("• אין לכתוב צורות מעורבות (כמו 'פורח/ת'). תמיד בחר צורה אחת תקינה.");
+  L.push("");
+  L.push("פרטי הדמות שיש לשלב בברכה:");
+  L.push("• פרח אביבי מייצג: " + fHe);
+  if(traitsStr)  L.push("• תכונות: " + traitsStr);
+  if(hobbiesStr) L.push("• תחביבים: " + hobbiesStr);
+  if(bgStr)      L.push("• עולם אישי (חיות, חפצים): " + bgStr);
+  L.push("");
+
+  if(isShort){
+    L.push("מבנה הברכה הנדרש — ברכה קצרה וקולעת (2-3 משפטים):");
+    L.push("1. פתח תמיד במילים: \"" + address + "\"");
+    L.push("2. הוסף משפט אחד שמתחיל במילים: 'כמו " + fHe + " ש" + verb1 + " באביב, כך " + pronoun + "...' ושלב בו תכונה אחת.");
+    L.push("3. סיום קצר וחם: ברכת אביב שמח.");
+    L.push("⚠️ הקפד לסיים את הפסקה בנקודה או סימן קריאה. אל תקטע משפטים!");
+  } else {
+    L.push("מבנה הברכה הנדרש — מפורטת אך ממוקדת (עד 50-55 מילים לכל היותר!):");
+    L.push("כדי שהברכה תהיה מושלמת אך לא ארוכה מדי, עליך לכתוב 3-4 משפטים מרגשים אך קצרים ותמציתיים.");
+    L.push("");
+    L.push("משפט 1: פתח במילים \"" + address + "\" והוסף משפט קצר על האור ש" + pronoun + " " + verb3 + " לסביבה.");
+    L.push("משפט 2: 'כמו " + fHe + " ש" + verb1 + " לקראת האביב, כך " + pronoun + "...' (שלב את התכונות: " + (traitsStr || "האופי המיוחד") + "). הקפד שיהיה משפט קולע.");
+    if(hobbiesStr||bgStr){
+      L.push("משפט 3: משפט קצר המשלב בטבעיות את: " + [hobbiesStr,bgStr].filter(Boolean).join(" ו-") + ".");
+    } else {
+      L.push("משפט 3: משפט קצר על ההתפתחות ש" + pronoun + " מציג" + (iF?"ה":"") + " בכל יום.");
+    }
+    L.push("משפט 4: ברכת חג אביב שמח, קצרה ומרגשת.");
+    L.push("");
+    L.push("⚠️ חוק ברזל כפול: 1) אסור לעבור את ה-55 מילים בשום אופן! 2) חובה לסיים את המשפט האחרון עד תומו עם סימן פיסוק (! או .). תכנן את המשפטים כך שיהיו קצרים מספיק כדי לסיים בטבעיות לפני המילה ה-55.");
+  }
+  L.push("החזר רק את הפסקה עצמה (כגוש טקסט אחד רציף). ללא מרכאות, ללא כותרות.");
+  return L.join("\n");
+}
+
+/* build full prompt with paragraph embedded */
+function buildFullPrompt(d,para){
+  const fHe=FLOWER_HE[d.flower]||"spring flower";
+  const subject=d.iF?"girl":"boy";
+  const gradeStr=d.grade?" (grade "+d.grade+")":"";
+  const styleDesc=STYLE_MAP[d.style]||d.style||"sweet ornate spring illustration";
+  const P=[];
+
+  // ── Opening narrative ──
+  var sceneDesc="A richly detailed spring greeting poster with a clear vertical composition. ";
+  sceneDesc+="Illustration style: "+styleDesc+". ";
+  sceneDesc+="The mood is "+d.mood+". ";
+  if(d.elements.length){
+    sceneDesc+="The background features "+d.elements.slice(0,3).join(", ")+". ";
+  }
+  sceneDesc+="Prominent "+d.flower+" ("+fHe+") flowers are featured inside and around the text plaques.";
+  P.push(sceneDesc);
+  P.push("");
+
+  // ── Subject / layout ──
+  if(d.hasPhoto){
+    var subjectDesc="In the center, the "+subject+gradeStr+" from the uploaded photo stands in a lush spring field. ";
+    subjectDesc+="Preserve facial features, hair, glasses, and likeness exactly as in the original photo. ";
+    subjectDesc+="IMPORTANT: apply the illustration style fully to the subject — transform them into the same art style as the rest of the image, do NOT leave them as a realistic photograph.";
+    if(d.allTraits.length) subjectDesc+=" Personality: "+d.allTraits.slice(0,4).join(", ")+".";
+    P.push(subjectDesc);
+  } else {
+    // No photo — decorative poster layout
+    var noPhotoDesc="There is no human figure in this poster. Instead, create a beautiful, fully decorative spring illustration. ";
+    noPhotoDesc+="Fill the poster with lush "+d.flower+" ("+fHe+") flowers, spring greenery, butterflies, and seasonal details. ";
+    if(d.allTraits.length||d.allHobbies.length){
+      var symbols=[].concat(d.allTraits.slice(0,2),d.allHobbies.slice(0,2));
+      noPhotoDesc+="Incorporate these symbolic elements as charming decorative details throughout the composition: "+symbols.join(", ")+". ";
+    }
+    noPhotoDesc+="The composition should feel warm, celebratory, and personal — like a handcrafted spring greeting card.";
+    P.push(noPhotoDesc);
+  }
+
+  // ── Background details — always included ──
+  var bgItems = [].concat(d.allHobbies, d.allBg).filter(Boolean);
+  if(bgItems.length){
+    P.push("Weave subtly into the background as small charming decorative details (not dominant, not labeled): "+bgItems.join("; ")+".");
+  }
+  P.push("");
+
+  // ── Hebrew text framing ──
+  var numTexts=(d.titleTxt?1:0)+1+1;
+  P.push("The poster has "+numTexts+" distinct text elements in Hebrew, which must be rendered with perfect accuracy and right-alignment:");
+  P.push("");
+
+  var n=1;
+  if(d.titleTxt){
+    P.push(n+". Top Title — COPY EXACTLY:");
+    P.push("   At the very top, in "+d.titleFont+", "+d.titlePos+".");
+    P.push("   The exact text that must appear: \""+d.titleTxt+"\"");
+    P.push("   Copy letter by letter: \""+d.titleTxt+"\"");
+    P.push("");
+    n++;
+  }
+
+  // ── Split paragraph into numbered lines for maximum accuracy ──
+  var paraLines = para.split(/[.!,،]/).map(function(s){return s.trim();}).filter(Boolean);
+
+  P.push(n+". Central Paragraph — CRITICAL: COPY EVERY WORD EXACTLY AS WRITTEN:");
+  P.push("   The central element is a flower-trimmed plaque. The EXACT Hebrew text that must appear inside it, word for word:");
+  P.push('   "'+para+'"');
+  P.push("");
+  P.push("   To ensure accuracy, here is the same text broken into lines:");
+  paraLines.forEach(function(line, i){
+    P.push("   Line "+(i+1)+": "+line);
+  });
+  P.push("");
+  P.push("   IMPORTANT RULES FOR THE TEXT:");
+  P.push("   • Do NOT change, replace, or omit even a single letter or word.");
+  P.push("   • Do NOT invent alternative words — copy only what is written above.");
+  P.push("   • The final text in the image must match this EXACTLY: \""+para+"\"");
+  P.push("   • Right-aligned. Clean highly legible Hebrew font. Large enough to read comfortably.");
+  P.push("");
+  n++;
+
+  P.push(n+". Bottom Banner — COPY EXACTLY:");
+  P.push("   On a decorated ribbon at the bottom.");
+  P.push("   Line 1 — large bold Hebrew, copy exactly: \"חג אביב שמח\"");
+  if(d.signer) P.push("   Line 2 — below, copy exactly: \""+d.signer+"\"");
+  P.push("   Do not alter these words in any way.");
+  P.push("");
+
+  P.push("CRITICAL FINAL REMINDER — HEBREW TEXT ACCURACY:");
+  P.push("All Hebrew text must be copied EXACTLY as written. Do not change, invent, or substitute any word or letter.");
+  P.push("Every Hebrew word must be perfectly legible, correctly spelled, and right-aligned.");
+  P.push("Treat the Hebrew text like a font rendering task — visual precision, not interpretation.");
+  P.push("The entire composition is seamlessly integrated with soft, warm spring lighting.");
+
+  return P.join("\n");
+}
+
+/* state */
+var _lastData=null;
+
+/* Fetch with Retry mechanism for API stability */
+async function fetchWithRetry(url, options, retries = 5) {
+  let delay = 1000;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
+    } catch (e) {
+      if (i === retries - 1) throw e;
+      await new Promise(res => setTimeout(res, delay));
+      delay *= 2;
+    }
+  }
+}
+
+/* TWO-PHASE GENERATE - Using Gemini API integrated in the environment */
+async function generate(){
+  const d=getFormData();
+  _lastData=d;
+  // UI loading
+  $("generateBtn").disabled=true;
+  $("generateBtn").textContent="⏳ יוצר...";
+  $("mainLoading").style.display="block";
+  $("output").style.display="none";
+  $("descLoading").style.display="block";
+  $("descOutput").style.display="none";
+  $("statusDot").style.background="#f0c878";
+  $("statusText").textContent="כותב פסקה...";
+  $("descDot").style.background="#f0c878";
+  $("descStatus").textContent="כותב...";
+
+  // Phase 1 — AI paragraph
+  let para="";
+  try{
+    if (!apiKey) {
+      throw new Error("Missing API Key - please add MY_OWN_API_KEY in the code");
+    }
+
+    $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
+    
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    const payload = {
+        contents: [{ parts: [{ text: buildDescPrompt(d) }] }],
+        generationConfig: { temperature: 0.7 }
+    };
+    
+    const data = await fetchWithRetry(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+    
+    para = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    if(!para) throw new Error("empty");
+  }catch(e){
+    // Fallback in case of API error (like when missing key on GitHub)
+    const fHe=FLOWER_HE[d.flower]||"פרח אביבי";
+    const addr=d.name?(d.iF?d.name+" היקרה,":d.name+" היקר,"):(d.iF?"יקירה שלנו,":"יקירנו,");
+    const t1=d.allTraits[0]||(d.iF?"מיוחדת":"מיוחד");
+    para=addr+" כמו "+fHe+" שפורח"+(d.iF?"ת":"")+" עם בוא האביב, כך "+(d.iF?"את":"אתה")+" "+t1+" ומאיר"+(d.iF?"ת":"")+" את כולנו. חג אביב שמח! 🌸";
+  }
+
+  // show paragraph
+  $("descOutput").value=para;
+  $("descOutput").style.display="block";
+  $("descLoading").style.display="none";
+  $("descDot").style.background="#a8d870";
+  $("descStatus").textContent="מוכן לעריכה ✓";
+  if($("editReminder")) $("editReminder").style.display="block";
+  updateWordCount();
+
+  // Phase 2 — assemble full prompt
+  $("loadingMsg").textContent="שלב 2 מתוך 2: מרכיב פרומפט שלם עם הפסקה מוטמעת...";
+  await new Promise(r=>setTimeout(r,250));
+
+  const fullPrompt=buildFullPrompt(d,para);
+  $("output").textContent=fullPrompt;
+  $("output").style.display="block";
+  $("mainLoading").style.display="none";
+  $("statusDot").style.background="#a8d870";
+  $("statusText").textContent="מוכן ✓";
+
+  $("generateBtn").disabled=false;
+  $("generateBtn").textContent="✨ צור פסקה + פרומפט שלם";
+}
+
+/* word count — threshold depends on blessing type */
+function updateWordCount(){
+  const text=$("descOutput").value.trim();
+  const words=text?text.split(/\s+/).filter(Boolean).length:0;
+  const wc=$("wordCount");
+  const warn=$("wordWarning");
+  if(!wc) return;
+  const isShort=radio("blessingType")==="short";
+  const limit=isShort?15:60;
+  const softLimit=isShort?12:50;
+  wc.textContent=words+" מילים";
+  if(words===0){
+    wc.style.background="#f0f5ea"; wc.style.color="var(--green-dark)";
+    warn.style.display="none";
+  } else if(words<=limit){
+    wc.style.background="#e8f5e3"; wc.style.color="#2a6020";
+    warn.style.display="none";
+  } else if(words<=limit+15){
+    wc.style.background="#fff3cd"; wc.style.color="#7a5500";
+    warn.style.display="block";
+    warn.innerHTML="⚠️ <strong>"+words+" מילים</strong> — מומלץ עד "+limit+" מילים לדיוק מקסימלי.";
+  } else {
+    wc.style.background="#fde8e4"; wc.style.color="#a02020";
+    warn.style.display="block";
+    warn.innerHTML="⚠️ <strong>"+words+" מילים — ארוך מדי.</strong> מומלץ לקצר עד "+limit+" מילים.";
+  }
+}
+
+/* update blessing type hint */
+function updateBlessingHint(){
+  const isShort=radio("blessingType")==="short";
+  const hint=$("blessingTypeHint");
+  if(!hint) return;
+  if(isShort){
+    hint.style.background="#e8f5e3"; hint.style.borderColor="#c0ddb0"; hint.style.color="#2a6020";
+    hint.innerHTML="⚡ <strong>קצרה:</strong> 2–3 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה";
+  } else {
+    hint.style.background="#fff3cd"; hint.style.borderColor="#f0c040"; hint.style.color="#7a5500";
+    hint.innerHTML="📝 <strong>מפורטת:</strong> 4–5 משפטים, 45–60 מילים — ברכה עמוקה ואישית";
+  }
+  updateWordCount();
+}
+
+/* update no-photo hint */
+function updatePhotoHint(){
+  const noPhoto=radio("hasPhoto")==="no";
+  $("noPhotoHint").style.display=noPhoto?"block":"none";
+}
+
+/* live sync desc → prompt */
+$("descOutput").addEventListener("input",function(){
+  updateWordCount();
+  if(!_lastData) return;
+  const p=$("descOutput").value.trim();
+  if(!p) return;
+  $("output").textContent=buildFullPrompt(_lastData,p);
+});
+
+/* copy */
+function copyText(text,fbId){
+  function show(ok){
+    const fb=$(fbId);
+    fb.textContent=ok?"✅ הועתק!":"⚠️ העתיקי ידנית";
+    fb.classList.add("show");
+    setTimeout(()=>fb.classList.remove("show"),2500);
+  }
+  if(!text) return;
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>show(true)).catch(()=>fallback(text,show));
+  } else { fallback(text,show); }
+}
+function fallback(text,cb){
+  const t=document.createElement("textarea");
+  t.value=text; t.style.cssText="position:fixed;left:-9999px;opacity:0";
+  document.body.appendChild(t); t.focus(); t.select();
+  let ok=false; try{ok=document.execCommand("copy");}catch(e){}
+  document.body.removeChild(t); cb(ok);
+}
+
+/* regen desc */
+async function regenDesc(){
+  if(!_lastData) return;
+  $("descLoading").style.display="block";
+  $("descOutput").style.display="none";
+  $("descDot").style.background="#f0c878";
+  $("descStatus").textContent="כותב מחדש...";
+  try{
+    if (!apiKey) {
+      throw new Error("Missing API Key");
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    const payload = {
+        contents: [{ parts: [{ text: buildDescPrompt(_lastData) }] }],
+        generationConfig: { temperature: 0.7 }
+    };
+    
+    const data = await fetchWithRetry(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+    
+    const p = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    if(!p) throw new Error("empty");
+    $("descOutput").value=p;
+    $("output").textContent=buildFullPrompt(_lastData,p);
+    $("descDot").style.background="#a8d870"; $("descStatus").textContent="מוכן ✓";
+    if($("editReminder")) $("editReminder").style.display="block";
+    updateWordCount();
+  }catch(e){
+    $("descDot").style.background="#f0a070"; $("descStatus").textContent="שגיאה";
+  }
+  $("descOutput").style.display="block";
+  $("descLoading").style.display="none";
+}
+
+/* clear */
+function clearForm(){
+  ["studentName","traitsFree","hobbiesFree","extrasFree","titleText","signerName"].forEach(id=>{const el=$(id);if(el)el.value="";});
+  $$('input[type="checkbox"]').forEach(e=>e.checked=false);
+  $("titlePreset").value="";
+  $("style").selectedIndex=0;
+  [["flower"],["mood"],["grade"],["hasPhoto"],["blessingType"]].forEach(([n])=>{const e=$$('input[name="'+n+'"]');if(e.length)e[0].checked=true;});
+  updateTitleVis(); updateCounts(); updatePhotoHint(); updateBlessingHint();
+  $("output").innerHTML='<span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.</span>';
+  $("descOutput").value="";
+  if($("editReminder")) $("editReminder").style.display="none";
+  updateWordCount();
+  $("statusDot").style.background="#ccc"; $("statusText").textContent="ממתין";
+  $("descDot").style.background="#ccc"; $("descStatus").textContent="ממתין";
+  _lastData=null;
+}
+
+/* events */
+$("generateBtn").addEventListener("click",generate);
+$("clearBtn").addEventListener("click",clearForm);
+$("copyBtn").addEventListener("click",()=>copyText($("output").textContent.trim(),"copyFb"));
+$("copyDescBtn").addEventListener("click",()=>copyText($("descOutput").value.trim(),"copyDescFb"));
+$("regenDescBtn").addEventListener("click",regenDesc);
+$("titlePreset").addEventListener("change",updateTitleVis);
+$$('input[name="gender"]').forEach(e=>e.addEventListener("change",()=>applyGender(radio("gender"))));
+$$('input[name="blessingType"]').forEach(e=>e.addEventListener("change",updateBlessingHint));
+$$('input[name="hasPhoto"]').forEach(e=>e.addEventListener("change",updatePhotoHint));
+$$('#traitsGroup input,#elementsGroup input').forEach(e=>e.addEventListener("change",updateCounts));
+
+/* init */
+updateTitleVis(); updateCounts(); applyGender(radio("gender")); updateBlessingHint(); updatePhotoHint();
+})();
+</script>
+<footer style="text-align:center; padding:22px 20px 28px; font-size:13px; color:#8a7a60; background:var(--surface-2); border-top:1px solid var(--border); margin-top:8px;">
+  פותח על ידי <strong>אילנית שוורץ</strong> · קהילת "קריאה להבנה" · אביב תשפ״ו 🌸
+</footer>
+
 </body>
 </html>
