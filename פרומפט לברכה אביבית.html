@@ -97,8 +97,36 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 .loading-box{display:none;text-align:center;padding:28px 0;color:var(--text-3)}
 .loading-msg{font-size:13px;font-weight:600;color:var(--green-d);margin-top:10px}
 .loading-sub{font-size:11.5px;color:var(--text-3);margin-top:5px}
-.desc-textarea{width:100%;min-height:170px;background:#fffdf8;border:1.5px solid var(--border);border-radius:var(--r);padding:13px 15px;font-family:'Heebo','Arial Hebrew',sans-serif;font-size:14.5px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;resize:vertical;outline:none;transition:.15s}
-.desc-textarea:focus{border-color:var(--green)}
+.desc-textarea{
+  width:100%;
+  min-height:170px;
+  background:
+    repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      #e8dfc8 39px,
+      #e8dfc8 40px
+    ),
+    linear-gradient(180deg, #fffef7 0%, #fdf9f0 100%);
+  border: 1px solid #ddd0b0;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-family:'Noto Serif Hebrew','Arial Hebrew',serif;
+  font-size:15.5px;
+  line-height:2.5;
+  color:#2a2010;
+  direction:rtl;
+  text-align:right;
+  resize:vertical;
+  outline:none;
+  transition:.15s;
+  box-shadow: 2px 3px 12px rgba(140,110,50,0.08);
+  letter-spacing:0.01em;
+}
+.desc-textarea:focus{
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(90,122,58,.10), 2px 3px 12px rgba(140,110,50,0.08);
+}
 @media(max-width:1000px){.main{grid-template-columns:1fr}.out-panel,.desc-panel{position:static}}
 @media(max-width:640px){.header{padding:18px}.main{padding:12px 12px 40px}.grid-2{grid-template-columns:1fr}.actions{padding:11px 13px}}
 </style>
@@ -156,8 +184,8 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
         <label class="radio-card">
           <input type="radio" name="blessingType" value="long">
           <div class="rc-label">
-            <div class="rc-title">📝 מפורטת ואישית</div>
-            <div class="rc-sub">עד 25 מילים · יותר תוכן</div>
+            <div class="rc-title">📝 מפורטת ועמוקה</div>
+            <div class="rc-sub">40–55 מילים · 4–5 משפטים</div>
           </div>
         </label>
       </div>
@@ -231,7 +259,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <label class="chip"><input type="checkbox" value="חרוצה"><span class="chip-label" data-f="📚 חרוצה" data-m="📚 חרוץ">📚 חרוצה</span></label>
       <label class="chip"><input type="checkbox" value="מצחיקה"><span class="chip-label" data-f="😂 מצחיקה" data-m="😂 מצחיק">😂 מצחיקה</span></label>
       <label class="chip"><input type="checkbox" value="עדינה"><span class="chip-label" data-f="🌸 עדינה" data-m="🌸 עדין">🌸 עדינה</span></label>
-      <label class="chip"><input type="checkbox" value="חלומנית"><span class="chip-label" data-f="✨ חולמנית" data-m="✨ חלומן">✨ חלומנית</span></label>
+      <label class="chip"><input type="checkbox" value="חלומנית"><span class="chip-label" data-f="✨ חלומנית" data-m="✨ חלומן">✨ חלומנית</span></label>
       <label class="chip"><input type="checkbox" value="ספורטיבית"><span class="chip-label" data-f="🏃 ספורטיבית" data-m="🏃 ספורטיבי">🏃 ספורטיבית</span></label>
       <label class="chip"><input type="checkbox" value="אוהבת טבע"><span class="chip-label" data-f="🌿 אוהבת טבע" data-m="🌿 אוהב טבע">🌿 אוהבת טבע</span></label>
       <label class="chip"><input type="checkbox" value="בעלת ביטחון עצמי"><span class="chip-label" data-f="👑 בעלת ביטחון" data-m="👑 בעל ביטחון">👑 ביטחון עצמי</span></label>
@@ -259,7 +287,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <label class="chip"><input type="checkbox" value="ריקוד"><span class="chip-label">💃 ריקוד</span></label>
       <label class="chip"><input type="checkbox" value="כדורגל"><span class="chip-label">⚽ כדורגל</span></label>
       <label class="chip"><input type="checkbox" value="שחייה"><span class="chip-label">🏊 שחייה</span></label>
-      <label class="chip"><input type="checkbox" value="גימנסטיקה"><span class="chip-label">🤸 התעמלות</span></label>
+      <label class="chip"><input type="checkbox" value="גימנסטיקה"><span class="chip-label">🤸 גימנסטיקה</span></label>
       <label class="chip"><input type="checkbox" value="קריאת ספרים"><span class="chip-label">📖 קריאה</span></label>
       <label class="chip"><input type="checkbox" value="בישול ואפייה"><span class="chip-label">🍪 בישול</span></label>
       <label class="chip"><input type="checkbox" value="גינון ופרחים"><span class="chip-label">🌱 גינון</span></label>
@@ -412,19 +440,19 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <label class="field-label" for="style">סגנון איור</label>
       <select id="style">
         <optgroup label="🌸 רך ואביבי">
-          <option value="dreamy soft pastel illustration with delicate petal-like brushstrokes and a blooming spring atmosphere">🌸 פסטל חלומי — קלאסי ועדין</option>
-          <option value="delicate transparent watercolor illustration with loose wet-on-wet washes and spring flower garden feeling">💧 צבעי מים — שקוף ונושם</option>
-          <option value="soft romantic cottage-core illustration with hand-painted floral wreaths and warm golden afternoon light">🌼 קוטג'-קור — חם וכפרי</option>
+          <option value="PASTEL_DREAMY">🌸 פסטל חלומי — קלאסי ועדין</option>
+          <option value="WATERCOLOR_SOFT">💧 צבעי מים — שקוף ונושם</option>
+          <option value="COTTAGE_CORE">🌼 קוטג'-קור — חם וכפרי</option>
         </optgroup>
         <optgroup label="✨ מסוגנן ואיכותי">
-          <option value="stylized 3D character render with Pixar-Disney quality, soft spring lighting, blooming background and warm pastel palette">✨ תלת-מימד פיקסר — בהיר ומחייך</option>
-          <option value="Studio Ghibli inspired illustration with lush spring meadow, warm natural lighting and whimsical botanical details">🍃 סגנון ג'יבלי — קסום ופורח</option>
-          <option value="impressionist digital painting with dappled spring light, soft dabs of color and blooming flower atmosphere">🖼️ אימפרסיוניזם — כמו מונה</option>
+          <option value="PIXAR_3D">✨ תלת-מימד פיקסר — בהיר ומחייך</option>
+          <option value="GHIBLI">🍃 סגנון ג'יבלי — קסום ופורח</option>
+          <option value="IMPRESSIONIST">🖼️ אימפרסיוניזם — כמו מונה</option>
         </optgroup>
         <optgroup label="🌺 מיוחד">
-          <option value="bold spring sticker art with thick cheerful outlines, vibrant flat pastel colors, playful flowers and butterflies">🎀 סטיקר ארט אביבי — שמח ועליז</option>
-          <option value="soft anime shojo portrait style with delicate spring linework, cherry-blossom background and glowing pastel light">🌸 אנימה שוג'ו — עדין ורומנטי</option>
-          <option value="vintage botanical engraving illustration with hand-drawn spring flowers, warm sepia and sage green palette">📜 בוטאני וינטג'</option>
+          <option value="STICKER_ART">🎀 סטיקר ארט אביבי — שמח ועליז</option>
+          <option value="ANIME_SHOJO">🌸 אנימה שוג'ו — עדין ורומנטי</option>
+          <option value="BOTANICAL_VINTAGE">📜 בוטאני וינטג'</option>
         </optgroup>
       </select>
     </div>
@@ -540,6 +568,18 @@ function isFemale(){return radio("gender")!=="m";}
 
 const FLOWER_HE={anemone:"כלנית",buttercup:"נורית",daisy:"חרצית","almond blossom":"שקדיה",tulip:"צבעוני",wildflowers:"פרחי בר",sunflower:"חמנייה"};
 
+const STYLE_MAP={
+  PASTEL_DREAMY:   "dreamy pastel illustration — soft cream and blush tones, delicate petal-like brushstrokes, gentle hazy glow, delicate linework, chalky matte texture, like a hand-painted greeting card",
+  WATERCOLOR_SOFT: "transparent watercolor illustration — loose wet-on-wet washes, soft bleeding edges at color boundaries, visible paper grain texture, translucent layered pigments, muted spring palette of sage, blush and sky",
+  COTTAGE_CORE:    "romantic cottage-core hand-painted illustration — warm golden afternoon light, thick impasto-style paint texture, earthy cream and moss greens, decorative floral wreaths, folk-art charm with naive proportions",
+  PIXAR_3D:        "stylized 3D CGI render — smooth subsurface skin shading, soft volumetric spring lighting, vibrant saturated pastel palette, clean crisp edges, Pixar-Disney quality character design, polished and cheerful",
+  GHIBLI:          "Studio Ghibli inspired illustration — lush painterly meadow backgrounds, warm nostalgic golden light, expressive soft linework with flowing contours, delicate botanical details, muted greens and warm ochres",
+  IMPRESSIONIST:   "digital impressionist painting — short visible dabs of oil-like color, dappled spring light with glowing halos, blurred soft edges, Monet garden palette of lilac, gold and green, loose gestural strokes",
+  STICKER_ART:     "bold kawaii sticker art — thick black outlines, vibrant flat pastel fills, no gradients, cheerful chibi proportions, clean white highlights, playful spring energy, like a die-cut vinyl sticker",
+  ANIME_SHOJO:     "soft shojo anime illustration — fine delicate linework, luminous skin with soft blush, cherry-blossom sparkle effects, pastel color palette with glowing light overlays, dreamy romantic atmosphere",
+  BOTANICAL_VINTAGE:"vintage botanical engraving illustration — detailed hand-etched linework, warm sepia-cream paper tone, sage green and dusty rose palette, scientific illustration precision with decorative flourishes"
+};
+
 /* title visibility */
 function updateTitleVis(){
   const v=$("titlePreset").value;
@@ -608,35 +648,72 @@ function getFormData(){
 /* build description prompt */
 function buildDescPrompt(d){
   const fHe=FLOWER_HE[d.flower]||"פרח אביבי";
-  const address=d.name?(d.iF?d.name+" היקרה,":d.name+" היקר,"):(d.iF?"יקירה שלנו,":"יקירנו,");
   const isShort=d.blessingType==="short";
-  const maxWords=isShort?15:25;
-  const L=[
-    "כתוב פסקת ברכה בעברית לתמונת אביב של תלמיד/ה.",
-    "מין: "+(d.iF?"נקבה":"זכר")+". כיתה: "+d.grade+".",
-    "","פרטים:",
-  ];
-  if(d.allTraits.length) L.push("- תכונות: "+d.allTraits.slice(0,isShort?2:3).join(", "));
-  if(d.allHobbies.length) L.push("- תחביבים: "+d.allHobbies.slice(0,isShort?1:2).join(", "));
-  L.push("- פרח מייצג: "+fHe);
-  if(d.titleTxt) L.push("- כותרת התמונה: \""+d.titleTxt+"\"");
+  const iF=d.iF;
+
+  // Gender-explicit forms for the AI
+  const gWord    = iF ? "נקבה"   : "זכר";
+  const pronoun  = iF ? "את"     : "אתה";
+  const possess  = iF ? "שלך"    : "שלך";  // same
+  const verb1    = iF ? "פורחת"  : "פורח";
+  const verb2    = iF ? "מאירה"  : "מאיר";
+  const verb3    = iF ? "מביאה"  : "מביא";
+  const verb4    = iF ? "ממשיכי" : "המשך";
+  const adj1     = iF ? "יקרה"   : "יקר";
+  const adj2     = iF ? "מיוחדת" : "מיוחד";
+  const adj3     = iF ? "אהובה"  : "אהוב";
+
+  // address: "תמר אהובה," NOT "תמר האהובה,"
+  const address  = d.name
+    ? d.name + " " + adj3 + ","
+    : (iF ? "יקירתנו," : "יקירנו,");
+
+  const gradeHe  = d.grade ? "כיתה " + d.grade : "";
+  const traitsStr  = d.allTraits.length  ? d.allTraits.slice(0, isShort?2:4).join(", ")  : "";
+  const hobbiesStr = d.allHobbies.length ? d.allHobbies.slice(0, isShort?1:3).join(", ") : "";
+  const bgStr      = d.allBg.length      ? d.allBg.slice(0, isShort?1:3).join(", ")      : "";
+
+  const L = [];
+
+  L.push("אתה כותב פסקת ברכה אביבית בעברית לתלמיד" + (iF?"ה":"") + " " + (gradeHe||"") + ".");
+  L.push("");
+  L.push("⚠️ כללי דקדוק חובה — אין לחרוג מהם:");
+  L.push("• המין הדקדוקי של הדמות: " + gWord + ".");
+  L.push("• הפנייה היא ל" + (iF?"נקבה":"זכר") + " יחיד" + (iF?"ה":"") + " — " + pronoun + ".");
+  L.push("• כל הפעלים, התארים והפניות חייבים להיות ב" + (iF?"נקבה":"זכר") + " יחיד" + (iF?"ה":"") + ":");
+  L.push("  פורח → " + verb1 + " | מאיר → " + verb2 + " | מביא → " + verb3);
+  L.push("• אין לערב לשון זכר ונקבה באותו משפט.");
+  L.push("• אין לכתוב צורות כפולות כמו 'פורח/ת' — בחרי תמיד בצורה אחת בלבד.");
+  L.push("");
+  L.push("פרטי הדמות:");
+  L.push("• פרח מייצג: " + fHe);
+  if(traitsStr)  L.push("• תכונות אישיות: " + traitsStr);
+  if(hobbiesStr) L.push("• תחביבים ותשוקות: " + hobbiesStr);
+  if(bgStr)      L.push("• פרטים אישיים (חיות, משפחה, חפצים אהובים): " + bgStr);
+  if(d.titleTxt) L.push("• כותרת התמונה: \"" + d.titleTxt + "\"");
+  L.push("");
 
   if(isShort){
-    L.push("","הנחיות — ברכה קצרה ומדויקת:",
-      "1. פתח בפנייה: \""+address+"\"",
-      "2. משפט אחד בלבד עם דימוי קצר לפרח ותכונה אחת.",
-      "⚠️ חובה: עד 15 מילים בסך הכל. משפט אחד עד שניים בלבד. ללא חתימה. ללא מרכאות חיצוניות.",
-      "💡 קצר = מדויק יותר בתמונה."
-    );
+    L.push("מבנה הברכה — קצרה ומדויקת (עד 15 מילים):");
+    L.push("1. פתח בפנייה: \"" + address + "\"");
+    L.push("2. משפט אחד: 'כמו " + fHe + " ש" + verb1 + " באביב, כך " + pronoun + "...' — שלב תכונה אחת.");
+    L.push("3. משפט סיום קצר: עידוד אביבי חם.");
+    L.push("");
+    L.push("⚠️ חובה: עד 15 מילים. 2-3 משפטים. פסקה רציפה. ללא חתימה. ללא מרכאות חיצוניות.");
   } else {
-    L.push("","הנחיות — ברכה מפורטת:",
-      "1. פתח בפנייה: \""+address+"\"",
-      "2. משפט עם דימוי לפרח: 'כמו "+fHe+" שפורח"+(d.iF?"ת":"")+" באביב, כך "+(d.iF?"את":"אתה")+"...' — שלב תכונה.",
-      "3. משפט נוסף על תחביב או כוח אחר.",
-      "4. משפט סיום: עידוד אביבי קצר.",
-      "⚠️ חובה: סך הכל עד 25 מילים. 3 משפטים קצרים. ללא חתימה. ללא מרכאות חיצוניות."
-    );
+    L.push("מבנה הברכה — מלאה ועמוקה (40–55 מילים):");
+    L.push("1. פתח בפנייה: \"" + address + "\" ומשפט ראשון חם ואישי.");
+    L.push("2. דימוי לפרח: 'כמו " + fHe + " ש" + verb1 + " לקראת האביב, כך " + pronoun + " " + verb2 + "...' — שלב תכונה מרכזית.");
+    if(hobbiesStr) L.push("3. משפט על תחביב/תשוקה (" + hobbiesStr + ") — מה זה אומר על האופי שלהם.");
+    if(bgStr)      L.push((hobbiesStr?"3ב":"3") + ". שלב בטבעיות פרט אישי אחד מהרשימה (" + bgStr + ") — כחלק ממשפט, לא כרשימה.");
+    L.push((hobbiesStr||bgStr?"4":"3") + ". משפט על ההשפעה על הסביבה — מה " + pronoun + " " + verb3 + " לעולם.");
+    L.push((hobbiesStr||bgStr?"5":"4") + ". סיום: ברכה אביבית עמוקה ומחממת לב — לא קלישאתית.");
+    L.push("");
+    L.push("סגנון: חם ואישי, לא מתנשא, לא קלישאתי. כתוב כמו מבוגר אוהב שמכיר את הילד" + (iF?"ה":"") + " היטב.");
+    L.push("אורך: 40–55 מילים. פסקה רציפה. ללא כותרת. ללא חתימה. ללא מרכאות חיצוניות.");
   }
+  L.push("");
+  L.push("כתוב כעת את הפסקה — רק הפסקה עצמה, ללא הקדמה:");
   return L.join("\n");
 }
 
@@ -645,11 +722,12 @@ function buildFullPrompt(d,para){
   const fHe=FLOWER_HE[d.flower]||"spring flower";
   const subject=d.iF?"girl":"boy";
   const gradeStr=d.grade?" (grade "+d.grade+")":"";
+  const styleDesc=STYLE_MAP[d.style]||d.style||"sweet ornate spring illustration";
   const P=[];
 
   // ── Opening narrative ──
-  var sceneDesc="A richly detailed "+d.style+" spring greeting poster with a clear vertical composition. ";
-  sceneDesc+="The overall style is sweet and ornate, full of pastel spring colors. ";
+  var sceneDesc="A richly detailed spring greeting poster with a clear vertical composition. ";
+  sceneDesc+="Illustration style: "+styleDesc+". ";
   sceneDesc+="The mood is "+d.mood+". ";
   if(d.elements.length){
     sceneDesc+="The background features "+d.elements.slice(0,3).join(", ")+". ";
@@ -661,7 +739,8 @@ function buildFullPrompt(d,para){
   // ── Subject / layout ──
   if(d.hasPhoto){
     var subjectDesc="In the center, the "+subject+gradeStr+" from the uploaded photo stands in a lush spring field. ";
-    subjectDesc+="Preserve facial features, hair, glasses, and likeness exactly as in the original photo.";
+    subjectDesc+="Preserve facial features, hair, glasses, and likeness exactly as in the original photo. ";
+    subjectDesc+="IMPORTANT: apply the illustration style fully to the subject — transform them into the same art style as the rest of the image, do NOT leave them as a realistic photograph.";
     if(d.allTraits.length) subjectDesc+=" Personality: "+d.allTraits.slice(0,4).join(", ")+".";
     P.push(subjectDesc);
   } else {
@@ -676,10 +755,10 @@ function buildFullPrompt(d,para){
     P.push(noPhotoDesc);
   }
 
-  // ── Background details (both modes) ──
-  var bgItems=[].concat(d.allHobbies.slice(0,3),d.allBg.slice(0,3));
-  if(bgItems.length && d.hasPhoto){
-    P.push("Weave subtly into the background as small decorative details: "+bgItems.join("; ")+".");
+  // ── Background details — always included ──
+  var bgItems = [].concat(d.allHobbies, d.allBg).filter(Boolean);
+  if(bgItems.length){
+    P.push("Weave subtly into the background as small charming decorative details (not dominant, not labeled): "+bgItems.join("; ")+".");
   }
   P.push("");
 
@@ -690,21 +769,46 @@ function buildFullPrompt(d,para){
 
   var n=1;
   if(d.titleTxt){
-    P.push(n+". Top Title: At the very top, in "+d.titleFont+", "+d.titlePos+", incorporate the exact text: '"+d.titleTxt+"'.");
+    P.push(n+". Top Title — COPY EXACTLY:");
+    P.push("   At the very top, in "+d.titleFont+", "+d.titlePos+".");
+    P.push("   The exact text that must appear: \""+d.titleTxt+"\"");
+    P.push("   Copy letter by letter: \""+d.titleTxt+"\"");
     P.push("");
     n++;
   }
 
-  P.push(n+". Central Paragraph (The core, verbatim): The central and most complex element is an ornate, wood-and-flower-trimmed plaque containing the full Hebrew paragraph verbatim: '"+para+"'. This text must be right-aligned within the plaque, using a clean, highly legible font, and must be completely free of errors.");
+  // ── Split paragraph into numbered lines for maximum accuracy ──
+  var paraLines = para.split(/[.!,،]/).map(function(s){return s.trim();}).filter(Boolean);
+
+  P.push(n+". Central Paragraph — CRITICAL: COPY EVERY WORD EXACTLY AS WRITTEN:");
+  P.push("   The central element is a flower-trimmed plaque. The EXACT Hebrew text that must appear inside it, word for word:");
+  P.push('   "'+para+'"');
+  P.push("");
+  P.push("   To ensure accuracy, here is the same text broken into lines:");
+  paraLines.forEach(function(line, i){
+    P.push("   Line "+(i+1)+": "+line);
+  });
+  P.push("");
+  P.push("   IMPORTANT RULES FOR THE TEXT:");
+  P.push("   • Do NOT change, replace, or omit even a single letter or word.");
+  P.push("   • Do NOT invent alternative words — copy only what is written above.");
+  P.push("   • The final text in the image must match this EXACTLY: \""+para+"\"");
+  P.push("   • Right-aligned. Clean highly legible Hebrew font. Large enough to read comfortably.");
   P.push("");
   n++;
 
-  var bannerText="חג אביב שמח";
-  if(d.signer) bannerText+="', and directly below it, '"+d.signer;
-  P.push(n+". Bottom Signature: Below the central plaque, on a decorated banner, the text in bolder Hebrew letters must be: '"+bannerText+"'.");
+  P.push(n+". Bottom Banner — COPY EXACTLY:");
+  P.push("   On a decorated ribbon at the bottom.");
+  P.push("   Line 1 — large bold Hebrew, copy exactly: \"חג אביב שמח\"");
+  if(d.signer) P.push("   Line 2 — below, copy exactly: \""+d.signer+"\"");
+  P.push("   Do not alter these words in any way.");
   P.push("");
 
-  P.push("All Hebrew text must be perfectly legible, correctly spelled, and right-aligned for readability of complex text. Ensure all Hebrew characters are rendered flawlessly. The entire composition is seamlessly integrated, with soft, warm spring lighting.");
+  P.push("CRITICAL FINAL REMINDER — HEBREW TEXT ACCURACY:");
+  P.push("All Hebrew text must be copied EXACTLY as written. Do not change, invent, or substitute any word or letter.");
+  P.push("Every Hebrew word must be perfectly legible, correctly spelled, and right-aligned.");
+  P.push("Treat the Hebrew text like a font rendering task — visual precision, not interpretation.");
+  P.push("The entire composition is seamlessly integrated with soft, warm spring lighting.");
 
   return P.join("\n");
 }
@@ -732,7 +836,7 @@ async function generate(){
   let para="";
   try{
     $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
-    const maxTok=d.blessingType==="short"?80:150;
+    const maxTok=d.blessingType==="short"?80:300;
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -783,7 +887,8 @@ function updateWordCount(){
   const warn=$("wordWarning");
   if(!wc) return;
   const isShort=radio("blessingType")==="short";
-  const limit=isShort?15:25;
+  const limit=isShort?15:55;
+  const softLimit=isShort?12:45;
   wc.textContent=words+" מילים";
   if(words===0){
     wc.style.background="#f0f5ea"; wc.style.color="var(--green-dark)";
@@ -791,7 +896,7 @@ function updateWordCount(){
   } else if(words<=limit){
     wc.style.background="#e8f5e3"; wc.style.color="#2a6020";
     warn.style.display="none";
-  } else if(words<=limit+10){
+  } else if(words<=limit+15){
     wc.style.background="#fff3cd"; wc.style.color="#7a5500";
     warn.style.display="block";
     warn.innerHTML="⚠️ <strong>"+words+" מילים</strong> — מומלץ עד "+limit+" מילים לדיוק מקסימלי.";
@@ -809,10 +914,10 @@ function updateBlessingHint(){
   if(!hint) return;
   if(isShort){
     hint.style.background="#e8f5e3"; hint.style.borderColor="#c0ddb0"; hint.style.color="#2a6020";
-    hint.innerHTML="⚡ <strong>קצרה:</strong> 1–2 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה";
+    hint.innerHTML="⚡ <strong>קצרה:</strong> 2–3 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה";
   } else {
     hint.style.background="#fff3cd"; hint.style.borderColor="#f0c040"; hint.style.color="#7a5500";
-    hint.innerHTML="📝 <strong>מפורטת:</strong> עד 3 משפטים, עד 25 מילים — יותר תוכן אישי, מעט פחות דיוק";
+    hint.innerHTML="📝 <strong>מפורטת:</strong> 4–5 משפטים, 40–55 מילים — ברכה עמוקה ואישית";
   }
   updateWordCount();
 }
@@ -880,7 +985,7 @@ async function regenDesc(){
   $("descOutput").style.display="none";
   $("descDot").style.background="#f0c878";
   $("descStatus").textContent="כותב מחדש...";
-  const maxTok=_lastData.blessingType==="short"?80:150;
+  const maxTok=_lastData.blessingType==="short"?80:300;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",headers:{"Content-Type":"application/json"},
@@ -934,4 +1039,4 @@ updateTitleVis(); updateCounts(); applyGender(radio("gender")); updateBlessingHi
 })();
 </script>
 </body>
-</html>
+  </html>
