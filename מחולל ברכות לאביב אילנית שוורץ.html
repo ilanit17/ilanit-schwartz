@@ -1,12 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחולל ברכות לאביב אילנית שוורץ</title>
 </head>
 <body>
-    <h1>מחולל ברכות לאביב</h1>
-    <p>ברכות קצרות: 15 מילים</p>
-    <p>ברכות ארוכות: 60 מילים</p>
-    <p>הערות: אנא ודא שהמגבלה של ברכות ארוכות היא של 60 מילים בלבד. הממשק חייב להעביר התראות על מספר מילים כאשר הטקסט עובר את המגבלה הזו של 60 מילים.</p>
+    <h1>מחולל ברכות לאביב אילנית שוורץ</h1>
+    <p>Welcome to the blessing generator for spring. Please provide your details below:</p>
+    <form>
+        <label for="blessingType">Select Blessing Type:</label>
+        <select id="blessingType">
+            <option value="short">Short Blessing</option>
+            <option value="deep">Deep Blessing</option>
+        </select>
+        <br>
+        <label for="blessingContent">Blessing Content:</label>
+        <textarea id="blessingContent" rows="5" cols="33" placeholder="Write your blessing here..."></textarea>
+        <br>
+        <button type="submit">Generate Blessing</button>
+    </form>
+    <script>
+        const buildDescPrompt = (blessingType) => {
+            const shortLimit = 15;
+            const deepLimit = 60; // Updated from 55 to 60
+            if (blessingType === "short") {
+                return `Your blessing should not exceed ${shortLimit} words.`;
+            } else if (blessingType === "deep") {
+                return `Your blessing should not exceed ${deepLimit} words.`; // Updated warning text
+            }
+        };
+
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const blessingType = document.getElementById('blessingType').value;
+            const blessingContent = document.getElementById('blessingContent').value;
+            alert(buildDescPrompt(blessingType));
+        });
+    </script>
 </body>
 </html>
