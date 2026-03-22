@@ -66,7 +66,22 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 .out-status{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:999px;padding:3px 10px;font-size:11.5px;color:rgba(255,255,255,.85);white-space:nowrap;flex-shrink:0}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
 .out-body{padding:14px 16px}
-.prompt-box{background:#f8f9f4;border:1.5px solid #e0e8d4;border-radius:var(--r);padding:14px;min-height:360px;white-space:pre-wrap;font-family:'Heebo','Arial Hebrew',sans-serif;font-size:13px;line-height:1.75;color:var(--text);direction:ltr;text-align:left}
+.prompt-box{
+  background: linear-gradient(160deg, #fffdf7 0%, #fdf8ee 100%);
+  border: none;
+  border-radius: 18px;
+  padding: 20px 18px;
+  min-height: 360px;
+  white-space: pre-wrap;
+  font-family: 'Heebo','Arial Hebrew',sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text);
+  direction: ltr;
+  text-align: left;
+  box-shadow: 0 2px 0 #e8d9b0, 0 4px 16px rgba(140,110,50,0.08), inset 0 0 0 1px rgba(200,170,90,0.18);
+  position: relative;
+}
 .prompt-ph{color:var(--text-3);font-style:italic;font-size:13.5px;line-height:1.7;direction:rtl;text-align:right}
 .blessing-box{background:linear-gradient(135deg,#fffbef,#fff5d8);border:1.5px solid var(--amber-m);border-radius:var(--r);padding:12px 15px;margin-top:12px}
 .blessing-label{font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
@@ -100,6 +115,60 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 
 <div class="main">
 <div class="form-col">
+
+<!-- CARD: photo + blessing type -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-num" style="background:var(--amber)">✦</div>
+    <div><div class="card-title">הגדרות בסיסיות</div><div class="card-hint">האם יש תמונה? ואיזה סוג ברכה?</div></div>
+  </div>
+  <div class="card-body">
+
+    <div class="field">
+      <label class="field-label">📷 האם יש תמונת פנים של הילד/ה?</label>
+      <div class="chip-group" id="hasPhotoGroup">
+        <label class="chip">
+          <input type="radio" name="hasPhoto" value="yes" checked>
+          <span class="chip-label">✅ כן — אעלה תמונה לננו בננה</span>
+        </label>
+        <label class="chip">
+          <input type="radio" name="hasPhoto" value="no">
+          <span class="chip-label">🖼️ לא — צור פוסטר ללא פנים</span>
+        </label>
+      </div>
+      <div id="noPhotoHint" style="display:none;margin-top:8px;padding:8px 12px;background:#f0f5ea;border-radius:9px;font-size:12px;color:var(--green-dark)">
+        💡 הפרומפט יותאם לפוסטר אביבי עם אלמנטים המייצגים את הילד/ה — ללא דמות מרכזית של אדם.
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <div class="field">
+      <label class="field-label">✍️ סוג הברכה</label>
+      <div class="radio-cards" id="blessingTypeGroup" style="grid-template-columns:1fr 1fr">
+        <label class="radio-card">
+          <input type="radio" name="blessingType" value="short" checked>
+          <div class="rc-label">
+            <div class="rc-title">⚡ קצרה ומדויקת</div>
+            <div class="rc-sub">עד 15 מילים · דיוק מקסימלי</div>
+          </div>
+        </label>
+        <label class="radio-card">
+          <input type="radio" name="blessingType" value="long">
+          <div class="rc-label">
+            <div class="rc-title">📝 מפורטת ואישית</div>
+            <div class="rc-sub">עד 25 מילים · יותר תוכן</div>
+          </div>
+        </label>
+      </div>
+      <div id="blessingTypeHint" style="margin-top:8px;padding:8px 12px;border-radius:9px;font-size:12px;
+        background:#e8f5e3;color:#2a6020;border:1px solid #c0ddb0">
+        ⚡ <strong>קצרה:</strong> 1–2 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- CARD 0 — basics -->
 <div class="card">
@@ -526,34 +595,48 @@ function getFormData(){
   const style=$("style").value;
   const mood=radio("mood")||"soft, bright, spring, pastel, uplifting";
   const signer=$("signerName").value.trim();
+  const hasPhoto=radio("hasPhoto")!=="no"; // default yes
+  const blessingType=radio("blessingType")||"short";
 
   const allTraits=[...traitChips,...(traitFree?traitFree.split(/[,،]/).map(t=>t.trim()).filter(Boolean):[])];
   const allHobbies=[...hobbyChips,...(hobbyFree?hobbyFree.split(/[,،]/).map(t=>t.trim()).filter(Boolean):[])];
   const allBg=[...animals,...objects,...(extraFree?[extraFree]:[])];
 
-  return{iF,name,grade,allTraits,allHobbies,allBg,flower,elements,titleTxt,titlePos,titleFont,style,mood,signer};
+  return{iF,name,grade,allTraits,allHobbies,allBg,flower,elements,titleTxt,titlePos,titleFont,style,mood,signer,hasPhoto,blessingType};
 }
 
 /* build description prompt */
 function buildDescPrompt(d){
   const fHe=FLOWER_HE[d.flower]||"פרח אביבי";
   const address=d.name?(d.iF?d.name+" היקרה,":d.name+" היקר,"):(d.iF?"יקירה שלנו,":"יקירנו,");
+  const isShort=d.blessingType==="short";
+  const maxWords=isShort?15:25;
   const L=[
-    "כתוב פסקת ברכה קצרה וממוקדת בעברית לתמונת אביב של תלמיד/ה.",
+    "כתוב פסקת ברכה בעברית לתמונת אביב של תלמיד/ה.",
     "מין: "+(d.iF?"נקבה":"זכר")+". כיתה: "+d.grade+".",
     "","פרטים:",
   ];
-  if(d.allTraits.length) L.push("- תכונות: "+d.allTraits.slice(0,3).join(", "));
-  if(d.allHobbies.length) L.push("- תחביבים: "+d.allHobbies.slice(0,2).join(", "));
+  if(d.allTraits.length) L.push("- תכונות: "+d.allTraits.slice(0,isShort?2:3).join(", "));
+  if(d.allHobbies.length) L.push("- תחביבים: "+d.allHobbies.slice(0,isShort?1:2).join(", "));
   L.push("- פרח מייצג: "+fHe);
   if(d.titleTxt) L.push("- כותרת התמונה: \""+d.titleTxt+"\"");
-  L.push("","הנחיות:",
-    "1. פתח בדיוק בפנייה: \""+address+"\"",
-    "2. משפט אחד עם דימוי לפרח: 'כמו "+fHe+" שפורח"+(d.iF?"ת":"")+" באביב, כך "+(d.iF?"את":"אתה")+"...' — שלב תכונה אחת.",
-    "3. משפט סיום: עידוד אביבי קצר וחם.",
-    "⚠️ חובה: סך הכל עד 25 מילים. 2-3 משפטים קצרים בלבד. פסקה רציפה. ללא חתימה. ללא מרכאות חיצוניות.",
-    "💡 טקסט קצר = דיוק גבוה יותר בתמונה — אל תחרוג מ-25 מילים."
-  );
+
+  if(isShort){
+    L.push("","הנחיות — ברכה קצרה ומדויקת:",
+      "1. פתח בפנייה: \""+address+"\"",
+      "2. משפט אחד בלבד עם דימוי קצר לפרח ותכונה אחת.",
+      "⚠️ חובה: עד 15 מילים בסך הכל. משפט אחד עד שניים בלבד. ללא חתימה. ללא מרכאות חיצוניות.",
+      "💡 קצר = מדויק יותר בתמונה."
+    );
+  } else {
+    L.push("","הנחיות — ברכה מפורטת:",
+      "1. פתח בפנייה: \""+address+"\"",
+      "2. משפט עם דימוי לפרח: 'כמו "+fHe+" שפורח"+(d.iF?"ת":"")+" באביב, כך "+(d.iF?"את":"אתה")+"...' — שלב תכונה.",
+      "3. משפט נוסף על תחביב או כוח אחר.",
+      "4. משפט סיום: עידוד אביבי קצר.",
+      "⚠️ חובה: סך הכל עד 25 מילים. 3 משפטים קצרים. ללא חתימה. ללא מרכאות חיצוניות."
+    );
+  }
   return L.join("\n");
 }
 
@@ -564,7 +647,7 @@ function buildFullPrompt(d,para){
   const gradeStr=d.grade?" (grade "+d.grade+")":"";
   const P=[];
 
-  // ── Opening narrative paragraph (scene + style) ──
+  // ── Opening narrative ──
   var sceneDesc="A richly detailed "+d.style+" spring greeting poster with a clear vertical composition. ";
   sceneDesc+="The overall style is sweet and ornate, full of pastel spring colors. ";
   sceneDesc+="The mood is "+d.mood+". ";
@@ -575,45 +658,52 @@ function buildFullPrompt(d,para){
   P.push(sceneDesc);
   P.push("");
 
-  // ── Subject ──
-  var subjectDesc="In the center, the "+subject+gradeStr+" from the uploaded photo stands in a lush spring field. ";
-  subjectDesc+="Preserve facial features, hair, glasses, and likeness exactly as in the original photo.";
-  if(d.allTraits.length) subjectDesc+=" Personality: "+d.allTraits.slice(0,4).join(", ")+".";
-  P.push(subjectDesc);
+  // ── Subject / layout ──
+  if(d.hasPhoto){
+    var subjectDesc="In the center, the "+subject+gradeStr+" from the uploaded photo stands in a lush spring field. ";
+    subjectDesc+="Preserve facial features, hair, glasses, and likeness exactly as in the original photo.";
+    if(d.allTraits.length) subjectDesc+=" Personality: "+d.allTraits.slice(0,4).join(", ")+".";
+    P.push(subjectDesc);
+  } else {
+    // No photo — decorative poster layout
+    var noPhotoDesc="There is no human figure in this poster. Instead, create a beautiful, fully decorative spring illustration. ";
+    noPhotoDesc+="Fill the poster with lush "+d.flower+" ("+fHe+") flowers, spring greenery, butterflies, and seasonal details. ";
+    if(d.allTraits.length||d.allHobbies.length){
+      var symbols=[].concat(d.allTraits.slice(0,2),d.allHobbies.slice(0,2));
+      noPhotoDesc+="Incorporate these symbolic elements as charming decorative details throughout the composition: "+symbols.join(", ")+". ";
+    }
+    noPhotoDesc+="The composition should feel warm, celebratory, and personal — like a handcrafted spring greeting card.";
+    P.push(noPhotoDesc);
+  }
 
-  // ── Background details ──
-  var bgItems=[].concat(d.allHobbies.slice(0,3), d.allBg.slice(0,3));
-  if(bgItems.length){
+  // ── Background details (both modes) ──
+  var bgItems=[].concat(d.allHobbies.slice(0,3),d.allBg.slice(0,3));
+  if(bgItems.length && d.hasPhoto){
     P.push("Weave subtly into the background as small decorative details: "+bgItems.join("; ")+".");
   }
   P.push("");
 
-  // ── Hebrew text framing sentence ──
-  var numTexts=(d.titleTxt?1:0)+1+1; // title (optional) + paragraph + banner
+  // ── Hebrew text framing ──
+  var numTexts=(d.titleTxt?1:0)+1+1;
   P.push("The poster has "+numTexts+" distinct text elements in Hebrew, which must be rendered with perfect accuracy and right-alignment:");
   P.push("");
 
   var n=1;
-
-  // (1) Title
   if(d.titleTxt){
     P.push(n+". Top Title: At the very top, in "+d.titleFont+", "+d.titlePos+", incorporate the exact text: '"+d.titleTxt+"'.");
     P.push("");
     n++;
   }
 
-  // (2) Central paragraph verbatim
   P.push(n+". Central Paragraph (The core, verbatim): The central and most complex element is an ornate, wood-and-flower-trimmed plaque containing the full Hebrew paragraph verbatim: '"+para+"'. This text must be right-aligned within the plaque, using a clean, highly legible font, and must be completely free of errors.");
   P.push("");
   n++;
 
-  // (3) Bottom banner
   var bannerText="חג אביב שמח";
   if(d.signer) bannerText+="', and directly below it, '"+d.signer;
   P.push(n+". Bottom Signature: Below the central plaque, on a decorated banner, the text in bolder Hebrew letters must be: '"+bannerText+"'.");
   P.push("");
 
-  // ── Closing guarantee ──
   P.push("All Hebrew text must be perfectly legible, correctly spelled, and right-aligned for readability of complex text. Ensure all Hebrew characters are rendered flawlessly. The entire composition is seamlessly integrated, with soft, warm spring lighting.");
 
   return P.join("\n");
@@ -641,13 +731,14 @@ async function generate(){
   // Phase 1 — AI paragraph
   let para="";
   try{
-    $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה קצרה...";
+    $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
+    const maxTok=d.blessingType==="short"?80:150;
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         model:"claude-sonnet-4-20250514",
-        max_tokens:120,
+        max_tokens:maxTok,
         messages:[{role:"user",content:buildDescPrompt(d)}]
       })
     });
@@ -684,28 +775,52 @@ async function generate(){
   $("generateBtn").textContent="✨ צור פסקה + פרומפט שלם";
 }
 
-/* word count */
+/* word count — threshold depends on blessing type */
 function updateWordCount(){
   const text=$("descOutput").value.trim();
   const words=text?text.split(/\s+/).filter(Boolean).length:0;
   const wc=$("wordCount");
   const warn=$("wordWarning");
   if(!wc) return;
+  const isShort=radio("blessingType")==="short";
+  const limit=isShort?15:25;
   wc.textContent=words+" מילים";
   if(words===0){
     wc.style.background="#f0f5ea"; wc.style.color="var(--green-dark)";
     warn.style.display="none";
-  } else if(words<=25){
+  } else if(words<=limit){
     wc.style.background="#e8f5e3"; wc.style.color="#2a6020";
     warn.style.display="none";
-  } else if(words<=35){
+  } else if(words<=limit+10){
     wc.style.background="#fff3cd"; wc.style.color="#7a5500";
     warn.style.display="block";
+    warn.innerHTML="⚠️ <strong>"+words+" מילים</strong> — מומלץ עד "+limit+" מילים לדיוק מקסימלי.";
   } else {
     wc.style.background="#fde8e4"; wc.style.color="#a02020";
     warn.style.display="block";
-    warn.innerHTML="⚠️ <strong>"+words+" מילים — ארוך מדי.</strong> ננו בננה מדויק יותר עד 25 מילים. מומלץ לקצר את הפסקה.";
+    warn.innerHTML="⚠️ <strong>"+words+" מילים — ארוך מדי.</strong> מומלץ לקצר עד "+limit+" מילים.";
   }
+}
+
+/* update blessing type hint */
+function updateBlessingHint(){
+  const isShort=radio("blessingType")==="short";
+  const hint=$("blessingTypeHint");
+  if(!hint) return;
+  if(isShort){
+    hint.style.background="#e8f5e3"; hint.style.borderColor="#c0ddb0"; hint.style.color="#2a6020";
+    hint.innerHTML="⚡ <strong>קצרה:</strong> 1–2 משפטים, עד 15 מילים — הדיוק הגבוה ביותר של ננו בננה";
+  } else {
+    hint.style.background="#fff3cd"; hint.style.borderColor="#f0c040"; hint.style.color="#7a5500";
+    hint.innerHTML="📝 <strong>מפורטת:</strong> עד 3 משפטים, עד 25 מילים — יותר תוכן אישי, מעט פחות דיוק";
+  }
+  updateWordCount();
+}
+
+/* update no-photo hint */
+function updatePhotoHint(){
+  const noPhoto=radio("hasPhoto")==="no";
+  $("noPhotoHint").style.display=noPhoto?"block":"none";
 }
 
 /* live sync desc → prompt */
@@ -716,6 +831,27 @@ $("descOutput").addEventListener("input",function(){
   if(!p) return;
   $("output").textContent=buildFullPrompt(_lastData,p);
 });
+
+/* copy */
+function copyText(text,fbId){
+  function show(ok){
+    const fb=$(fbId);
+    fb.textContent=ok?"✅ הועתק!":"⚠️ העתיקי ידנית";
+    fb.classList.add("show");
+    setTimeout(()=>fb.classList.remove("show"),2500);
+  }
+  if(!text) return;
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>show(true)).catch(()=>fallback(text,show));
+  } else { fallback(text,show); }
+}
+function fallback(text,cb){
+  const t=document.createElement("textarea");
+  t.value=text; t.style.cssText="position:fixed;left:-9999px;opacity:0";
+  document.body.appendChild(t); t.focus(); t.select();
+  let ok=false; try{ok=document.execCommand("copy");}catch(e){}
+  document.body.removeChild(t); cb(ok);
+}
 
 /* copy */
 function copyText(text,fbId){
@@ -744,10 +880,11 @@ async function regenDesc(){
   $("descOutput").style.display="none";
   $("descDot").style.background="#f0c878";
   $("descStatus").textContent="כותב מחדש...";
+  const maxTok=_lastData.blessingType==="short"?80:150;
   try{
     const res=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:120,
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:maxTok,
         messages:[{role:"user",content:buildDescPrompt(_lastData)}]})
     });
     const data=await res.json();
@@ -756,6 +893,7 @@ async function regenDesc(){
     $("descOutput").value=p;
     $("output").textContent=buildFullPrompt(_lastData,p);
     $("descDot").style.background="#a8d870"; $("descStatus").textContent="מוכן ✓";
+    updateWordCount();
   }catch(e){
     $("descDot").style.background="#f0a070"; $("descStatus").textContent="שגיאה";
   }
@@ -769,8 +907,8 @@ function clearForm(){
   $$('input[type="checkbox"]').forEach(e=>e.checked=false);
   $("titlePreset").value="";
   $("style").selectedIndex=0;
-  [["flower"],["mood"],["grade"]].forEach(([n])=>{const e=$$('input[name="'+n+'"]');if(e.length)e[0].checked=true;});
-  updateTitleVis(); updateCounts();
+  [["flower"],["mood"],["grade"],["hasPhoto"],["blessingType"]].forEach(([n])=>{const e=$$('input[name="'+n+'"]');if(e.length)e[0].checked=true;});
+  updateTitleVis(); updateCounts(); updatePhotoHint(); updateBlessingHint();
   $("output").innerHTML='<span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.</span>';
   $("descOutput").value="";
   updateWordCount();
@@ -787,10 +925,12 @@ $("copyDescBtn").addEventListener("click",()=>copyText($("descOutput").value.tri
 $("regenDescBtn").addEventListener("click",regenDesc);
 $("titlePreset").addEventListener("change",updateTitleVis);
 $$('input[name="gender"]').forEach(e=>e.addEventListener("change",()=>applyGender(radio("gender"))));
+$$('input[name="blessingType"]').forEach(e=>e.addEventListener("change",updateBlessingHint));
+$$('input[name="hasPhoto"]').forEach(e=>e.addEventListener("change",updatePhotoHint));
 $$('#traitsGroup input,#elementsGroup input').forEach(e=>e.addEventListener("change",updateCounts));
 
 /* init */
-updateTitleVis(); updateCounts(); applyGender(radio("gender"));
+updateTitleVis(); updateCounts(); applyGender(radio("gender")); updateBlessingHint(); updatePhotoHint();
 })();
 </script>
 </body>
