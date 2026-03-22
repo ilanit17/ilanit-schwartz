@@ -522,7 +522,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 ① AI כותב פסקת ברכה אישית בעברית<br>
 ② הפסקה מוטמעת verbatim בפרומפט המלא</span>
       </div>
-      <div class="tip-box">💡 <strong>איך להשתמש:</strong> העתיקי את הפרומפט השלם ← הדביקי בננו בננה ← העלי תמונת פנים ← Generate. הפסקה כלולה מוטמעת.</div>
+      <div class="tip-box">✏️ <strong>לפני העתקה:</strong> בדקי את פסקת הברכה (פאנל ימין) וערכי לפי הצורך — הפרומפט יתעדכן אוטומטית. לאחר מכן העתיקי את הפרומפט השלם ← הדביקי בננו בננה ← העלי תמונה ← Generate.</div>
     </div>
     <div class="out-actions">
       <button class="btn btn-copy" id="copyBtn" style="flex:1;justify-content:center">📋 העתק פרומפט שלם</button>
@@ -548,6 +548,9 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       </div>
       <div id="wordWarning" style="display:none;margin-top:6px;padding:7px 11px;background:#fff3cd;border:1px solid #f0c040;border-radius:8px;font-size:12px;color:#7a5500">
         ⚠️ <strong>הפסקה ארוכה מדי.</strong> ננו בננה מדויק יותר עד 25 מילים — מומלץ לקצר.
+      </div>
+      <div id="editReminder" style="display:none;margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,#f0f8ea,#e8f4e0);border:1.5px solid #a8d080;border-radius:10px;font-size:13px;color:#3a6020;line-height:1.6">
+        ✏️ <strong>לפני שמעתיקים את הפרומפט —</strong> קראי את הפסקה וודאי שהיא מדויקת, אישית ומשקפת נכון את הילד/ה. ניתן לערוך ישירות בתיבה למעלה.
       </div>
     </div>
     <div class="out-actions">
@@ -865,6 +868,7 @@ async function generate(){
   $("descLoading").style.display="none";
   $("descDot").style.background="#a8d870";
   $("descStatus").textContent="מוכן לעריכה ✓";
+  if($("editReminder")) $("editReminder").style.display="block";
   updateWordCount();
 
   // Phase 2 — assemble full prompt
@@ -1001,6 +1005,7 @@ async function regenDesc(){
     $("descOutput").value=p;
     $("output").textContent=buildFullPrompt(_lastData,p);
     $("descDot").style.background="#a8d870"; $("descStatus").textContent="מוכן ✓";
+    if($("editReminder")) $("editReminder").style.display="block";
     updateWordCount();
   }catch(e){
     $("descDot").style.background="#f0a070"; $("descStatus").textContent="שגיאה";
@@ -1019,6 +1024,7 @@ function clearForm(){
   updateTitleVis(); updateCounts(); updatePhotoHint(); updateBlessingHint();
   $("output").innerHTML='<span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.</span>';
   $("descOutput").value="";
+  if($("editReminder")) $("editReminder").style.display="none";
   updateWordCount();
   $("statusDot").style.background="#ccc"; $("statusText").textContent="ממתין";
   $("descDot").style.background="#ccc"; $("descStatus").textContent="ממתין";
