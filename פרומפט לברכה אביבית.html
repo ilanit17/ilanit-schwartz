@@ -505,34 +505,10 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 <!-- OUTPUT COL -->
 <div class="output-col">
 
-  <div class="out-panel">
+  <!-- פסקת הברכה — ראשונה ונגישה -->
+  <div class="desc-panel" style="position:sticky;top:18px">
     <div class="out-head">
-      <div><h2>הפרומפט השלם</h2><p>פסקת הברכה מוטמעת verbatim — מוכן לננו בננה</p></div>
-      <div class="out-status"><div class="status-dot" id="statusDot"></div><span id="statusText">ממתין</span></div>
-    </div>
-    <div class="out-body">
-      <div class="loading-box" id="mainLoading">
-        <div class="spin" style="font-size:30px">🌸</div>
-        <div class="loading-msg" id="loadingMsg">שלב 1: כותב/ת פסקת ברכה אישית...</div>
-        <div class="loading-sub">לאחר מכן הפסקה מוטמעת בפרומפט השלם</div>
-      </div>
-      <div class="prompt-box" id="output">
-        <span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.<br><br>
-הפרומפט ייוצר בשני שלבים:<br>
-① AI כותב פסקת ברכה אישית בעברית<br>
-② הפסקה מוטמעת verbatim בפרומפט המלא</span>
-      </div>
-      <div class="tip-box">✏️ <strong>לפני העתקה:</strong> בדקי את פסקת הברכה (פאנל ימין) וערכי לפי הצורך — הפרומפט יתעדכן אוטומטית. לאחר מכן העתיקי את הפרומפט השלם ← הדביקי בננו בננה ← העלי תמונה ← Generate.</div>
-    </div>
-    <div class="out-actions">
-      <button class="btn btn-copy" id="copyBtn" style="flex:1;justify-content:center">📋 העתק פרומפט שלם</button>
-      <span class="copy-fb" id="copyFb">✅ הועתק!</span>
-    </div>
-  </div>
-
-  <div class="desc-panel">
-    <div class="out-head">
-      <div><h2>✍️ פסקת הברכה</h2><p>נכתבת ע״י AI — ערכי לפי הצורך</p></div>
+      <div><h2>✍️ שלב א׳ — פסקת הברכה</h2><p>נכתבת ע״י AI · ערכי לפי הצורך · מתעדכנת בפרומפט אוטומטית</p></div>
       <div class="out-status"><div class="status-dot" id="descDot" style="background:#ccc"></div><span id="descStatus">ממתין</span></div>
     </div>
     <div class="out-body">
@@ -543,20 +519,45 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
       <textarea class="desc-textarea" id="descOutput"
         placeholder="הפסקה תופיע כאן לאחר הלחיצה.&#10;ערכי ישירות — הפרומפט יתעדכן אוטומטית."></textarea>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-        <div style="font-size:11px;color:var(--text-3)">💡 כל עריכה מתעדכנת אוטומטית בפרומפט השלם</div>
+        <div style="font-size:11px;color:var(--text-3)">💡 כל עריכה מתעדכנת אוטומטית בפרומפט השלם למטה</div>
         <div id="wordCount" style="font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:#f0f5ea;color:var(--green-dark)">0 מילים</div>
       </div>
       <div id="wordWarning" style="display:none;margin-top:6px;padding:7px 11px;background:#fff3cd;border:1px solid #f0c040;border-radius:8px;font-size:12px;color:#7a5500">
-        ⚠️ <strong>הפסקה ארוכה מדי.</strong> ננו בננה מדויק יותר עד 25 מילים — מומלץ לקצר.
+        ⚠️ <strong>הפסקה ארוכה מדי.</strong> ננו בננה מדויק יותר עד 60 מילים — מומלץ לקצר.
       </div>
       <div id="editReminder" style="display:none;margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,#f0f8ea,#e8f4e0);border:1.5px solid #a8d080;border-radius:10px;font-size:13px;color:#3a6020;line-height:1.6">
-        ✏️ <strong>לפני שמעתיקים את הפרומפט —</strong> קראי את הפסקה וודאי שהיא מדויקת, אישית ומשקפת נכון את הילד/ה. ניתן לערוך ישירות בתיבה למעלה.
+        ✏️ <strong>בדקי וערכי לפי הצורך</strong> — ואז גללי למטה לפרומפט השלם והעתיקי.
       </div>
     </div>
     <div class="out-actions">
       <button class="btn btn-copy" id="copyDescBtn" style="flex:1;justify-content:center">📋 העתק פסקה בלבד</button>
       <button class="btn btn-secondary" id="regenDescBtn">🔄 כתוב מחדש</button>
       <span class="copy-fb" id="copyDescFb">✅ הועתק!</span>
+    </div>
+  </div>
+
+  <!-- פרומפט שלם — למטה -->
+  <div class="out-panel" style="margin-top:16px;position:static">
+    <div class="out-head">
+      <div><h2>🚀 שלב ב׳ — הפרומפט השלם</h2><p>פסקת הברכה מוטמעת verbatim — מוכן לננו בננה</p></div>
+      <div class="out-status"><div class="status-dot" id="statusDot"></div><span id="statusText">ממתין</span></div>
+    </div>
+    <div class="out-body">
+      <div class="loading-box" id="mainLoading">
+        <div class="spin" style="font-size:30px">🌸</div>
+        <div class="loading-msg" id="loadingMsg">שלב 1: כותב/ת פסקת ברכה אישית...</div>
+        <div class="loading-sub">לאחר מכן הפסקה מוטמעת בפרומפט השלם</div>
+      </div>
+      <div class="prompt-box" id="output">
+        <span class="prompt-ph">לחצי על ״צור פסקה + פרומפט שלם״ כדי להתחיל.<br><br>
+① AI כותב פסקת ברכה (למעלה) — ערכי לפי הצורך<br>
+② הפסקה מוטמעת verbatim בפרומפט המלא (כאן)</span>
+      </div>
+      <div class="tip-box">✏️ <strong>לאחר עריכת הפסקה למעלה</strong> — העתיקי את הפרומפט השלם ← הדביקי בננו בננה ← העלי תמונה ← Generate.</div>
+    </div>
+    <div class="out-actions">
+      <button class="btn btn-copy" id="copyBtn" style="flex:1;justify-content:center">📋 העתק פרומפט שלם</button>
+      <span class="copy-fb" id="copyFb">✅ הועתק!</span>
     </div>
   </div>
 
