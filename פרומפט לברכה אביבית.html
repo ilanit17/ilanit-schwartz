@@ -708,27 +708,35 @@ function buildDescPrompt(d){
     L.push("");
     L.push("⚠️ חובה: עד 15 מילים. 2-3 משפטים. פסקה רציפה. ללא חתימה. ללא מרכאות חיצוניות.");
   } else {
-    L.push("🔴 הגבלת אורך קשיחה: בין 45 ל-60 מילים בלבד — לא יותר מ-60 בשום פנים ואופן.");
-    L.push("ספור את המילים לפני שאתה מסיים. אם הגעת ל-60 מילים — עצור מיד.");
+    L.push("MANDATORY LENGTH: Write between 45 and 60 Hebrew words. This is non-negotiable.");
+    L.push("IMPORTANT: Count every word as you write. Do NOT stop before 45 words. Do NOT exceed 60 words.");
+    L.push("A short response is WRONG here. You must write a full, warm, detailed paragraph.");
     L.push("");
-    L.push("מבנה — 4 משפטים בלבד:");
+    L.push("Write EXACTLY 4 sentences in Hebrew:");
     L.push("");
-    L.push("משפט 1 — פתיחה (10-12 מילים):");
-    L.push("   פתח ב: \"" + address + "\" + משפט קצר על הנוכחות המיוחדת.");
+    L.push("Sentence 1 — warm personal opening (10-12 words):");
+    L.push("   Start with exactly: \"" + address + "\" then a warm sentence about their special presence.");
     L.push("");
-    L.push("משפט 2 — דימוי לפרח (15-18 מילים):");
-    L.push("   'כמו " + fHe + " ש" + verb1 + ", כך " + pronoun + "...' — שלב 1-2 תכונות מ: " + (traitsStr||"תכונות") + ".");
+    L.push("Sentence 2 — flower metaphor, the LONGEST sentence (15-18 words):");
+    L.push("   'כמו " + fHe + " ש" + verb1 + " לקראת האביב, כך " + pronoun + "...' — include 2 traits from: " + (traitsStr||"the child's personality") + ".");
     L.push("");
-    L.push("משפט 3 — עולם אישי (10-15 מילים):");
-    if(hobbiesStr) L.push("   " + hobbiesStr + (bgStr?" ו/או "+bgStr:"") + " — משפט אחד קצר.");
-    else if(bgStr) L.push("   " + bgStr + " — משפט אחד קצר.");
-    else L.push("   משפט על מה " + pronoun + " " + verb3 + " לסביבה.");
+    L.push("Sentence 3 — personal world (10-15 words):");
+    if(hobbiesStr||bgStr){
+      L.push("   Write a full sentence naturally mentioning: " + [hobbiesStr,bgStr].filter(Boolean).join(" and ") + ".");
+    } else {
+      L.push("   A sentence about what " + pronoun + " " + verb3 + " to the people around " + (iF?"her":"him") + ".");
+    }
     L.push("");
-    L.push("משפט 4 — סיום (8-12 מילים):");
-    L.push("   ברכה אביבית חמה — קצרה ומדויקת.");
+    L.push("Sentence 4 — spring blessing closing (8-12 words):");
+    L.push("   A heartfelt spring blessing — meaningful, not just 'חג שמח'.");
     L.push("");
-    L.push("🔴 עצור בדיוק ב-60 מילים. קצר = דיוק גבוה יותר בתמונה.");
-    L.push("פסקה רציפה. ללא כותרת. ללא חתימה. ללא מרכאות חיצוניות.");
+    L.push("FINAL CHECK before responding:");
+    L.push("  - Count the total Hebrew words");
+    L.push("  - If under 45 words → ADD more detail to sentences 2 and 3");
+    L.push("  - If over 60 words → SHORTEN");
+    L.push("  - Only respond when you have between 45-60 words");
+    L.push("");
+    L.push("Format: single flowing paragraph in Hebrew. No title. No signature. No quotes.");
   }
   L.push("");
   L.push("כתוב כעת את הפסקה — רק הפסקה עצמה, ללא הקדמה:");
