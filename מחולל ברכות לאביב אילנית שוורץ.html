@@ -71,7 +71,9 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
   border: none;
   border-radius: 18px;
   padding: 20px 18px;
-  min-height: 360px;
+  min-height: 250px;
+  max-height: 380px; /* תוספת: גובה מקסימלי */
+  overflow-y: auto;  /* תוספת: פס גלילה פנימי */
   white-space: pre-wrap;
   font-family: 'Heebo','Arial Hebrew',sans-serif;
   font-size: 13px;
@@ -188,7 +190,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
           <input type="radio" name="blessingType" value="long">
           <div class="rc-label">
             <div class="rc-title">📝 מפורטת ועמוקה</div>
-            <div class="rc-sub">45–60 מילים · 4–5 משפטים</div>
+            <div class="rc-sub">עד כ-50 מילים · 3-4 משפטים</div>
           </div>
         </label>
       </div>
@@ -568,7 +570,14 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:12px 0}
 (function(){
 "use strict";
 
-const apiKey = ""; // API Key is injected dynamically by the environment
+// ⚠️ כדי שהאפליקציה תעבוד מחוץ לסביבה הזו (כמו בגיטהאב או במחשב שלך),
+// את חייבת ליצור מפתח API חינמי של Gemini בכתובת:
+// https://aistudio.google.com/app/apikey
+// ולהדביק אותו בין המרכאות כאן למטה:
+const MY_OWN_API_KEY = "AIzaSyCfyzzlb-C1PVEvyfHm-5Gzu0EM4B0uBLE"; 
+
+const environmentKey = typeof __app_id !== 'undefined' ? "" : "";
+const apiKey = environmentKey || MY_OWN_API_KEY;
 
 const $=id=>document.getElementById(id);
 const $$=sel=>Array.from(document.querySelectorAll(sel));
@@ -859,12 +868,15 @@ async function generate(){
   // Phase 1 — AI paragraph
   let para="";
   try{
+    if (!apiKey) {
+      throw new Error("Missing API Key - please add MY_OWN_API_KEY in the code");
+    }
+
     $("loadingMsg").textContent="שלב 1 מתוך 2: כותב פסקת ברכה "+(d.blessingType==="short"?"קצרה":"מפורטת")+"...";
     
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
     const payload = {
         contents: [{ parts: [{ text: buildDescPrompt(d) }] }],
-        // הסרנו לחלוטין את מגבלת האסימונים (maxOutputTokens) כדי למנוע קטיעות
         generationConfig: { temperature: 0.7 }
     };
     
@@ -877,7 +889,7 @@ async function generate(){
     para = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
     if(!para) throw new Error("empty");
   }catch(e){
-    // Fallback in case of API error
+    // Fallback in case of API error (like when missing key on GitHub)
     const fHe=FLOWER_HE[d.flower]||"פרח אביבי";
     const addr=d.name?(d.iF?d.name+" היקרה,":d.name+" היקר,"):(d.iF?"יקירה שלנו,":"יקירנו,");
     const t1=d.allTraits[0]||(d.iF?"מיוחדת":"מיוחד");
@@ -995,10 +1007,13 @@ async function regenDesc(){
   $("descDot").style.background="#f0c878";
   $("descStatus").textContent="כותב מחדש...";
   try{
+    if (!apiKey) {
+      throw new Error("Missing API Key");
+    }
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
     const payload = {
         contents: [{ parts: [{ text: buildDescPrompt(_lastData) }] }],
-        // הסרנו לחלוטין את מגבלת האסימונים גם כאן
         generationConfig: { temperature: 0.7 }
     };
     
